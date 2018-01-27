@@ -1,0 +1,29 @@
+.tabsLogin {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  align-items: center;
+  justify-content: center
+}
+
+.tabsInside {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
+.paddingTop20 {
+  padding-top: 20px;
+}
+
+.marginBottom20 {
+  /* padding-bottom: 20px; */
+  margin-bottom: 20px;
+}
+
+.marginTop20 {
+  margin-top: 20px;
+}
