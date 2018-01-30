@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 import {Admin} from './admin'
 import Login from './login'
-import {Home} from './home'
+import Home from './home'
 
 export const Content = ({match}) => (<Router>
   <div>
