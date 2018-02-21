@@ -4,8 +4,12 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import {Admin} from './admin'
 import Login from './login'
 import Home from './home'
+import Pesquisa from './pesquisaVotos'
 
-export const Content = ({match}) => (<Router>
+
+
+export const Content = ({match}) => (
+  <Router>
   <div>
     <ul>
       <li>
@@ -25,10 +29,11 @@ export const Content = ({match}) => (<Router>
       </li>
     </ul>
 
-    <hr/>
-
     <Route exact="exact" path="/" component={Home}/>
+    <Route path="/pesquisasDeVoto" component={Pesquisa}/>
     <Route path="/admin" component={Admin}/>
-    <Route path="/login" component={Login}/>
+    <Route path="/login" component={Login} />
+
   </div>
-</Router>)
+</Router>
+)

@@ -29,7 +29,7 @@ export default class App extends React.Component {
     return (<div>
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
         <AppBar onLeftIconButtonClick={this.handleToggle} title="VOTO360"/>
-        <Content/>
+        <Content />
         <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
           <MenuItem onClick={this.handleClose}>Menu Item</MenuItem>
           <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>

@@ -3,23 +3,97 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import styles from '../dist/css/login.css'
+
+import { BrowserRouter as Router, Route, Link} from 'react-router-dom'
+
 
 import axios from 'axios'
 import { CPF } from 'cpf_cnpj'
+import { cookie } from 'cookie_js'
 
 export default class Login extends React.Component {
   render() {
-    return <TabsLogin />
+    console.log(this.props)
+    return <TabsLogin { ...this.props }/>
   }
 }
 
-const CardLogin = () => (
-  <div className="cardLogin">
-    <LoginFields />
-    <RaisedButtonLogin/>
-  </div>
-)
+class CardLogin extends React.Component {
+
+
+  constructor(props){
+    super(props)
+    this.state = {
+      email: '',
+      senha: ''
+    }
+  }
+
+  validarErroSenha = () => {
+    if(!this.state.senha){
+      this.setState({errorSenha: true})
+      return true
+    }
+    return false
+  }
+
+   validarErroEmail = () => {
+     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+     if (!re.test(this.state.email)){
+       this.setState({errorEmail: true})
+         return true
+     }
+     return false
+   }
+
+   handleSignInSuccess = (response) => {
+       cookie.set({
+          user: JSON.stringify(response.data)
+       });
+       this.props.history.goBack()
+
+   }
+  signIn = () => {
+
+    if(this.validarErroSenha()){
+      return;
+    }
+
+    //Valida Email
+    if(this.validarErroEmail()){
+      return;
+    }
+
+    var request = {
+      senha: this.state.senha,
+      email: this.state.email
+    };
+
+    axios.post('http://localhost:8080/login',request)
+    .then(this.handleSignInSuccess)
+    .catch(function (error) {
+      alert(error);
+    });
+
+  }
+
+  render(){
+    return (
+      <div className="cardLogin">
+
+        <div className="tabsInside">
+          <TextField onBlur={this.validarErroEmail} errorText={this.state.errorEmail && "Confirme o email digitado"} floatingLabelText="Email" onChange={(event, text)=>{this.setState({email: text, errorEmail: false})}}/>
+          <TextField onBlur={this.validarErroSenha} floatingLabelText="Senha" type="password" onChange={(event, text)=>{this.setState({senha: text, errorSenha: false})}}/>
+        </div>
+
+        <RaisedButtonLogin handleClick={this.signIn}/>
+        <ForgotPassword/>
+      </div>
+    )
+  }
+}
 
  class CardCadastro extends React.Component {
 
@@ -37,6 +111,8 @@ const CardLogin = () => (
        errorCPF: false
      }
    }
+
+
 
    validarErroSenha = () => {
      if(this.state.senha !== this.state.confirmarsenha){
@@ -63,19 +139,33 @@ const CardLogin = () => (
       return false
     }
 
+    handleSignInSuccess = (response) => {
+        alert("Sucesso");
+        this.setState({
+          email: '',
+          nome: '',
+          senha: '',
+          confirmarsenha: '',
+          cpf: '',
+
+          errorSenha: false,
+          errorEmail: false,
+          errorCPF: false
+        });
+    }
    signUp = () => {
 
      //Valida senha
-     if(this.validarErroSenha){
+     if(this.validarErroSenha()){
        return;
      }
 
      //Valida Email
-     if(this.validarErroEmail){
+     if(this.validarErroEmail()){
        return;
      }
      //Valida cpf
-     if(this.validarErroCPF){
+     if(this.validarCPF()){
        return;
      }
 
@@ -88,9 +178,7 @@ const CardLogin = () => (
      };
 
      axios.post('http://localhost:8080/pessoa',request)
-     .then(function (response) {
-       alert(JSON.stringify(response));
-     })
+     .then(this.handleSignInSuccess)
      .catch(function (error) {
        alert(error);
      });
@@ -100,41 +188,56 @@ const CardLogin = () => (
   render(){
     return(
     <div className="cardLogin">
+      <RadioButtonGroup name="shipSpeed" defaultSelected="not_light" className="radioButtonGroup">
+        <RadioButton
+          value="light"
+          label="Eleitor"
+          style={styles.radioButton}
+        />
+        <RadioButton
+          value="not_light"
+          label="Político"
+          style={styles.radioButton}
+        />
+     </RadioButtonGroup>
       <div className="tabsInside">
-        <TextField onBlur={this.validarErroEmail} errorText={this.state.errorEmail && "Confirme o email digitado"} floatingLabelText="Email" onChange={(event, text)=>{this.setState({email: text, errorEmail: false})}}/>
-        <TextField floatingLabelText="Nome Completo" onChange={(event, text)=>{this.setState({nome: text})}}/>
-        <TextField onBlur={this.validarErroSenha} floatingLabelText="Senha" type="password" onChange={(event, text)=>{this.setState({senha: text, errorSenha: false})}}/>
-        <TextField onBlur={this.validarErroSenha} errorText={this.state.errorSenha && "Confirme as senhas digitadas"} floatingLabelText="Confirmar Senha" type="password" onChange={(event, text)=>{this.setState({confirmarsenha: text, errorSenha: false})}}/>
-        <TextField onBlur={this.validarCPF} errorText={this.state.errorCPF && "Confirme o CPF digitado"} floatingLabelText="CPF" onChange={(event, text)=>{this.setState({cpf: text, errorCPF: false})}}/>
+
+        <TextField value={this.state.email} onBlur={this.validarErroEmail} errorText={this.state.errorEmail && "Confirme o email digitado"} floatingLabelText="Email" onChange={(event, text)=>{this.setState({email: text, errorEmail: false})}}/>
+        <TextField value={this.state.nome} floatingLabelText="Nome Completo" onChange={(event, text)=>{this.setState({nome: text})}}/>
+        <TextField value={this.state.senha} onBlur={this.validarErroSenha} floatingLabelText="Senha" type="password" onChange={(event, text)=>{this.setState({senha: text, errorSenha: false})}}/>
+        <TextField value={this.state.confirmarsenha} onBlur={this.validarErroSenha} errorText={this.state.errorSenha && "Confirme as senhas digitadas"} floatingLabelText="Confirmar Senha" type="password" onChange={(event, text)=>{this.setState({confirmarsenha: text, errorSenha: false})}}/>
+        <TextField value={this.state.cpf} onBlur={this.validarCPF} errorText={this.state.errorCPF && "Confirme o CPF digitado"} floatingLabelText="CPF" onChange={(event, text)=>{this.setState({cpf: text, errorCPF: false})}}/>
       </div>
       <RaisedButtonCadastro handleClick={this.signUp}/>
+
     </div>
   )
 }
 }
 
-const RaisedButtonLogin = () => (
-    <RaisedButton label="Login" primary={true} />
+const RaisedButtonLogin = (props) => (
+    <RaisedButton label="Login" primary={true} onClick={props.handleClick} />
 );
 
 const RaisedButtonCadastro = (props) => (
     <RaisedButton label="Cadastro" className="marginBottom20 marginTop20" onClick={props.handleClick}/>
 );
 
-const LoginFields = () => (
-  <div className="tabsInside">
-    <TextField floatingLabelText="Email" />
-    <TextField floatingLabelText="Senha" type="password"/>
-  </div>
-)
 
-const TabsLogin = () => (
+
+const TabsLogin = (props) => (
   <Tabs className="tabsLogin">
     <Tab label="Login">
-        <CardLogin/>
+        <CardLogin {...props}/>
     </Tab>
     <Tab label="Cadastro">
       <CardCadastro/>
     </Tab>
   </Tabs>
+);
+
+const ForgotPassword = () => (
+  <div>
+    <a href="/login">Esqueci a senha</a>
+  </div>
 );

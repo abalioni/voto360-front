@@ -1,14 +1,6 @@
 import React from 'react'
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import style from '../dist/css/home.css'
-import {grey900, grey800} from 'material-ui/styles/colors';
-
-const styles = {
-  floatingLabelStyle: {
-    color: grey900,
-  }
-};
 
 export default class Home extends React.Component {
   render() {
@@ -48,5 +40,11 @@ const SearchBar = () => (
 const MiddleBar = () => (
   <div className="middleBar">
 
-  </div>  
+  </div>
+)
+
+const BottomSection = () => (
+  <div>
+    
+  </div>
 )

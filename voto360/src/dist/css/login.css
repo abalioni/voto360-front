@@ -4,7 +4,8 @@
   flex-direction: column;
   width: 45%;
   align-items: center;
-  justify-content: center
+  justify-content: center;
+  /* height: 180px; */
 }
 
 .tabsInside {
@@ -26,4 +27,13 @@
 
 .marginTop20 {
   margin-top: 20px;
+}
+
+.radioButtonGroup {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+  width: 60%;
+  align-items: center;
+  align-content: center;
 }
