@@ -4,7 +4,7 @@ import {
   Link
 } from 'react-router-dom'
 import { MeusDados } from './meusdados'
-import { ControlePermissoes } from './controlePermissoes'
+import ControlePermissoes from './controlePermissoes'
 
 export const Admin = ({ match }) => (
   <div>

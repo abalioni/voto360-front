@@ -1,6 +1,6 @@
 import React from 'react'
 import RaisedButton from 'material-ui/RaisedButton';
-import style from '../dist/css/home.css'
+import '../dist/css/home.css'
 
 export default class Home extends React.Component {
   render() {
@@ -12,6 +12,7 @@ const FullHome = () => (
   <div>
     <SearchBar/>
     <MiddleBar/>
+     <BottomSection />
   </div>
 )
 
@@ -45,6 +46,6 @@ const MiddleBar = () => (
 
 const BottomSection = () => (
   <div>
-    
+
   </div>
 )
