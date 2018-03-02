@@ -57,7 +57,7 @@ export default class ControlePermissoes extends React.Component {
   }
 
   getUsuarios = () => {
-    axios.get('http://localhost:8080/pessoa').then(this.handleUsers).catch(function(error) {
+    axios.get('http://localhost:8081/pessoa').then(this.handleUsers).catch(function(error) {
       alert(error);
     });
   }
@@ -82,7 +82,7 @@ export default class ControlePermissoes extends React.Component {
 
   handleSalvarPermissoes = () => {
 
-    axios.put('http://localhost:8080/change-role', {
+    axios.put('http://localhost:8081/change-role', {
       email: this.state.emailSelecionado,
       cargo: this.state.cargo
     })
@@ -95,7 +95,7 @@ export default class ControlePermissoes extends React.Component {
       }
     })
 
-    axios.get('http://localhost:8080/pessoa?q=', {
+    axios.get('http://localhost:8081/pessoa?q=', {
       email: this.state.emailSelecionado
     })
     .then(function (response) {

@@ -10,7 +10,6 @@ import InputCPF from './InputCPF';
 import axios from 'axios'
 import {CPF} from 'cpf_cnpj'
 import {cookie} from 'cookie_js'
-import { sha512 } from 'js-sha512'
 
 
 
@@ -87,7 +86,7 @@ class CardLogin extends React.Component {
       email: this.state.email
     };
 
-    axios.post('http://localhost:8080/login', request).then(this.handleSignInSuccess).catch(function(error) {
+    axios.post('http://localhost:8081/login', request).then(this.handleSignInSuccess).catch(function(error) {
       alert(error);
     });
 
@@ -207,7 +206,7 @@ class CardCadastro extends React.Component {
       cargo: this.state.cargo
     };
 
-    axios.post('http://localhost:8080/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
+    axios.post('http://localhost:8081/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
       alert(error);
     });
 
