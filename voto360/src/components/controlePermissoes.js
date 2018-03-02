@@ -82,7 +82,7 @@ export default class ControlePermissoes extends React.Component {
 
   handleSalvarPermissoes = () => {
 
-    axios.put('http://localhost:8080/pessoa?q=', {
+    axios.put('http://localhost:8080/change-role', {
       email: this.state.emailSelecionado,
       cargo: this.state.cargo
     })

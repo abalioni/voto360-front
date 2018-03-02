@@ -12,32 +12,22 @@ export default class EsqueciSenha extends React.Component {
     super(props)
 
     this.state = {
-      isLoggedIn: cookie.get('user')
+      isLoggedIn: cookie.get('user'),
+      email: '',
+      novaSenha: ''
+
     }
     this.handleUserSession = this.handleUserSession.bind(this)
   }
 
   render() {
     return (
-      this.handleUserSession ? (<LoggedReset />) : (<NotLoggedReset />)
+      this.handleUserSession() ? (<LoggedReset />) : (<NotLoggedReset />)
     )
   }
 
   handleUserSession () {
-    const user = cookie.get('user');
-
-    if(user){
-      console.log(user);
-      this.setState(
-        {
-          user: user
-        }
-      )
-      return true
-    } else {
-      console.log(user);
-      return false
-    }
+    return cookie.get('user');
   }
 }
 
@@ -56,6 +46,10 @@ const LoggedReset = () => (
     <TextField
       hintText="Senha atual"
       floatingLabelText="Senha atual"
+      onChange={(event, text) =>
+        {
+          this.setState({email: text, errorEmail: false})
+        }}
     />
     <TextField
       hintText="Nova senha"
