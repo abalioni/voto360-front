@@ -82,14 +82,29 @@ export default class ControlePermissoes extends React.Component {
 
   handleSalvarPermissoes = () => {
 
-    console.log(this.state);
-  //   axios.get('/pessoa?q={"email":"balionisalexia@gmail.com"}')
-  //   .then(function (response) {
-  //     console.log(response);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  //
+    axios.put('http://localhost:8080/pessoa?q=', {
+      email: this.state.emailSelecionado,
+      cargo: this.state.cargo
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
+
+    axios.get('http://localhost:8080/pessoa?q=', {
+      email: this.state.emailSelecionado
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
 }
 }

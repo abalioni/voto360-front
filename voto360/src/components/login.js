@@ -3,14 +3,16 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import styles from '../dist/css/login.css'
-
-// import { BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import css from '../dist/css/login.css'
+import { gray900, orange500 } from 'material-ui/styles/colors';
+import InputCPF from './InputCPF';
 
 import axios from 'axios'
 import {CPF} from 'cpf_cnpj'
 import {cookie} from 'cookie_js'
+import { sha512 } from 'js-sha512'
+
+
 
 export default class Login extends React.Component {
   render() {
@@ -18,7 +20,17 @@ export default class Login extends React.Component {
   }
 }
 
+const styles = {
+  floatingLabelStyle: {
+    color: gray900,
+  },
+  underlineStyle: {
+    borderColor: gray900,
+  }
+};
+
 class CardLogin extends React.Component {
+
 
   constructor(props) {
     super(props)
@@ -46,10 +58,15 @@ class CardLogin extends React.Component {
   }
 
   handleSignInSuccess = (response) => {
+
     cookie.set({
       user: JSON.stringify(response.data)
     });
-    if (this.props.location.state.referrer) {
+    if (!this.props.location.state) {
+      this.props.history.push('/')
+    }
+
+    if (this.props.location.state && this.props.location.state.referrer) {
       this.props.history.push(this.props.location.state.referrer)
     }
     this.props.handleLogin()
@@ -80,12 +97,26 @@ class CardLogin extends React.Component {
     return (<div className="cardLogin">
 
       <div className="tabsInside">
-        <TextField onBlur={this.validarErroEmail} errorText={this.state.errorEmail && "Confirme o email digitado"} floatingLabelText="Email" onChange={(event, text) => {
-            this.setState({email: text, errorEmail: false})
-          }}/>
-        <TextField onBlur={this.validarErroSenha} floatingLabelText="Senha" type="password" onChange={(event, text) => {
-            this.setState({senha: text, errorSenha: false})
-          }}/>
+        <TextField
+          onBlur={this.validarErroEmail}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          errorText={this.state.errorEmail && "Verifique o email digitado"}
+          floatingLabelText="Email"
+          onChange={(event, text) =>
+            {
+              this.setState({email: text, errorEmail: false})
+            }}/>
+        <TextField
+          onBlur={this.validarErroSenha}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          floatingLabelText="Senha"
+          type="password"
+          onChange={(event, text) =>
+            {
+              this.setState({senha: text, errorSenha: false})
+            }}/>
       </div>
 
       <RaisedButtonLogin handleClick={this.signIn}/>
@@ -182,25 +213,61 @@ class CardCadastro extends React.Component {
 
   }
 
+
   render() {
     return (<div className="cardLogin">
       <div className="tabsInside">
 
-        <TextField value={this.state.email} onBlur={this.validarErroEmail} errorText={this.state.errorEmail && "Confirme o email digitado"} floatingLabelText="Email*" onChange={(event, text) => {
+        <TextField
+          value={this.state.email}
+          onBlur={this.validarErroEmail}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          errorText={this.state.errorEmail && "Confirme o email digitado"}
+          floatingLabelText="Email*"
+          onChange={(event, text) => {
             this.setState({email: text, errorEmail: false})
           }}/>
-        <TextField value={this.state.nome} floatingLabelText="Nome Completo" onChange={(event, text) => {
+        <TextField
+          value={this.state.nome}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          floatingLabelText="Nome Completo"
+          onChange={(event, text) => {
             this.setState({nome: text})
           }}/>
-        <TextField value={this.state.senha} onBlur={this.validarErroSenha} floatingLabelText="Senha*" type="password" onChange={(event, text) => {
+        <InputCPF
+          value={this.state.cpf}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          errorText={this.state.errorCPF && "Confirme o CPF digitado"}
+          floatingLabelText="CPF*"
+          onChange={(event, text) => {
+            this.setState({cpf: text, errorCPF: false})
+          }}
+        />
+        <TextField
+          value={this.state.senha}
+          onBlur={this.validarErroSenha}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          floatingLabelText="Senha*"
+          type="password"
+          onChange={(event, text) => {
             this.setState({senha: text, errorSenha: false})
           }}/>
-        <TextField value={this.state.confirmarsenha} onBlur={this.validarErroSenha} errorText={this.state.errorSenha && "Confirme as senhas digitadas"} floatingLabelText="Confirmar Senha*" type="password" onChange={(event, text) => {
+        <TextField
+          value={this.state.confirmarsenha}
+          onBlur={this.validarErroSenha}
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
+          errorText={this.state.errorSenha && "Confirme as senhas digitadas"}
+          floatingLabelText="Confirmar Senha*"
+          type="password"
+          onChange={(event, text) => {
             this.setState({confirmarsenha: text, errorSenha: false})
           }}/>
-        <TextField value={this.state.cpf} onBlur={this.validarCPF} errorText={this.state.errorCPF && "Confirme o CPF digitado"} floatingLabelText="CPF*" onChange={(event, text) => {
-            this.setState({cpf: text, errorCPF: false})
-          }}/>
+
       </div>
       <RaisedButtonCadastro handleClick={this.signUp}/>
 
@@ -210,7 +277,7 @@ class CardCadastro extends React.Component {
 
 const RaisedButtonLogin = (props) => (<RaisedButton label="Login" primary={true} onClick={props.handleClick}/>);
 
-const RaisedButtonCadastro = (props) => (<RaisedButton label="Cadastro" className="marginBottom20 marginTop20" onClick={props.handleClick}/>);
+const RaisedButtonCadastro = (props) => (<RaisedButton label="Cadastro" primary={true} className="marginBottom20 marginTop20" onClick={props.handleClick}/>);
 
 const TabsLogin = (props) => (<Tabs className="tabsLogin">
   <Tab label="Login">
@@ -222,5 +289,5 @@ const TabsLogin = (props) => (<Tabs className="tabsLogin">
 </Tabs>);
 
 const ForgotPassword = () => (<div>
-  <a href="/login">Esqueci a senha</a>
+  <a href="/forgotpassword">Esqueci a senha</a>
 </div>);

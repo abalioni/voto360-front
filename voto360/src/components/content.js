@@ -5,6 +5,7 @@ import {Admin} from './admin'
 import Login from './login'
 import Home from './home'
 import Pesquisa from './pesquisaVotos'
+import EsqueciSenha from './esqueciSenha'
 
 import { cookie } from 'cookie_js'
 
@@ -67,7 +68,9 @@ class Content extends Component {
       <Route exact="exact" path="/" component={Home}/>
       <Route path="/pesquisasDeVoto" component={Pesquisa}/>
       <Route path="/admin" component={Admin}/>
+      <Route path="/forgotpassword" component={EsqueciSenha}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
+
 
     </div>
   </Router>
