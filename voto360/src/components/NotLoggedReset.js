@@ -3,6 +3,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import axios from 'axios'
 
+
 import { cookie } from 'cookie_js'
 
 export default class NotLoggedReset extends React.Component {
@@ -15,10 +16,11 @@ export default class NotLoggedReset extends React.Component {
       users: [],
       email: '',
       novaSenha: '',
-      exists: ''
+      token: ''
     }
     this.handleReset = this.handleReset.bind(this)
-    this.getUsuario = this.getUsuario.bind(this);
+    this.getUsuario = this.getUsuario.bind(this)
+    this.saveToken = this.saveToken.bind(this)
   }
 
   render() {
@@ -32,27 +34,77 @@ export default class NotLoggedReset extends React.Component {
                 this.setState({email: text})
             }}
           />
-          <RaisedButton label="Enviar email" primary={true} onClick={this.handleReset} />
+        <RaisedButton label="Enviar email" primary={true} onClick={this.handleReset} />
         </div>
     )
   }
 
   handleReset () {
-      const exists = this.getUsuario()
-      console.log('exists', exists);
+      this.getUsuario()
   }
 
   getUsuario = () => {
-      console.log(this.state.email);
-      axios.get('http://localhost:8081/singlePerson', {
-        email: this.state.email
-      })
-      .then(function (response) {
-          console.log(response);
-          this.setState({exists: true})
-        console.log(response);
-      })
-      .then(function (error) {
-            this.setState({exists: false})
-      })}
+    var request = {
+      email: this.state.email
+    };
+
+    axios.post('http://localhost:8080/singlePerson', request).then(this.startPasswordReset).catch(function(error) {
+      alert(error);
+    });
   }
+
+  startPasswordReset = () => {
+    this.saveToken()
+  }
+
+  makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 15; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    this.setState({
+      token: text
+    })
+    return text;
+  }
+
+  saveToken = () => {
+    const token = this.makeid()
+
+    var request = {
+      email: this.state.email,
+      token: token
+    };
+
+    axios.put('http://localhost:8080/change-token', {
+      email: this.state.email,
+      token: token
+    })
+    .then(function (response) {
+      this.sendMail(token)
+    })
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
+
+  }
+
+  sendEmail = (token) => {
+    var request = {
+      to: this.state.email,
+      from: this.state.cpf,
+      subject: 'reset de senha',
+      url: 'http://localhost:8080/sendMail'+ token,
+    };
+
+    axios.post('http://localhost:8080/sendMail', request).then(this.handleSignUpSuccess).catch(function(error) {
+      alert(error);
+    });
+  }
+
+
+}

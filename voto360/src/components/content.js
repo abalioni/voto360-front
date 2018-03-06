@@ -34,7 +34,6 @@ class Content extends Component {
     if(user){
       console.log("logout");
        cookie.remove('user');
-
     }
     this.handleLogged(false)
   }
