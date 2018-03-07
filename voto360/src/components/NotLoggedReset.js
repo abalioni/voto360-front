@@ -18,9 +18,10 @@ export default class NotLoggedReset extends React.Component {
       novaSenha: '',
       token: ''
     }
-    this.handleReset = this.handleReset.bind(this)
+
     this.getUsuario = this.getUsuario.bind(this)
     this.saveToken = this.saveToken.bind(this)
+
   }
 
   render() {
@@ -34,27 +35,22 @@ export default class NotLoggedReset extends React.Component {
                 this.setState({email: text})
             }}
           />
-        <RaisedButton label="Enviar email" primary={true} onClick={this.handleReset} />
+        <RaisedButton label="Enviar email" primary={true} onClick={this.getUsuario} />
         </div>
     )
   }
 
-  handleReset () {
-      this.getUsuario()
-  }
-
   getUsuario = () => {
-    var request = {
+
+    axios.get('http://localhost:8080/pessoa?q=', {
       email: this.state.email
-    };
-
-    axios.post('http://localhost:8080/singlePerson', request).then(this.startPasswordReset).catch(function(error) {
-      alert(error);
-    });
-  }
-
-  startPasswordReset = () => {
-    this.saveToken()
+    })
+    .then(() => this.saveToken())
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
   }
 
   makeid() {
@@ -72,18 +68,14 @@ export default class NotLoggedReset extends React.Component {
 
   saveToken = () => {
     const token = this.makeid()
-
-    var request = {
-      email: this.state.email,
-      token: token
-    };
-
+    console.log(token);
     axios.put('http://localhost:8080/change-token', {
       email: this.state.email,
       token: token
     })
     .then(function (response) {
-      this.sendMail(token)
+      console.log('funcionou change token');
+      console.log(response);
     })
     .then(function (error) {
       if (error) {
@@ -93,18 +85,6 @@ export default class NotLoggedReset extends React.Component {
 
   }
 
-  sendEmail = (token) => {
-    var request = {
-      to: this.state.email,
-      from: this.state.cpf,
-      subject: 'reset de senha',
-      url: 'http://localhost:8080/sendMail'+ token,
-    };
-
-    axios.post('http://localhost:8080/sendMail', request).then(this.handleSignUpSuccess).catch(function(error) {
-      alert(error);
-    });
-  }
 
 
 }
