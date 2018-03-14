@@ -1,15 +1,6 @@
 import React from 'react'
 import TextField from 'material-ui/TextField';
-import { gray900 } from 'material-ui/styles/colors';
 
-const styles = {
-  floatingLabelStyle: {
-    color: gray900,
-  },
-  underlineStyle: {
-    borderColor: gray900,
-  }
-};
 
 export default class InputCPF extends React.Component {
 
@@ -18,7 +9,7 @@ export default class InputCPF extends React.Component {
 
     this.handleChange = this.handleChange.bind(this)
 
-    this.cpfMascarado = null
+    this.cpfMascarado = ''
   }
 
   componentWillReceiveProps(nextProps) {

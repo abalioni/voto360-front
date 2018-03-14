@@ -3,9 +3,10 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import css from '../dist/css/login.css'
-import { gray900, orange500 } from 'material-ui/styles/colors';
+import '../dist/css/login.css'
+import { gray900 } from 'material-ui/styles/colors';
 import InputCPF from './InputCPF';
+import SimpleDialog from './SimpleDialog'
 
 import axios from 'axios'
 import {CPF} from 'cpf_cnpj'
@@ -30,7 +31,6 @@ const styles = {
 
 class CardLogin extends React.Component {
 
-
   constructor(props) {
     super(props)
     this.state = {
@@ -48,7 +48,7 @@ class CardLogin extends React.Component {
   }
 
   validarErroEmail = () => {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!re.test(this.state.email)) {
       this.setState({errorEmail: true})
       return true
@@ -71,6 +71,11 @@ class CardLogin extends React.Component {
     this.props.handleLogin()
   }
 
+  handleSignInFailure = (response) => {
+    console.log('falhou');
+    return (<SimpleDialog />)
+  }
+
   signIn = () => {
     if (this.validarErroSenha()) {
       return;
@@ -86,9 +91,9 @@ class CardLogin extends React.Component {
       email: this.state.email
     };
 
-    axios.post('http://localhost:8080/login', request).then(this.handleSignInSuccess).catch(function(error) {
-      alert(error);
-    });
+    axios.post('http://localhost:8080/login', request)
+    .then(this.handleSignInSuccess)
+    .catch(this.handleSignInFailure);
 
   }
 
@@ -135,6 +140,7 @@ class CardCadastro extends React.Component {
       confirmarsenha: '',
       cpf: '',
       cargo: 'eleitor',
+      senha_antiga: '',
 
       errorSenha: false,
       errorEmail: false,
@@ -151,7 +157,7 @@ class CardCadastro extends React.Component {
   }
 
   validarErroEmail = () => {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!re.test(this.state.email)) {
       this.setState({errorEmail: true})
       return true
@@ -169,6 +175,21 @@ class CardCadastro extends React.Component {
 
   handleSignUpSuccess = (response) => {
     alert("Sucesso");
+    this.setState({
+      email: '',
+      nome: '',
+      senha: '',
+      confirmarsenha: '',
+      cpf: '',
+
+      errorSenha: false,
+      errorEmail: false,
+      errorCPF: false
+    });
+  }
+
+  handleSignUpFailure = (response) => {
+    alert("Erro");
     this.setState({
       email: '',
       nome: '',
@@ -204,7 +225,9 @@ class CardCadastro extends React.Component {
       senha: this.state.senha,
       email: this.state.email,
       cargo: this.state.cargo,
-      token: 'uashduahsd'
+      token_senha: '',
+      senha_antiga: this.state.senha
+
     };
 
     axios.post('http://localhost:8080/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {

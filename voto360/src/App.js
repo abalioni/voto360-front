@@ -1,8 +1,5 @@
 import React from 'react'
 
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
-
 import Content from './components/content'
 
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -26,15 +23,13 @@ export default class App extends React.Component {
   });
 
   render() {
-    return (<div>
+    return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-        <AppBar onLeftIconButtonClick={this.handleToggle} title="VOTO360"/>
-        <Content/>
-        <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
-          <MenuItem onClick={this.handleClose}>Menu Item</MenuItem>
-          <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>
-        </Drawer>
+        <div>
+          <AppBar onLeftIconButtonClick={this.handleToggle} title="VOTO360"/>
+          <Content open={this.state.open} handleToggle={this.handleToggle} handleClose={this.handleClose}/>
+        </div>
       </MuiThemeProvider>
-    </div>);
+    );
   }
 }

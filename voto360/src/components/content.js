@@ -6,6 +6,9 @@ import Login from './login'
 import Home from './home'
 import Pesquisa from './pesquisaVotos'
 import NotLoggedReset from './NotLoggedReset'
+import VerifyChangePasswordToken from './VerifyChangePasswordToken'
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 
 import { cookie } from 'cookie_js'
 
@@ -39,37 +42,52 @@ class Content extends Component {
   }
 
   render() {
-
+    const cookieUser = cookie.get('user');
+    let user;
+    if(cookieUser){
+      user = JSON.parse(cookieUser);
+    }
     return (
     <Router>
     <div>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/comparacaoPoliticos">Comparação Politicos</Link>
-        </li>
-        <li>
-          <Link to="/pesquisasDeVoto">Pesquisas de Voto</Link>
-        </li>
-        {this.state.isLoggedIn ? null : (<li>
-          <Link to="/login">Login/Cadastro</Link>
-        </li>)}
-        {this.state.isLoggedIn ? (<li>
-          <button onClick={this.handleLogout}> Logout </ button>
-        </li>) : null}
-        <li>
-          <Link to="/admin">Admin</Link>
-        </li>
-      </ul>
+      <Drawer docked={false} width={200} open={this.props.open} onRequestChange={this.props.handleToggle} >
+          <Link to="/"><MenuItem onClick={this.props.handleClose}>
+              Home
+          </MenuItem></Link>
 
-      <Route exact="exact" path="/" component={Home}/>
+          <Link to="/comparacaoPoliticos">
+            <MenuItem onClick={this.props.handleClose}>
+              Comparação Politicos
+            </MenuItem>
+          </Link>
+          <Link to="/pesquisasDeVoto">
+            <MenuItem onClick={this.props.handleClose}>
+              Pesquisas de Voto
+            </MenuItem>
+          </Link>
+          {user && user.cargo === 'admin' && <Link to="/admin">
+            <MenuItem onClick={this.props.handleClose}>
+              Admin
+          </MenuItem>
+        </Link>}
+        {this.state.isLoggedIn ? null : (<Link to="/login">
+          <MenuItem onClick={this.props.handleClose}>
+            Login/Cadastro
+        </MenuItem></Link>)}
+        {this.state.isLoggedIn ? (<button onClick={this.handleLogout}>
+          <MenuItem onClick={this.props.handleClose}>
+             Logout
+        </MenuItem>
+        </ button>) : null}
+      </Drawer>
+
+
+      <Route exact path="/" component={Home}/>
       <Route path="/pesquisasDeVoto" component={Pesquisa}/>
-      <Route path="/admin" component={Admin}/>
-      <Route path="/forgotpassword" component={NotLoggedReset}/>
+      <Route path="/admin" render={(props) => (user && user.cargo === 'admin') ? <Admin {...props} /> : <div></div>} />
+      <Route path="/forgotpassword/" component={NotLoggedReset}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
-
+      <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
 
     </div>
   </Router>

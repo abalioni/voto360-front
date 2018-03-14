@@ -2,7 +2,7 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import axios from 'axios'
-
+import SimpleDialog from './SimpleDialog'
 
 import { cookie } from 'cookie_js'
 
@@ -16,11 +16,9 @@ export default class NotLoggedReset extends React.Component {
       users: [],
       email: '',
       novaSenha: '',
-      token: ''
+      token: '',
+      success: undefined
     }
-
-    this.getUsuario = this.getUsuario.bind(this)
-    this.saveToken = this.saveToken.bind(this)
 
   }
 
@@ -35,56 +33,34 @@ export default class NotLoggedReset extends React.Component {
                 this.setState({email: text})
             }}
           />
-        <RaisedButton label="Enviar email" primary={true} onClick={this.getUsuario} />
+        <RaisedButton label="Enviar email" primary={true} onClick={this.changePassword} />
         </div>
     )
   }
 
-  getUsuario = () => {
+  changePassword = () => {
 
-    axios.get('http://localhost:8080/pessoa?q=', {
-      email: this.state.email
-    })
-    .then(() => this.saveToken())
-    .then(function (error) {
-      if (error) {
-        console.log(error);
-      }
-    })
-  }
-
-  makeid() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < 15; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    this.setState({
-      token: text
-    })
-    return text;
-  }
-
-  saveToken = () => {
-    const token = this.makeid()
-    console.log(token);
-    axios.put('http://localhost:8080/change-token', {
+    axios.post('http://localhost:8080/change-password', {
       email: this.state.email,
-      token: token
     })
-    .then(function (response) {
+    .then(response => {
+      this.setState({
+        success: true
+      })
       console.log('funcionou change token');
-      console.log(response);
+      this.handleReturn(true)
     })
-    .then(function (error) {
-      if (error) {
-        console.log(error);
-      }
+    .catch(error => {
+        this.setState({
+          success: false
+        })
+      this.handleReturn(false)
     })
-
+    
   }
 
-
+  handleReturn = (status) =>{
+    status ? alert('sucesso') : alert('falhou')
+  }
 
 }

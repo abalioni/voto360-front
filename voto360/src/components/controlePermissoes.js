@@ -1,5 +1,4 @@
 import React from 'react'
-import SelectCargo from './SelectCargo'
 import axios from 'axios'
 
 import RaisedButton from 'material-ui/RaisedButton';
