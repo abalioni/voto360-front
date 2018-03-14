@@ -5,13 +5,27 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
+import { gray900 } from 'material-ui/styles/colors';
 
+
+import '../dist/css/controlepermissoes.css'
 
 const style = {
   margin: 12,
 };
 
+const styles = {
+  floatingLabelStyle: {
+    color: gray900,
+  },
+  underlineStyle: {
+    borderColor: gray900,
+  }
+};
+
 export default class ControlePermissoes extends React.Component {
+
+  
 
   constructor(props) {
     super(props)
@@ -24,11 +38,16 @@ export default class ControlePermissoes extends React.Component {
     this.handleUsers = this.handleUsers.bind(this);
   }
 
+  
+
   render() {
-    return (<div>
-      <h3>Controle Permissoes</h3>
+    return (<div className="outter-div">
+    <h2>Controle Permissoes</h2>
+      <div className="inner-div">
         <AutoComplete
           floatingLabelText="Pesquise o usuário por email"
+          floatingLabelStyle={styles.floatingLabelStyle}
+          underlineStyle={styles.underlineStyle}
           filter={AutoComplete.fuzzyFilter}
           dataSource={this.state.users}
           maxSearchResults={10}
@@ -37,21 +56,27 @@ export default class ControlePermissoes extends React.Component {
           }) }}
         />
         <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios}/>
-
-        <div>
+        </div>
+        <div className="inner-div">
           <SelectField
             floatingLabelText="Permissões"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
             value={this.state.cargo}
             onChange={this.handleCargo}
           >
             <MenuItem value={"eleitor"} primaryText="Eleitor" />
             <MenuItem value={"politico"} primaryText="Político" />
+            <MenuItem value={"editor"} primaryText="Editor" />
             <MenuItem value={"admin"} primaryText="Admin" />
           </SelectField>
+          
         </div>
-
-
-      <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes}/>
+        <div className="inner-div">
+          
+          {/* <RaisedButton label="Excluir usuário" primary={true} style={style} onClick={this.handleSalvarPermissoes}/> */}
+          <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes}/>
+        </div>
     </div>)
   }
 

@@ -7,6 +7,7 @@ import '../dist/css/login.css'
 import { gray900 } from 'material-ui/styles/colors';
 import InputCPF from './InputCPF';
 import SimpleDialog from './SimpleDialog'
+import DialogResetPassword from './DialogResetPassword';
 
 import axios from 'axios'
 import {CPF} from 'cpf_cnpj'
@@ -35,7 +36,9 @@ class CardLogin extends React.Component {
     super(props)
     this.state = {
       email: '',
-      senha: ''
+      senha: '',
+      success: false,
+      open: false
     }
   }
 
@@ -124,7 +127,18 @@ class CardLogin extends React.Component {
       </div>
 
       <RaisedButtonLogin handleClick={this.signIn}/>
-      <ForgotPassword/>
+      <button onClick={() => this.setState({
+        open: true
+      })}>Esqueci a Senha</button>
+      <DialogResetPassword 
+        open={this.state.open} 
+        message={this.state.success ? 'Vá ao seu email para continuar o reset de senha' : 'Verifique o email digitado'}
+        onRequestClose={()=>{
+          this.setState({
+            open: false,
+          })
+        }}
+      />
     </div>)
   }
 }
@@ -227,7 +241,6 @@ class CardCadastro extends React.Component {
       cargo: this.state.cargo,
       token_senha: '',
       senha_antiga: this.state.senha
-
     };
 
     axios.post('http://localhost:8080/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
@@ -293,7 +306,7 @@ class CardCadastro extends React.Component {
 
       </div>
       <RaisedButtonCadastro handleClick={this.signUp}/>
-
+      
     </div>)
   }
 }
@@ -310,7 +323,3 @@ const TabsLogin = (props) => (<Tabs className="tabsLogin">
     <CardCadastro/>
   </Tab>
 </Tabs>);
-
-const ForgotPassword = () => (<div>
-  <a href="/forgotpassword">Esqueci a senha</a>
-</div>);

@@ -8,7 +8,6 @@ import ControlePermissoes from './controlePermissoes'
 
 export const Admin = ({ match }) => (
   <div>
-    <h2>Admin</h2>
     <ul>
       <li>
         <Link to={`${match.url}/meusDados`}>

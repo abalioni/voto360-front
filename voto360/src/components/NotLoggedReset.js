@@ -2,9 +2,20 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import axios from 'axios'
-import SimpleDialog from './SimpleDialog'
+import SimpleDialog from './SimpleDialog';
+import { gray900 } from 'material-ui/styles/colors';
+import '../dist/css/NotLoggedReset.css'
 
 import { cookie } from 'cookie_js'
+
+const styles = {
+  floatingLabelStyle: {
+    color: gray900,
+  },
+  underlineStyle: {
+    borderColor: gray900,
+  }
+};
 
 export default class NotLoggedReset extends React.Component {
 
@@ -24,17 +35,22 @@ export default class NotLoggedReset extends React.Component {
   }
 
   render() {
-    return (
-        <div>
+    return (<div className="outter-div">
+        <div className="inner-div">
           <TextField
             hintText="Informe seu email"
             floatingLabelText="Informe seu email"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
             onChange={(event, text) =>
             {
                 this.setState({email: text})
             }}
           />
-        <RaisedButton label="Resetar senha" primary={true} onClick={this.changePassword} />
+          <RaisedButton label="Resetar senha" primary={true} onClick={this.changePassword} />
+        </div>  
+        
+        
         <SimpleDialog 
               open={this.state.open} 
               title= {this.state.success ? 'Email Enviado' : 'Algo deu errado'}
@@ -45,7 +61,7 @@ export default class NotLoggedReset extends React.Component {
                 })
               }}
               />
-        </div>
+      </div>
     )
   }
 
