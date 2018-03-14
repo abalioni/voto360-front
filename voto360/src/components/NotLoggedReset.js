@@ -17,7 +17,8 @@ export default class NotLoggedReset extends React.Component {
       email: '',
       novaSenha: '',
       token: '',
-      success: undefined
+      success: false,
+      open: false,
     }
 
   }
@@ -33,7 +34,17 @@ export default class NotLoggedReset extends React.Component {
                 this.setState({email: text})
             }}
           />
-        <RaisedButton label="Enviar email" primary={true} onClick={this.changePassword} />
+        <RaisedButton label="Resetar senha" primary={true} onClick={this.changePassword} />
+        <SimpleDialog 
+              open={this.state.open} 
+              title= {this.state.success ? 'Email Enviado' : 'Algo deu errado'}
+              message={this.state.success ? 'Vá ao seu email para continuar o reset de senha' : 'Verifique o email digitado'}
+              onRequestClose={()=>{
+                this.setState({
+                  open: false,
+                })
+              }}
+              />
         </div>
     )
   }
@@ -45,22 +56,17 @@ export default class NotLoggedReset extends React.Component {
     })
     .then(response => {
       this.setState({
-        success: true
+        success: true,
+        open: true,
       })
-      console.log('funcionou change token');
-      this.handleReturn(true)
     })
     .catch(error => {
         this.setState({
-          success: false
+          success: false,
+          open:true,
         })
-      this.handleReturn(false)
     })
     
-  }
-
-  handleReturn = (status) =>{
-    status ? alert('sucesso') : alert('falhou')
   }
 
 }

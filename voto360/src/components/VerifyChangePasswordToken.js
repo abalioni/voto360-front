@@ -3,6 +3,7 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {gray900} from 'material-ui/styles/colors';
+import SimpleDialog from './SimpleDialog'
 
 import axios from 'axios'
 
@@ -24,7 +25,9 @@ export default class VerifyChangePasswordToken extends React.Component {
     this.state = {
       token: props.match.params.token,
       senha: '',
-      done: false
+      done: false,
+      success: false,
+      open: false,
     }
 
     this.handleSuccess = this.handleSuccess.bind(this)
@@ -41,32 +44,58 @@ export default class VerifyChangePasswordToken extends React.Component {
 
   render() {
     return (this.state.done ? (<SuccessPasswordReser />) : (<div>
-      <TextField type="password" floatingLabelStyle={styles.floatingLabelStyle} underlineStyle={styles.underlineStyle} floatingLabelText="Nova senha" onChange={(event, text) => {
+      <TextField 
+        type="password" 
+        floatingLabelStyle={styles.floatingLabelStyle} 
+        underlineStyle={styles.underlineStyle} 
+        floatingLabelText="Nova senha" 
+        onChange={(event, text) => {
           this.setState({senha: text})
         }}/>
       <br />
-      <TextField type="password" floatingLabelStyle={styles.floatingLabelStyle} underlineStyle={styles.underlineStyle} floatingLabelText="Confirme a nova senha" onChange={(event, text) => {
+      <TextField 
+        type="password" 
+        floatingLabelStyle={styles.floatingLabelStyle} 
+        underlineStyle={styles.underlineStyle} 
+        floatingLabelText="Confirme a nova senha" 
+        onChange={(event, text) => {
           this.setState({senha: text})
         }}/>
       <div>
         <RaisedButton label="Trocar senha" primary={true} onClick={this.changePassword} />
       </div>
+      <SimpleDialog 
+              open={this.state.open} 
+              title= {this.state.success ? 'Senha alterada' : 'Algo deu errado'}
+              message={this.state.success ? 'Sua senha foi alterada com sucesso' : 'Algo deu errado, você precisa de um novo link'}
+              onRequestClose={()=>{
+                this.setState({
+                  open: false,
+                })
+                this.state.success ? this.props.history.push('/login') : this.props.history.push('/forgotpassword')
+              }}
+              />
     </div>))
   }
 
   changePassword = () => {
-    // const token = this.makeid()
-    // console.log(token);
+    
     axios.post('http://localhost:8080/verify-change-password-token', {
       password: this.state.senha,
       token: this.state.token
     })
-    .then(function (response) {
-      alert('sucesso')
-      console.log('Changed Password');
+    .then(response => {
+      this.setState({
+        success: true,
+        open: true
+      })
+      
     })
-    .catch(function (error) {
-        alert('erro')
+    .catch(error => {
+      this.setState({
+        success: false,
+        open: true
+      })
     })
   }
 

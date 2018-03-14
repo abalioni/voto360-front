@@ -13,15 +13,18 @@ export default class SimpleDialog extends React.Component {
     super(props)
 
     this.state = {
-      open: true,
+      open: false,
     };
   }
 
-  handleOpen = () => {
-    this.setState({open: true});
-  };
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      open: nextProps.open
+    })
+  }
 
   handleClose = () => {
+    this.props.onRequestClose();
     this.setState({open: false});
   };
 
@@ -37,13 +40,13 @@ export default class SimpleDialog extends React.Component {
     return (
       <div>
         <Dialog
-          title="Informações incorretas"
+          title={this.props.title}
           actions={actions}
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
-          As informações do login não estão corretas, tente novamente.
+          {this.props.message}
         </Dialog>
       </div>
     );
