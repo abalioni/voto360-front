@@ -1,10 +1,10 @@
 .outter-div {
     display: flex;
-    flex-direction: column;
+    flex-direction: row !important;
     align-self: center;
     width: 80%;
     margin: auto;
-    
+    /* background-color: red; */
 }
 
 .inner-div {

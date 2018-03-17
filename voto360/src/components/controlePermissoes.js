@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import { gray900 } from 'material-ui/styles/colors';
 
 
+
 import '../dist/css/controlepermissoes.css'
 
 const style = {
@@ -31,9 +32,11 @@ export default class ControlePermissoes extends React.Component {
     super(props)
 
     this.state = {
+      emails: [],
       users: [],
       emailSelecionado: '',
-      cargo: ''
+      cargo: '',
+      nome: '',
     }
     this.handleUsers = this.handleUsers.bind(this);
   }
@@ -42,6 +45,8 @@ export default class ControlePermissoes extends React.Component {
 
   render() {
     return (<div className="outter-div">
+    
+    <div>
     <h2>Controle Permissoes</h2>
       <div className="inner-div">
         <AutoComplete
@@ -49,11 +54,14 @@ export default class ControlePermissoes extends React.Component {
           floatingLabelStyle={styles.floatingLabelStyle}
           underlineStyle={styles.underlineStyle}
           filter={AutoComplete.fuzzyFilter}
-          dataSource={this.state.users}
+          dataSource={this.state.emails}
           maxSearchResults={10}
-          onNewRequest={(text, index) => { this.setState({
-            emailSelecionado: text
-          }) }}
+          onNewRequest={(text, index) => { 
+            this.setState({
+              emailSelecionado: text
+            })
+            this.displayUser()
+          }}
         />
         <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios}/>
         </div>
@@ -77,6 +85,12 @@ export default class ControlePermissoes extends React.Component {
           {/* <RaisedButton label="Excluir usuário" primary={true} style={style} onClick={this.handleSalvarPermissoes}/> */}
           <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes}/>
         </div>
+      </div>  
+        <div>
+        {this.state.nome ? (<p>Nome: {this.state.nome}</p>) : undefined}
+        {this.state.emailSelecionado ? (<p>Email: {this.state.emailSelecionado}</p>) : undefined}
+        {this.state.cargo ? (<p>Cargo: {this.state.cargo}</p>) : undefined}
+        </div>
     </div>)
   }
 
@@ -87,17 +101,24 @@ export default class ControlePermissoes extends React.Component {
   }
 
   handleUsers = (response) => {
+ 
+    this.setState({ emails: response.data.map(d => d.email), users: response.data })
+    console.log(this.state.emailSelecionado, "email selecionad")
+    
+  }
 
-    var count = Object.keys(response.data).length;
-
-    for (var i = 0; i < count; i++) {
-
-      var arrayvar = this.state.users;
-      arrayvar.push(response.data[i].email)
-
-      this.setState({ users: arrayvar })
-    }
-
+  displayUser = () => {
+    this.state.users.forEach((obj, index) => {
+      console.log(obj)
+      if(obj.email === this.state.emailSelecionado) {
+        console.log(obj.nome, "obj nome")
+        this.setState({
+          cargo: obj.cargo,
+          nome: obj.nome
+        })
+        return
+      }
+    })  
   }
 
   handleCargo = (event, index, value) => {

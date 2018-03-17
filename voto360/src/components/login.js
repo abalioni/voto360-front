@@ -158,7 +158,8 @@ class CardCadastro extends React.Component {
 
       errorSenha: false,
       errorEmail: false,
-      errorCPF: false
+      errorCPF: false,
+      errorNome: false
     }
   }
 
@@ -187,6 +188,14 @@ class CardCadastro extends React.Component {
     return false
   }
 
+  validarErroNome = () => {
+    if(this.state.nome === '') {
+      this.setState({errorNome: true})
+      return true
+    }
+    return false
+  }
+
   handleSignUpSuccess = (response) => {
     alert("Sucesso");
     this.setState({
@@ -198,7 +207,8 @@ class CardCadastro extends React.Component {
 
       errorSenha: false,
       errorEmail: false,
-      errorCPF: false
+      errorCPF: false,
+      errorNome: false
     });
   }
 
@@ -213,7 +223,8 @@ class CardCadastro extends React.Component {
 
       errorSenha: false,
       errorEmail: false,
-      errorCPF: false
+      errorCPF: false,
+      errorNome: false
     });
   }
 
@@ -230,6 +241,10 @@ class CardCadastro extends React.Component {
     }
     //Valida cpf
     if (this.validarCPF()) {
+      return;
+    }
+
+    if (this.validarErroNome()) {
       return;
     }
 
@@ -266,11 +281,13 @@ class CardCadastro extends React.Component {
           }}/>
         <TextField
           value={this.state.nome}
+          onBlur={this.validarErroNome}
           floatingLabelStyle={styles.floatingLabelStyle}
           underlineStyle={styles.underlineStyle}
-          floatingLabelText="Nome Completo"
+          errorText={this.state.errorNome && "Confirme o nome digitado"}
+          floatingLabelText="Nome Completo*"
           onChange={(event, text) => {
-            this.setState({nome: text})
+            this.setState({nome: text, errorNome: false})
           }}/>
         <InputCPF
           value={this.state.cpf}
