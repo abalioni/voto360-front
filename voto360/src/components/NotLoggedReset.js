@@ -64,7 +64,7 @@ export default class NotLoggedReset extends React.Component {
       </div>
     )
   }
-
+  changePassword = () => {
     var request = {
       email: this.state.email
     };
