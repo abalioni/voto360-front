@@ -65,15 +65,54 @@ export default class NotLoggedReset extends React.Component {
     )
   }
 
-  changePassword = () => {
+    var request = {
+      email: this.state.email
+    };
 
-    axios.post('http://localhost:8080/change-password', {
+    axios.get('http://localhost:8081/pessoa?q=', {
+      email: this.state.email
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
+  }
+
+  startPasswordReset = () => {
+    this.saveToken()
+  }
+
+  makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 25; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    this.setState({
+      token: text
+    })
+    return text;
+  }
+
+  saveToken = () => {
+    const token = this.makeid()
+
+    var request = {
+      email: this.state.email,
+      token: token
+    };
+
+    axios.put('http://localhost:8081/change-token', {
       email: this.state.email,
     })
     .then(response => {
       this.setState({
         success: true,
-        open: true,
       })
     })
     .catch(error => {
@@ -84,5 +123,19 @@ export default class NotLoggedReset extends React.Component {
     })
     
   }
+
+  sendEmail = (token) => {
+    var request = {
+      to: this.state.email,
+      from: this.state.cpf,
+      subject: 'reset de senha',
+      url: 'http://localhost:8081/sendMail'+ token,
+    };
+
+    axios.post('http://localhost:8081/sendMail', request).then(this.handleSignUpSuccess).catch(function(error) {
+      alert(error);
+    });
+  }
+
 
 }

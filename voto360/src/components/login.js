@@ -94,9 +94,9 @@ class CardLogin extends React.Component {
       email: this.state.email
     };
 
-    axios.post('http://localhost:8080/login', request)
-    .then(this.handleSignInSuccess)
-    .catch(this.handleSignInFailure);
+    axios.post('http://localhost:8081/login', request).then(this.handleSignInSuccess).catch(function(error) {
+      alert(error);
+    });
 
   }
 
@@ -258,7 +258,7 @@ class CardCadastro extends React.Component {
       senha_antiga: this.state.senha
     };
 
-    axios.post('http://localhost:8080/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
+    axios.post('http://localhost:8081/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
       alert(error);
     });
 
