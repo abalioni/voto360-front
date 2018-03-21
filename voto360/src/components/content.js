@@ -7,6 +7,7 @@ import Home from './home'
 import Pesquisa from './pesquisaVotos'
 import NotLoggedReset from './NotLoggedReset'
 import VerifyChangePasswordToken from './VerifyChangePasswordToken'
+import MeusDados from './meusdados'
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -51,22 +52,22 @@ class Content extends Component {
     <Router>
     <div>
       <Drawer docked={false} width={200} open={this.props.open} onRequestChange={this.props.handleToggle} >
-          {user && user.cargo !== 'admin' && <Link to="/">
+          {((user && user.cargo) !== 'admin') && <Link to="/">
             <MenuItem onClick={this.props.handleClose}>
               Home
             </MenuItem></Link>}
 
-          {user && user.cargo !== 'admin' && <Link to="/comparacaoPoliticos">
+            {((user && user.cargo) !== 'admin') && <Link to="/comparacaoPoliticos">
             <MenuItem onClick={this.props.handleClose}>
               Comparação Politicos
             </MenuItem>
           </Link>}
-          {user && user.cargo !== 'admin' && <Link to="/pesquisasDeVoto">
+            {((user && user.cargo) !== 'admin') && <Link to="/pesquisasDeVoto">
             <MenuItem onClick={this.props.handleClose}>
               Pesquisas de Voto
             </MenuItem>
           </Link>}
-          {user && user.cargo === 'admin' && <Link to="/admin">
+          {user && (user.cargo === 'admin') && <Link to="/admin">
             <MenuItem onClick={this.props.handleClose}>
               Admin
           </MenuItem>
@@ -89,6 +90,7 @@ class Content extends Component {
       <Route path="/forgotpassword/" component={NotLoggedReset}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
+      <Route path="/meusDados" component={MeusDados} />
 
     </div>
   </Router>

@@ -79,8 +79,8 @@ export default class VerifyChangePasswordToken extends React.Component {
   }
 
   changePassword = () => {
-    
-    axios.post('http://localhost:8080/verify-change-password-token', {
+    (this.state.senha === '') ? this.setState({ sucess: false, open: true }) :
+    axios.post('http://localhost:8081/verify-change-password-token', {
       password: this.state.senha,
       token: this.state.token
     })

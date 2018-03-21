@@ -94,7 +94,7 @@ export default class DialogResetPassword extends React.Component {
   changePassword = () => {
     this.handleClose()
 
-    axios.post('http://localhost:8080/change-password', {
+    axios.post('http://localhost:8081/change-password', {
       email: this.state.email,
     })
     .then(response => {
