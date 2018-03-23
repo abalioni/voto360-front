@@ -65,9 +65,6 @@ export default class NotLoggedReset extends React.Component {
     )
   }
   changePassword = () => {
-    var request = {
-      email: this.state.email
-    };
 
     axios.get('http://localhost:8081/pessoa?q=', {
       email: this.state.email
@@ -100,12 +97,6 @@ export default class NotLoggedReset extends React.Component {
   }
 
   saveToken = () => {
-    const token = this.makeid()
-
-    var request = {
-      email: this.state.email,
-      token: token
-    };
 
     axios.put('http://localhost:8081/change-token', {
       email: this.state.email,

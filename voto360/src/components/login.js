@@ -125,11 +125,15 @@ class CardLogin extends React.Component {
               this.setState({senha: text, errorSenha: false})
             }}/>
       </div>
-
-      <RaisedButtonLogin handleClick={this.signIn}/>
-      <button onClick={() => this.setState({
-        open: true
-      })}>Esqueci a Senha</button>
+      
+      <div className="send-login-container"> 
+      <br/>
+        <RaisedButtonLogin handleClick={this.signIn}/>
+        <br/>
+        <button className="forgot-password-btn" onClick={() => this.setState({
+          open: true
+        })}>Esqueci a Senha</button>
+      </div>
       <DialogResetPassword 
         open={this.state.open} 
         message={this.state.success ? 'Vá ao seu email para continuar o reset de senha' : 'Verifique o email digitado'}
@@ -322,6 +326,7 @@ class CardCadastro extends React.Component {
           }}/>
 
       </div>
+      
       <RaisedButtonCadastro handleClick={this.signUp}/>
       
     </div>)

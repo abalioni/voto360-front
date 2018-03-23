@@ -52,22 +52,22 @@ class Content extends Component {
     <Router>
     <div>
       <Drawer docked={false} width={200} open={this.props.open} onRequestChange={this.props.handleToggle} >
-          {((user && user.cargo) !== 'admin') && <Link to="/">
+          {user && user.cargo === 'admin' ? undefined : (<Link to="/">
             <MenuItem onClick={this.props.handleClose}>
               Home
-            </MenuItem></Link>}
+            </MenuItem></Link>)}
 
-            {((user && user.cargo) !== 'admin') && <Link to="/comparacaoPoliticos">
+          {user && user.cargo === 'admin' ? undefined : (<Link to="/comparacaoPoliticos">
             <MenuItem onClick={this.props.handleClose}>
               Comparação Politicos
             </MenuItem>
-          </Link>}
-            {((user && user.cargo) !== 'admin') && <Link to="/pesquisasDeVoto">
+          </Link>) }
+          {user && user.cargo === 'admin' ? undefined : (<Link to="/pesquisasDeVoto">
             <MenuItem onClick={this.props.handleClose}>
               Pesquisas de Voto
             </MenuItem>
-          </Link>}
-          {user && (user.cargo === 'admin') && <Link to="/admin">
+          </Link>)}
+          {user && user.cargo === 'admin' && <Link to="/admin">
             <MenuItem onClick={this.props.handleClose}>
               Admin
           </MenuItem>

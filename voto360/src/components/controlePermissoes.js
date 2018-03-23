@@ -6,8 +6,8 @@ import AutoComplete from 'material-ui/AutoComplete';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import { gray900 } from 'material-ui/styles/colors';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 
 
 import '../dist/css/controlepermissoes.css'
@@ -66,32 +66,45 @@ export default class ControlePermissoes extends React.Component {
         />
         <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios}/>
         </div>
-        
-      </div> 
-        {this.state.emailSelecionado ? (
-        <Card className="card">
-          <CardTitle title={this.state.nome ? (<p>{this.state.nome}</p>) : undefined} subtitle={this.state.emailSelecionado ? (<p>{this.state.emailSelecionado}</p>) : undefined}
+        <div className="inner-div">
+          <SelectField
+            floatingLabelText="Permissões"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
+            value={this.state.cargo}
+            onChange={this.handleCargo}
+          >
+            <MenuItem value={"eleitor"} primaryText="Eleitor" />
+            <MenuItem value={"politico"} primaryText="Político" />
+            <MenuItem value={"editor"} primaryText="Editor" />
+            <MenuItem value={"admin"} primaryText="Admin" />
+          </SelectField>
+          
+        </div>
+        <div className="inner-div">
+          
+          {/* <RaisedButton label="Excluir usuário" primary={true} style={style} onClick={this.handleSalvarPermissoes}/> */}
+          <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes}/>
+        </div>
+      </div>  
+        <div className="card">
+        {this.state.emailSelecionado ? (<Card>
+          <CardHeader
+            title="Usuário selecionado"
           />
           <CardText>
-            {this.state.cargo ? (<p>Cargo: {this.state.cargo}</p>) : undefined}
-            <SelectField
-              floatingLabelText="Permissões"
-              floatingLabelStyle={styles.floatingLabelStyle}
-              underlineStyle={styles.underlineStyle}
-              value={this.state.cargo}
-              onChange={this.handleCargo}
-            >
-              <MenuItem value={"eleitor"} primaryText="Eleitor" />
-              <MenuItem value={"politico"} primaryText="Político" />
-              <MenuItem value={"editor"} primaryText="Editor" />
-              <MenuItem value={"admin"} primaryText="Admin" />
-            </SelectField>
+            <p>Nome: {this.state.nome}</p>
+            <p>Email: {this.state.emailSelecionado}</p>
+            <p>Cargo: {this.state.cargo}</p>
           </CardText>
-                <CardActions>
-                  <RaisedButton label="Salvar" primary={true} onClick={this.handleSalvarPermissoes} />
-                </CardActions>
-
-        </Card>) : undefined} 
+          <CardActions>
+            <FlatButton label="Excluir Usuário" />
+          </CardActions>
+          
+        </Card>
+        ) : undefined}
+            
+        </div>
     </div>)
   }
 

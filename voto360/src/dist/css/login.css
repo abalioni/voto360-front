@@ -37,3 +37,21 @@
   align-items: center;
   align-content: center;
 }
+
+.forgot-password-btn {
+    background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     /* border-bottom:1px solid #444;  */
+     cursor: pointer;
+}
+
+.send-login-container {
+  display: flex;
+  flex-direction: column;
+  /* background-color: red; */
+  /* width: 40%; */
+}
