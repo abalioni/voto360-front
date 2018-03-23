@@ -72,6 +72,12 @@ class Content extends Component {
               Admin
           </MenuItem>
         </Link>}
+        {user && user.cargo !== 'admin' ? (<Link to="/meusDados">
+          <MenuItem onClick={this.props.handleClose}>
+            Meu Perfil
+          </MenuItem>
+        </Link>) : undefined}
+                
         {this.state.isLoggedIn ? null : (<Link to="/login">
           <MenuItem onClick={this.props.handleClose}>
             Login/Cadastro
@@ -90,7 +96,7 @@ class Content extends Component {
       <Route path="/forgotpassword/" component={NotLoggedReset}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
-      <Route path="/meusDados" component={MeusDados} />
+      <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
 
     </div>
   </Router>

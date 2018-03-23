@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, CardActions, CardTitle } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import {gray900 } from 'material-ui/styles/colors';
 
@@ -273,8 +274,8 @@ export default class MeusDados extends React.Component {
           />
         </div>
         <CardActions>
-          <FlatButton label="Salvar" onClick={this.changeInfo} />
-          <FlatButton label="Cancelar" onClick={this.handleSignUpFailure}/>
+          <RaisedButton label="Salvar" primary={true} fullWidth={true} onClick={this.changeInfo} />
+          {/* <FlatButton label="Cancelar" onClick={this.handleSignUpFailure}/> */}
         </CardActions>    
       </Card>  
       

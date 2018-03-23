@@ -335,7 +335,7 @@ class CardCadastro extends React.Component {
 
 const RaisedButtonLogin = (props) => (<RaisedButton label="Login" primary={true} onClick={props.handleClick}/>);
 
-const RaisedButtonCadastro = (props) => (<RaisedButton label="Cadastro" primary={true} className="marginBottom20 marginTop20" onClick={props.handleClick}/>);
+const RaisedButtonCadastro = (props) => (<RaisedButton label="Cadastro" primary={true} fullWidth={true} className="marginBottom20 marginTop20" onClick={props.handleClick}/>);
 
 const TabsLogin = (props) => (<Tabs className="tabsLogin">
   <Tab label="Login">
