@@ -13,7 +13,6 @@ import MenuItem from 'material-ui/MenuItem';
 
 import { cookie } from 'cookie_js'
 
-
 // export class Content = ({match, isLoggedIn}) => {
 class Content extends Component {
   constructor(props) {

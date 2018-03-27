@@ -75,8 +75,10 @@ class CardLogin extends React.Component {
   }
 
   handleSignInFailure = (response) => {
-    console.log('falhou');
-    return (<SimpleDialog />)
+    this.setState({
+      open: true,
+      success: false
+    })
   }
 
   signIn = () => {
@@ -94,9 +96,7 @@ class CardLogin extends React.Component {
       email: this.state.email
     };
 
-    axios.post('http://localhost:8081/login', request).then(this.handleSignInSuccess).catch(function(error) {
-      alert(error);
-    });
+    axios.post('http://localhost:8081/login', request).then(this.handleSignInSuccess).catch(this.handleSignInFailure);
 
   }
 
@@ -143,6 +143,16 @@ class CardLogin extends React.Component {
           })
         }}
       />
+      <SimpleDialog 
+        open={this.state.open} 
+        title= {this.state.success ? undefined : 'Algo deu errado'}
+        message={this.state.success ? undefined : 'Usuário ou senha inválidos'}
+        onRequestClose={()=>{
+          this.setState({
+            open: false,
+          })
+        }}
+        />
     </div>)
   }
 }
@@ -201,7 +211,6 @@ class CardCadastro extends React.Component {
   }
 
   handleSignUpSuccess = (response) => {
-    alert("Sucesso");
     this.setState({
       email: '',
       nome: '',
@@ -212,23 +221,20 @@ class CardCadastro extends React.Component {
       errorSenha: false,
       errorEmail: false,
       errorCPF: false,
-      errorNome: false
+      errorNome: false,
+      success: true,
+      open: true
     });
   }
 
   handleSignUpFailure = (response) => {
-    alert("Erro");
     this.setState({
-      email: '',
-      nome: '',
-      senha: '',
-      confirmarsenha: '',
-      cpf: '',
-
       errorSenha: false,
       errorEmail: false,
       errorCPF: false,
-      errorNome: false
+      errorNome: false,
+      success: false,
+      open: true
     });
   }
 
@@ -262,9 +268,7 @@ class CardCadastro extends React.Component {
       senha_antiga: this.state.senha
     };
 
-    axios.post('http://localhost:8081/pessoa', request).then(this.handleSignUpSuccess).catch(function(error) {
-      alert(error);
-    });
+    axios.post('http://localhost:8081/pessoa', request).then(this.handleSignUpSuccess).catch(this.handleSignUpFailure);
 
   }
 
@@ -328,7 +332,16 @@ class CardCadastro extends React.Component {
       </div>
       
       <RaisedButtonCadastro handleClick={this.signUp}/>
-      
+      <SimpleDialog 
+              open={this.state.open} 
+              title= {this.state.success ? 'Usuário criado' : 'Algo deu errado'}
+              message={this.state.success ? 'Usuário criado com sucesso' : 'Algo deu errado, tente novamente'}
+              onRequestClose={()=>{
+                this.setState({
+                  open: false,
+                })
+              }}
+              />
     </div>)
   }
 }
