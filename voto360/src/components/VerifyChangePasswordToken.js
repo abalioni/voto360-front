@@ -3,7 +3,7 @@ import React from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {gray900} from 'material-ui/styles/colors';
-import SimpleDialog from './SimpleDialog'
+import SimpleDialog from './dialogs/SimpleDialog'
 
 import axios from 'axios'
 

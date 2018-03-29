@@ -6,8 +6,8 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import '../dist/css/login.css'
 import { gray900 } from 'material-ui/styles/colors';
 import InputCPF from './InputCPF';
-import SimpleDialog from './SimpleDialog'
-import DialogResetPassword from './DialogResetPassword';
+import SimpleDialog from './dialogs/SimpleDialog'
+import DialogResetPassword from './dialogs/DialogResetPassword';
 
 import axios from 'axios'
 import {CPF} from 'cpf_cnpj'

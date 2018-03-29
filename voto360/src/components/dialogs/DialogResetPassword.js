@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { gray900 } from 'material-ui/styles/colors';
 import SimpleDialog from './SimpleDialog';
-import '../dist/css/NotLoggedReset.css'
+import '../../dist/css/NotLoggedReset.css'
 
 import axios from 'axios'
 
