@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect, withRouter } from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -22,7 +23,7 @@ const styles = {
     }
 };
 
-export default class RequestPoliticsProfileDialog extends React.Component {
+export class RequestPoliticsProfileDialog extends React.Component {
     constructor(props) {
         super(props)
     
@@ -35,8 +36,7 @@ export default class RequestPoliticsProfileDialog extends React.Component {
           success: false,
           open: false,
           success_dialog: false
-        }
-    
+        }   
       }
     
     componentWillReceiveProps(nextProps){
@@ -81,8 +81,6 @@ export default class RequestPoliticsProfileDialog extends React.Component {
       </div>
     );
   }
-
-  callPoliticsSignUp = () => {
-    this.props.history.push('/cadastroPolitico');
-  }
 }
+
+export default withRouter(RequestPoliticsProfileDialog)
