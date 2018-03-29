@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import {gray900 } from 'material-ui/styles/colors';
+import RequestPoliticsProfileDialog from './dialogs/requestPoliticsProfileDialog'
 
 import { cookie } from 'cookie_js'
 import axios from 'axios'
@@ -46,7 +47,8 @@ export default class MeusDados extends React.Component {
       errorSenha: false,
       errorEmail: false,
       errorCPF: false,
-      errorNome: false
+      errorNome: false,
+      open: false
     }
 
   }
@@ -194,6 +196,12 @@ export default class MeusDados extends React.Component {
     })
   }
 
+  requestPoliticsProfile =() => {
+    this.setState({
+      open: true
+    })
+  }
+
   render() {
     return(<div className="card-div">
       <Card className="user-card-container">
@@ -275,12 +283,23 @@ export default class MeusDados extends React.Component {
             }}
           />
         </div>
-        <CardActions>
-          <RaisedButton label="Salvar" primary={true} fullWidth={true} onClick={this.changeInfo} />
-          {/* <FlatButton label="Cancelar" onClick={this.handleSignUpFailure}/> */}
+        <div className="buttons">
+        <CardActions className="card-actions">
+          <RaisedButton label="Solicitar Perfil Politico" primary={true} fullWidth={false} onClick={this.requestPoliticsProfile} />
+          <RaisedButton label="Salvar" primary={true} fullWidth={false} onClick={this.changeInfo} />
         </CardActions>    
+        </div>
       </Card>  
-      
+      <RequestPoliticsProfileDialog 
+        open={this.state.open} 
+        title="Solicitação de Perfil de Político"
+        message="Tem certeza? Apenas um políticos podem solicitar esse tipo de perfil. Ao continuar você irá fornecer as informações necessárias para obter um perfil de político."
+        onRequestClose={()=>{
+          this.setState({
+            open: false,
+          })
+        }}
+        />
     </div>
     )
   }

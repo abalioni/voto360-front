@@ -65,16 +65,16 @@ export default class VerifyChangePasswordToken extends React.Component {
         <RaisedButton label="Trocar senha" primary={true} onClick={this.changePassword} />
       </div>
       <SimpleDialog 
-              open={this.state.open} 
-              title= {this.state.success ? 'Senha alterada' : 'Algo deu errado'}
-              message={this.state.success ? 'Sua senha foi alterada com sucesso' : 'Algo deu errado, você precisa de um novo link'}
-              onRequestClose={()=>{
-                this.setState({
-                  open: false,
-                })
-                this.state.success ? this.props.history.push('/login') : this.props.history.push('/forgotpassword')
-              }}
-              />
+        open={this.state.open} 
+        title= {this.state.success ? 'Senha alterada' : 'Algo deu errado'}
+        message={this.state.success ? 'Sua senha foi alterada com sucesso' : 'Algo deu errado, você precisa de um novo link'}
+        onRequestClose={()=>{
+          this.setState({
+            open: false,
+          })
+          this.state.success ? this.props.history.push('/login') : this.props.history.push('/forgotpassword')
+        }}
+        />
     </div>))
   }
 
