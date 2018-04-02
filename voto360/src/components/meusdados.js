@@ -1,15 +1,15 @@
 import React from 'react'
 
 import { Card, CardActions, CardTitle } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import {gray900 } from 'material-ui/styles/colors';
+import { gray900 } from 'material-ui/styles/colors';
 import RequestPoliticsProfileDialog from './dialogs/requestPoliticsProfileDialog'
 
 import { cookie } from 'cookie_js'
 import axios from 'axios'
-import {CPF} from 'cpf_cnpj'
+import { CPF } from 'cpf_cnpj'
 
 import '../dist/css/meusdados.css'
 
@@ -38,7 +38,6 @@ export default class MeusDados extends React.Component {
       newemail: '',
       email: '',
       nome: '',
-      senha: '',
       senhaatual: '',
       novasenha: '',
       confirmarsenha: '',
@@ -63,15 +62,14 @@ export default class MeusDados extends React.Component {
         nome: user.nome,
         email: user.email,
         newemail: user.email,
-        cpf: user.cpf,
-        senha: user.senha
+        cpf: user.cpf
       })
     }
   }
 
   validarErroSenha = () => {
-    if (this.state.novasenha !== this.state.confirmarsenha) {
-      this.setState({errorSenha: true})
+    if (!this.state.novasenha || this.state.novasenha !== this.state.confirmarsenha || this.state.senhaatual === this.state.novasenha) {
+      this.setState({ errorSenha: true })
       return true
     }
     return false
@@ -80,7 +78,7 @@ export default class MeusDados extends React.Component {
   validarErroEmail = () => {
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!re.test(this.state.newemail)) {
-      this.setState({errorEmail: true})
+      this.setState({ errorEmail: true })
       return true
     }
     return false
@@ -88,15 +86,15 @@ export default class MeusDados extends React.Component {
 
   validarCPF = () => {
     if (!CPF.isValid(this.state.cpf)) {
-      this.setState({errorCPF: true})
+      this.setState({ errorCPF: true })
       return true
     }
     return false
   }
 
   validarErroNome = () => {
-    if(this.state.nome === '') {
-      this.setState({errorNome: true})
+    if (this.state.nome === '') {
+      this.setState({ errorNome: true })
       return true
     }
     return false
@@ -104,22 +102,20 @@ export default class MeusDados extends React.Component {
 
   handleChangeSuccess = () => {
     alert("Sucesso");
-    axios.get('http://localhost:8081/pessoa?q=', {
-      email: this.state.newemail
-    })
-    .then(function (response) {
-      console.log(response);
-      cookie.set({
-        user: JSON.stringify(response.data[0])
-      });
-    })
-    .catch(function (error) {
-      if (error) {
-        console.log(error);
-      }
-    })
+    axios.get(`http://localhost:8081/pessoa?q={"email":"${this.state.newemail}"}`)
+      .then(function (response) {
+        console.log(response);
+        cookie.set({
+          user: JSON.stringify(response.data[0])
+        });
+      })
+      .catch(function (error) {
+        if (error) {
+          console.log(error);
+        }
+      })
 
-    
+
 
   }
 
@@ -134,27 +130,24 @@ export default class MeusDados extends React.Component {
         email: user.email,
         newemail: user.email,
         cpf: user.cpf,
-        senha: user.senha
       })
     }
   }
 
   validaSenhaAlterada = () => {
 
-    if(this.state.novasenha && (this.state.novasenha !== this.state.senhaatual)){
-      this.setState({senha: this.state.novasenha})
-    } else {
-      this.setState({senha: this.state.senhaatual})
+    if (this.state.novasenha) {
+      this.setState({ senha: this.state.novasenha })
     }
     return;
   }
 
   validaEmailAlterado = () => {
 
-    if(this.state.newemail && (this.state.newemail !== this.state.email)){
-      this.setState({email: this.state.newemail})
+    if (this.state.newemail && (this.state.newemail !== this.state.email)) {
+      this.setState({ email: this.state.newemail })
     } else {
-      this.setState({email: this.state.email})
+      this.setState({ email: this.state.email })
     }
     return;
   }
@@ -179,33 +172,58 @@ export default class MeusDados extends React.Component {
       return;
     }
 
-    this.validaSenhaAlterada()
 
-    axios.put('http://localhost:8081/change-info', {
-      email: this.state.email,
-      newemail: this.state.newemail,
-      cpf: this.state.cpf,
-      senha: this.state.senhaatual,
-      nome: this.state.nome
-    })
-    .then(this.handleChangeSuccess)
-    .catch(function (error) {
-      if (error) {
-        console.log(error);
-      }
-    })
+    var request = {};
+
+    // email: this.state.email,
+    // newemail: this.state.newemail,
+    // cpf: this.state.cpf,
+    // senha: this.state.senha,
+    // nome: this.state.nome
+
+    if (this.state.email) {
+      request.email = this.state.email
+    }
+
+    if (this.state.newemail) {
+      request.newemail = this.state.newemail
+    }
+
+    if (this.state.cpf) {
+      request.cpf = this.state.cpf
+    }
+
+    if (this.state.senhaatual) {
+      request.senhaatual = this.state.senhaatual
+    }
+
+    if (this.state.novasenha) {
+      request.senha = this.state.novasenha
+    }
+
+    if (this.state.nome) {
+      request.nome = this.state.nome
+    }
+
+    axios.put('http://localhost:8081/change-info', request)
+      .then(this.handleChangeSuccess)
+      .catch(function (error) {
+        if (error) {
+          console.log(error);
+        }
+      })
   }
 
-  requestPoliticsProfile =() => {
+  requestPoliticsProfile = () => {
     this.setState({
       open: true
     })
   }
 
   render() {
-    return(<div className="card-div">
+    return (<div className="card-div">
       <Card className="user-card-container">
-        <CardTitle title="Meus dados" className="card-title"/>
+        <CardTitle title="Meus dados" className="card-title" />
         <div className="user-card-info">
           <TextField
             value={this.state.nome}
@@ -215,7 +233,7 @@ export default class MeusDados extends React.Component {
             errorText={this.state.errorNome && "Campo obrigatório"}
             floatingLabelText="Nome Completo*"
             onChange={(event, text) => {
-              this.setState({nome: text, errorNome: false})
+              this.setState({ nome: text, errorNome: false })
             }}
           />
           <TextField
@@ -228,7 +246,7 @@ export default class MeusDados extends React.Component {
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             onChange={(event, text) => {
-              this.setState({newemail: text, errorEmail: false})
+              this.setState({ newemail: text, errorEmail: false })
             }}
           />
           <TextField
@@ -241,7 +259,7 @@ export default class MeusDados extends React.Component {
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             onChange={(event, text) => {
-              this.setState({cpf: text, errorCPF: false})
+              this.setState({ cpf: text, errorCPF: false })
             }}
           />
           <TextField
@@ -254,7 +272,7 @@ export default class MeusDados extends React.Component {
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             type="password"
             onChange={(event, text) => {
-              this.setState({senhaatual: text, errorNome: false})
+              this.setState({ senhaatual: text, errorNome: false })
             }}
           />
           <TextField
@@ -267,7 +285,7 @@ export default class MeusDados extends React.Component {
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             type="password"
             onChange={(event, text) => {
-              this.setState({novasenha: text, errorNome: false})
+              this.setState({ novasenha: text, errorNome: false })
             }}
           />
           <TextField
@@ -279,27 +297,27 @@ export default class MeusDados extends React.Component {
             floatingLabelStyle={styles.floatingLabelStyle}
             type="password"
             onChange={(event, text) => {
-              this.setState({confirmarsenha: text, errorNome: false})
+              this.setState({ confirmarsenha: text, errorNome: false })
             }}
           />
         </div>
         <div className="buttons">
-        <CardActions className="card-actions">
-          <RaisedButton label="Solicitar Perfil Politico" primary={true} fullWidth={false} onClick={this.requestPoliticsProfile} />
-          <RaisedButton label="Salvar" primary={true} fullWidth={false} onClick={this.changeInfo} />
-        </CardActions>    
+          <CardActions className="card-actions">
+            <RaisedButton label="Solicitar Perfil Politico" primary={true} fullWidth={false} onClick={this.requestPoliticsProfile} />
+            <RaisedButton label="Salvar" primary={true} fullWidth={false} onClick={this.changeInfo} />
+          </CardActions>
         </div>
-      </Card>  
-      <RequestPoliticsProfileDialog 
-        open={this.state.open} 
+      </Card>
+      <RequestPoliticsProfileDialog
+        open={this.state.open}
         title="Solicitação de Perfil de Político"
         message="Tem certeza? Apenas um políticos podem solicitar esse tipo de perfil. Ao continuar você irá fornecer as informações necessárias para obter um perfil de político."
-        onRequestClose={()=>{
+        onRequestClose={() => {
           this.setState({
             open: false,
           })
         }}
-        />
+      />
     </div>
     )
   }
