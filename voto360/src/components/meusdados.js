@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { gray900 } from 'material-ui/styles/colors';
 import RequestPoliticsProfileDialog from './dialogs/requestPoliticsProfileDialog'
+import SimpleDialog from './dialogs/SimpleDialog'
 
 import { cookie } from 'cookie_js'
 import axios from 'axios'
@@ -44,10 +45,14 @@ export default class MeusDados extends React.Component {
       cpf: '',
 
       errorSenha: false,
+      errorSenhaAtual: false,
       errorEmail: false,
       errorCPF: false,
       errorNome: false,
-      open: false
+      open_request_politic: false, 
+      success_request_politic: false,
+      open_change_info_modal: false, 
+      success_change_info_modal: false
     }
 
   }
@@ -70,6 +75,15 @@ export default class MeusDados extends React.Component {
   validarErroSenha = () => {
     if (!this.state.novasenha || this.state.novasenha !== this.state.confirmarsenha || this.state.senhaatual === this.state.novasenha) {
       this.setState({ errorSenha: true })
+      return true
+    }
+    return false
+  }
+
+  validarErroSenhaAtual = () => {
+    console.log("valida senha atual")
+    if (this.state.senhaatual === '') {
+      this.setState({ errorSenhaAtual: true })
       return true
     }
     return false
@@ -101,18 +115,23 @@ export default class MeusDados extends React.Component {
   }
 
   handleChangeSuccess = () => {
-    alert("Sucesso");
     axios.get(`http://localhost:8081/pessoa?q={"email":"${this.state.newemail}"}`)
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         cookie.set({
           user: JSON.stringify(response.data[0])
         });
+        this.setState({
+          open_change_info_modal: true,
+          success_change_info_modal: true
+        })
       })
-      .catch(function (error) {
-        if (error) {
-          console.log(error);
-        }
+      .catch((error) => {
+        console.log("error", error)
+        this.setState({
+          open_change_info_modal: true,
+          success_change_info_modal: false
+        })
       })
 
 
@@ -155,6 +174,10 @@ export default class MeusDados extends React.Component {
   changeInfo = () => {
     //Valida senha
     if (this.validarErroSenha()) {
+      return;
+    }
+
+    if(this.validarErroSenhaAtual()) {
       return;
     }
 
@@ -216,7 +239,7 @@ export default class MeusDados extends React.Component {
 
   requestPoliticsProfile = () => {
     this.setState({
-      open: true
+      open_request_politic: true
     })
   }
 
@@ -264,15 +287,16 @@ export default class MeusDados extends React.Component {
           />
           <TextField
             value={this.state.senhaatual}
-            onBlur={this.validarErroSenha}
+            onBlur={this.validarErroSenhaAtual}
             hintText="Senha atual*"
             floatingLabelText="Senha atual*"
             underlineStyle={styles.underlineStyle}
+            errorText={this.state.errorSenhaAtual && "Campo obrigatório"}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             type="password"
             onChange={(event, text) => {
-              this.setState({ senhaatual: text, errorNome: false })
+              this.setState({ senhaatual: text, errorSenhaAtual: false })
             }}
           />
           <TextField
@@ -309,15 +333,25 @@ export default class MeusDados extends React.Component {
         </div>
       </Card>
       <RequestPoliticsProfileDialog
-        open={this.state.open}
+        open={this.state.open_request_politic}
         title="Solicitação de Perfil de Político"
-        message="Tem certeza? Apenas um políticos podem solicitar esse tipo de perfil. Ao continuar você irá fornecer as informações necessárias para obter um perfil de político."
+        message="Tem certeza? Apenas um políticos podem solicitar esse tipo de perfil. Ao continuar você irá fornecer as informações necessárias para que possamos garantir que você realmente é um político."
         onRequestClose={() => {
           this.setState({
-            open: false,
+            open_request_politic: false,
           })
         }}
       />
+      <SimpleDialog 
+        open={this.state.open_change_info_modal} 
+        title= {this.state.success_change_info_modal ? 'Informações alteradas' : 'Algo deu errado'}
+        message={this.state.success_change_info_modal ? 'Suas informações foram alteradas com sucesso' : 'Algo deu errado, tente novamente'}
+        onRequestClose={()=>{
+          this.setState({
+            open_change_info_modal: false,
+          })
+        }}
+        />
     </div>
     )
   }
