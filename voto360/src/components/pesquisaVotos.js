@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Avatar from 'material-ui/Avatar';
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import { Redirect } from 'react-router-dom'

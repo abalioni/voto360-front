@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import '../../dist/css/NotLoggedReset.css'
@@ -43,7 +42,6 @@ export class RequestPoliticsProfileDialog extends React.Component {
   }
 
   render() {
-    const { location } = this.props
     const actions = [
       <FlatButton
         label="Cancelar"

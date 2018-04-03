@@ -32,7 +32,7 @@ export default class SiglaPartido extends React.Component {
 
   render() {
       for (let i = 0; i < this.state.response.length; i++) {
-          items.push(<MenuItem value={i} key={i} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} />);
+          items.push(<MenuItem value={i} key={i} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} className="dropdown-menu-item"/>);
       }
     return (
         <DropDownMenu maxHeight={300} autoWidth={false} value="Sigla do Partido" onChange={this.handleChange} className="dropdown-menu">

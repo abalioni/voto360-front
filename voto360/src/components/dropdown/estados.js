@@ -2,7 +2,6 @@ import React from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import '../../dist/css/siglaPartido.css'
-import axios from 'axios'
 
 const items = [];
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-import { RadioButton } from 'material-ui/RadioButton';
-
 export default class PesquisaPoliticoItem extends React.Component {
     constructor(props) {
         super(props)
