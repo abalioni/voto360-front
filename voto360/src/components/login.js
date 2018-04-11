@@ -38,7 +38,8 @@ class CardLogin extends React.Component {
       email: '',
       senha: '',
       success: false,
-      open: false
+      open: false,
+      open_reset: false
     }
   }
 
@@ -131,15 +132,15 @@ class CardLogin extends React.Component {
         <RaisedButtonLogin handleClick={this.signIn}/>
         <br/>
         <button className="forgot-password-btn" onClick={() => this.setState({
-          open: true
+          open_reset: true
         })}>Esqueci a Senha</button>
       </div>
       <DialogResetPassword 
-        open={this.state.open} 
+        open={this.state.open_reset} 
         message={this.state.success ? 'Vá ao seu email para continuar o reset de senha' : 'Verifique o email digitado'}
         onRequestClose={()=>{
           this.setState({
-            open: false,
+            open_reset: false,
           })
         }}
       />

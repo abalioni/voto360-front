@@ -12,18 +12,23 @@ export default class Estados extends React.Component {
     super(props);
     this.state = {
         response: {},
-        states: ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
+        states: ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "'PB'", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"],
+        value: ""
     };
+  }
+
+  componentDidMount() {
+    for (let i = 0; i < this.state.states.length; i++) {
+      items.push(<MenuItem value={i} key={this.state.states[i]} primaryText={this.state.states[i]} />);
+    }
   }
 
   handleChange = (event, index, value) => this.setState({value});
 
   render() {
-      for (let i = 0; i < this.state.states.length; i++) {
-          items.push(<MenuItem value={i} key={this.state.states[i]} primaryText={this.state.states[i]} />);
-      }
+      
     return (
-        <DropDownMenu maxHeight={300} autoWidth={false} value="Sigla do Partido" onChange={this.handleChange} className="dropdown-menu">
+        <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu">
             {items}
       </DropDownMenu>
     );

@@ -43,6 +43,7 @@ export default class PesquisaPoliticoItem extends React.Component {
         
         return (
             <div>
+                <img src={this.state.response && this.state.response.urlFoto} />
                 <label htmlFor="radioButton">{this.state.response && this.state.response.nome}</label>
                 <input type="radio" id="UKE" />
             </div>
