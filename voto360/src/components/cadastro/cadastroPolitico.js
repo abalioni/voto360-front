@@ -4,10 +4,11 @@ import { Card, CardActions, CardTitle } from 'material-ui/Card';
 import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import {gray900 } from 'material-ui/styles/colors';
+import { gray900 } from 'material-ui/styles/colors';
 import '../../dist/css/cadastroPolitico.css';
 import SiglaPartido from '../dropdown/siglaPartidos';
 import Estados from '../dropdown/estados';
+import NiveisDeEscolaridade from '../dropdown/nivelDeEscolaridade';
 import InputCNPJ from '../inputs/InputCNPJ';
 
 import { cookie } from 'cookie_js';
@@ -15,55 +16,57 @@ import axios from 'axios';
 import { CNPJ } from 'cpf_cnpj';
 
 const styles = {
-  errorStyle: {
-    color: gray900,
-  },
-  underlineStyle: {
-    borderColor: gray900,
-  },
-  floatingLabelStyle: {
-    color: gray900,
-  },
-  floatingLabelFocusStyle: {
-    color: gray900,
-  },
+    errorStyle: {
+        color: gray900,
+    },
+    underlineStyle: {
+        borderColor: gray900,
+    },
+    floatingLabelStyle: {
+        color: gray900,
+    },
+    floatingLabelFocusStyle: {
+        color: gray900,
+    },
 };
 
 export default class CadastroPolitico extends React.Component {
     constructor(props) {
-      super(props)
-  
-      this.state = {
-        user: '',
-        emaileleitoral: '',
-        email: '',
-        nome: '',
-        senhaatual: '',
-        cpf: '',
-        cnpj: '',
-        datanascimento: undefined,
+        super(props)
 
-        errorCNPJ: false,
-        errorSenha: false,
-        errorSenhaAtual: false,
-        errorEmail: false,
-        errorCPF: false,
-        errorNome: false,
-        maxDate: undefined
-                    
-      }
-  
+        this.state = {
+            user: '',
+            emaileleitoral: '',
+            email: '',
+            nomeeleitoral: '',
+            partido: '',
+            cpf: '',
+            cnpj: '',
+            datanascimento: undefined,
+            biografia: '',
+
+            errorCNPJ: false,
+            errorSenha: false,
+            errorSenhaAtual: false,
+            errorEmail: false,
+            errorCPF: false,
+            errorNome: false,
+            maxDate: undefined
+
+        }
+
     }
 
     componentWillMount() {
         const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear(), maxDate.getMonth() , maxDate.getDate())
+        maxDate.setFullYear(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
         const cookieUser = cookie.get('user');
         let user;
         if (cookieUser) {
             user = JSON.parse(cookieUser);
             console.log(user)
             this.setState({
+                user: user,
                 maxDate
             })
         }
@@ -72,7 +75,7 @@ export default class CadastroPolitico extends React.Component {
     validarCNPJ = () => {
         if (!CNPJ.isValid(this.state.cnpj)) {
             this.setState({ errorCNPJ: true })
-        return true
+            return true
         }
         return false
     }
@@ -95,66 +98,70 @@ export default class CadastroPolitico extends React.Component {
     }
 
     changeInfo = () => {
-    
-    //Valida Email
-    if (this.validarErroEmail()) {
-      return;
-    }
 
-    //Valida cpf
-        if (this.validarCNPJ()) {
-      return;
-    }
-
-    if (this.validarErroNome()) {
-      return;
-    }
-
-
-    var request = {};
-
-    // email: this.state.email,
-    // emaileleitoral: this.state.emaileleitoral,
-    // cpf: this.state.cpf,
-    // senha: this.state.senha,
-    // nome: this.state.nome
-
-    if (this.state.email) {
-      request.email = this.state.email
-    }
-
-    if (this.state.emaileleitoral) {
-      request.emaileleitoral = this.state.emaileleitoral
-    }
-
-    if (this.state.partido) {
-      request.partido = this.state.partido
-    }
-
-    if (this.state.estado) {
-      request.estado = this.state.estado
-    }
-
-    if (this.state.datanascimento) {
-      request.datanascimento = this.state.datanascimento
-    }
-
-    if (this.state.cnpj) {
-      request.cnpj = this.state.cnpj
-    }
-
-    if (this.state.biografia) {
-        request.biografia = this.state.biografia
-    }
-
-    axios.post('http://localhost:8081/politico', request)
-      .then(this.handleChangeSuccess)
-      .catch(function (error) {
-        if (error) {
-          console.log(error);
+        //Valida Email
+        if (this.validarErroEmail()) {
+            return;
         }
-      })
-  }
+
+        //Valida cpf
+        if (this.validarCNPJ()) {
+            return;
+        }
+
+        if (this.validarErroNome()) {
+            return;
+        }
+
+
+        var request = {};
+
+        // email: this.state.email,
+        // emaileleitoral: this.state.emaileleitoral,
+        // cpf: this.state.cpf,
+        // senha: this.state.senha,
+        // nome: this.state.nome
+
+        if (this.state.user._id) {
+            request.id = this.state.user._id
+        }
+
+        if (this.state.email) {
+            request.email = this.state.email
+        }
+
+        if (this.state.emaileleitoral) {
+            request.emaileleitoral = this.state.emaileleitoral
+        }
+
+        if (this.state.partido) {
+            request.partido = this.state.partido
+        }
+
+        if (this.state.estado) {
+            request.estado = this.state.estado
+        }
+
+        if (this.state.datanascimento) {
+            request.datanascimento = this.state.datanascimento
+        }
+
+        if (this.state.cnpj) {
+            request.cnpj = this.state.cnpj
+        }
+
+        if (this.state.biografia) {
+            request.biografia = this.state.biografia
+        }
+
+        axios.post('http://localhost:8081/politico', request)
+            .then(this.handleChangeSuccess)
+            .catch(function (error) {
+                if (error) {
+                    console.log(error);
+                }
+            })
+    }
 
 
     render() {
@@ -183,27 +190,10 @@ export default class CadastroPolitico extends React.Component {
                         floatingLabelStyle={styles.floatingLabelStyle}
                         floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
                         onChange={(event, text) => {
-                        this.setState({ emaileleitoral: text, errorEmail: false })
+                            this.setState({ emaileleitoral: text, errorEmail: false })
                         }}
                     />
-                    <p>Selectione o Partido:</p>
-                    <SiglaPartido className="partido-dropdown" />
-                    <p>Selectione o Estado:</p>
-                    <Estados />
-                    <p>Selecione a data de nascimento:</p>
-                    <DatePicker 
-                        hintText="Data de nascimento" 
-                        container="inline" 
-                        underlineStyle={styles.underlineStyle} 
-                        textFieldStyle={styles.floatingLabelStyle}
-                        dialogContainerStyle={styles.floatingLabelFocusStyle}
-                        maxDate={this.state.maxDate}
-                        onChange={(event, date) => {
-                            this.setState({ datanascimento: date })
-                        }}
-                        locale="en-US"
-                        />
-                    <InputCNPJ 
+                    <InputCNPJ
                         value={this.state.cnpj}
                         onBlur={this.validarCNPJ}
                         hintText="CNPJ*"
@@ -214,7 +204,26 @@ export default class CadastroPolitico extends React.Component {
                         floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
                         onChange={(event, text) => {
                             this.setState({ cnpj: text, errorCNPJ: false })
-                        }}/>
+                        }} />
+                    <p>Selectione o Partido:</p>
+                    <SiglaPartido className="partido-dropdown" />
+                    <p>Selectione o Estado:</p>
+                    <Estados />
+                    <p>Selecione a data de nascimento:</p>
+                    <DatePicker
+                        hintText="Data de nascimento"
+                        container="inline"
+                        underlineStyle={styles.underlineStyle}
+                        textFieldStyle={styles.floatingLabelStyle}
+                        dialogContainerStyle={styles.floatingLabelFocusStyle}
+                        maxDate={this.state.maxDate}
+                        onChange={(event, date) => {
+                            this.setState({ datanascimento: date })
+                        }}
+                        locale="en-US"
+                    />
+                    <p>Selectione o seu nível de escolaridade:</p>
+                    <NiveisDeEscolaridade />
                     <TextField
                         hintText="Biografia"
                         floatingLabelText="Biografia"
