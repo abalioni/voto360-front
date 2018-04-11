@@ -35,14 +35,13 @@ export default class CadastroPolitico extends React.Component {
   
       this.state = {
         user: '',
-        newemail: '',
+        emaileleitoral: '',
         email: '',
         nome: '',
         senhaatual: '',
-        novasenha: '',
-        confirmarsenha: '',
         cpf: '',
         cnpj: '',
+        datanascimento: undefined,
 
         errorCNPJ: false,
         errorSenha: false,
@@ -50,22 +49,22 @@ export default class CadastroPolitico extends React.Component {
         errorEmail: false,
         errorCPF: false,
         errorNome: false,
+        maxDate: undefined
                     
       }
   
     }
 
     componentWillMount() {
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear(), maxDate.getMonth() , maxDate.getDate())
         const cookieUser = cookie.get('user');
         let user;
         if (cookieUser) {
             user = JSON.parse(cookieUser);
             console.log(user)
             this.setState({
-                nome: user.nome,
-                email: user.email,
-                newemail: user.email,
-                cpf: user.cpf
+                maxDate
             })
         }
     }
@@ -80,7 +79,7 @@ export default class CadastroPolitico extends React.Component {
 
     validarErroEmail = () => {
         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!re.test(this.state.newemail)) {
+        if (!re.test(this.state.emaileleitoral)) {
             this.setState({ errorEmail: true })
             return true
         }
@@ -115,7 +114,7 @@ export default class CadastroPolitico extends React.Component {
     var request = {};
 
     // email: this.state.email,
-    // newemail: this.state.newemail,
+    // emaileleitoral: this.state.emaileleitoral,
     // cpf: this.state.cpf,
     // senha: this.state.senha,
     // nome: this.state.nome
@@ -124,24 +123,28 @@ export default class CadastroPolitico extends React.Component {
       request.email = this.state.email
     }
 
-    if (this.state.newemail) {
-      request.newemail = this.state.newemail
+    if (this.state.emaileleitoral) {
+      request.emaileleitoral = this.state.emaileleitoral
     }
 
-    if (this.state.cpf) {
-      request.cpf = this.state.cpf
+    if (this.state.partido) {
+      request.partido = this.state.partido
     }
 
-    if (this.state.senhaatual) {
-      request.senhaatual = this.state.senhaatual
+    if (this.state.estado) {
+      request.estado = this.state.estado
     }
 
-    if (this.state.novasenha) {
-      request.senha = this.state.novasenha
+    if (this.state.datanascimento) {
+      request.datanascimento = this.state.datanascimento
     }
 
-    if (this.state.nome) {
-      request.nome = this.state.nome
+    if (this.state.cnpj) {
+      request.cnpj = this.state.cnpj
+    }
+
+    if (this.state.biografia) {
+        request.biografia = this.state.biografia
     }
 
     axios.post('http://localhost:8081/politico', request)
@@ -152,6 +155,7 @@ export default class CadastroPolitico extends React.Component {
         }
       })
   }
+
 
     render() {
         return (<div className="card-div">
@@ -170,7 +174,7 @@ export default class CadastroPolitico extends React.Component {
                         }}
                     />
                     <TextField
-                        value={this.state.newemail}
+                        value={this.state.emaileleitoral}
                         onBlur={this.validarErroEmail}
                         hintText="Email Eleitoral*"
                         floatingLabelText="Email Eleitoral*"
@@ -179,7 +183,7 @@ export default class CadastroPolitico extends React.Component {
                         floatingLabelStyle={styles.floatingLabelStyle}
                         floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
                         onChange={(event, text) => {
-                        this.setState({ newemail: text, errorEmail: false })
+                        this.setState({ emaileleitoral: text, errorEmail: false })
                         }}
                     />
                     <p>Selectione o Partido:</p>
@@ -193,6 +197,11 @@ export default class CadastroPolitico extends React.Component {
                         underlineStyle={styles.underlineStyle} 
                         textFieldStyle={styles.floatingLabelStyle}
                         dialogContainerStyle={styles.floatingLabelFocusStyle}
+                        maxDate={this.state.maxDate}
+                        onChange={(event, date) => {
+                            this.setState({ datanascimento: date })
+                        }}
+                        locale="en-US"
                         />
                     <InputCNPJ 
                         value={this.state.cnpj}
