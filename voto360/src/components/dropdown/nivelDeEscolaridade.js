@@ -13,7 +13,7 @@ export default class NiveisDeEscolaridade extends React.Component {
     this.state = {
         response: {},
         niveis: ["Médio - Incompleto", "Médio - Completo", "Superior - Incompleto", "Superior - Completo", "Pós-graduação (Lato senso) - Incompleto", "Pós-graduação (Lato senso) - Completo", "Pós-graduação (Stricto sensu, nível mestrado) - Incompleto", "Pós-graduação (Stricto sensu, nível mestrado) - Completo", "Pós-graduação (Stricto sensu, nível doutor) - Incompleto", "Pós-graduação (Stricto sensu, nível doutor) - Completo"],
-        value: ""
+        value: -1
     };
   }
 
@@ -28,7 +28,7 @@ export default class NiveisDeEscolaridade extends React.Component {
   render() {
       
     return (
-        <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu">
+      <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu">
             {items}
       </DropDownMenu>
     );

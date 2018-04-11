@@ -5,6 +5,11 @@ import '../../dist/css/siglaPartido.css'
 import axios from 'axios'
 
 const items = [];
+const styles = {
+  customWidth: {
+    width: 300,
+  },
+};
 
 export default class SiglaPartido extends React.Component {
 
@@ -12,7 +17,7 @@ export default class SiglaPartido extends React.Component {
     super(props);
     this.state = {
         response: {},
-        value: "Sigla do partido"
+        value: -1
     };
   }
 
@@ -21,7 +26,7 @@ export default class SiglaPartido extends React.Component {
           .then((res) => {
               this.setState({ response: res.data.dados })
               for (let i = 0; i < this.state.response.length; i++) {
-                items.push(<MenuItem key={i} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} className="dropdown-menu-item"/>);
+                items.push(<MenuItem key={i} value={i} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} className="dropdown-menu-item" />);
                 }
               return res;
           })
@@ -38,7 +43,13 @@ export default class SiglaPartido extends React.Component {
   render() {
       
     return (
-        <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu">
+        <DropDownMenu 
+          maxHeight={300} 
+          style={styles.customWidth}
+          autoWidth={false} 
+          value={this.state.value} 
+          onChange={this.handleChange} 
+          className="dropdown-menu">
         {items}
       </DropDownMenu>
     );

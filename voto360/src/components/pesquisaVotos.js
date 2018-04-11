@@ -9,7 +9,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import '../dist/css/pesquisa.css'
 import { cookie } from 'cookie_js'
 
-import PesquisaPoliticoCard from './pesquisaPoliticoItem'
+import PesquisaPoliticoItem from './pesquisaPoliticoItem'
 
 const styles = {
   block: {
@@ -60,7 +60,7 @@ export default class Pesquisa extends React.Component {
               </div>
               <form>
                 {values.map((item, i) => {
-                  return (<PesquisaPoliticoCard
+                  return (<PesquisaPoliticoItem
                     checked={this.state.selectedOption === item}
                     onChange={this.handleOptionChange}
                     id={item} />)

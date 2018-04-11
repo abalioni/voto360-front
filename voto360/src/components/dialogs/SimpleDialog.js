@@ -25,7 +25,7 @@ export default class SimpleDialog extends React.Component {
 
   handleClose = () => {
     this.props.onRequestClose();
-    this.setState({open: false});
+    // this.setState({open: false});
   };
 
   render() {

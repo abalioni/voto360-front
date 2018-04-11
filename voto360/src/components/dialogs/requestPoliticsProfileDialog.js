@@ -34,7 +34,9 @@ export class RequestPoliticsProfileDialog extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({ open: false, success_dialog: true });
+    // this.setState({ open: false, 
+    // success_dialog: true });
+    this.props.onRequestClose()
   };
 
   callPoliticsSignUpPage = () => {
