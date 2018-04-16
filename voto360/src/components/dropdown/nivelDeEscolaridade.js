@@ -19,11 +19,14 @@ export default class NiveisDeEscolaridade extends React.Component {
 
   componentDidMount() {
     for (let i = 0; i < this.state.niveis.length; i++) {
-      items.push(<MenuItem value={i} key={this.state.niveis[i]} primaryText={this.state. niveis[i]} />);
+      items.push(<MenuItem value={this.state.niveis[i]} key={this.state.niveis[i]} primaryText={this.state.niveis[i]} />);
     }
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  handleChange = (event, index, value) => {
+    this.setState({value})
+    this.props.handleEscolaridadeChange(event, value)
+  }
 
   render() {
       

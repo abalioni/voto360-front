@@ -36,13 +36,15 @@ export default class CadastroPolitico extends React.Component {
 
         this.state = {
             user: '',
+            nome: '',
             emaileleitoral: '',
             email: '',
             nomeeleitoral: '',
             partido: '',
             cpf: '',
             cnpj: '',
-            datanascimento: undefined,
+            datanascimento: '',
+            nivelescolaridade: '',
             biografia: '',
 
             errorCNPJ: false,
@@ -116,22 +118,20 @@ export default class CadastroPolitico extends React.Component {
 
         var request = {};
 
-        // email: this.state.email,
-        // emaileleitoral: this.state.emaileleitoral,
-        // cpf: this.state.cpf,
-        // senha: this.state.senha,
-        // nome: this.state.nome
-
         if (this.state.user._id) {
             request.id = this.state.user._id
         }
 
-        if (this.state.email) {
-            request.email = this.state.email
+        if (this.state.nome) {
+            request.nome_eleitoral = this.state.nome
         }
 
         if (this.state.emaileleitoral) {
             request.emaileleitoral = this.state.emaileleitoral
+        }
+
+        if (this.state.nivelescolaridade) {
+            request.escolaridade = this.state.nivelescolaridade
         }
 
         if (this.state.partido) {
@@ -146,23 +146,43 @@ export default class CadastroPolitico extends React.Component {
             request.datanascimento = this.state.datanascimento
         }
 
-        if (this.state.cnpj) {
-            request.cnpj = this.state.cnpj
-        }
+        // if (this.state.cnpj) {
+        //     request.cnpj = this.state.cnpj
+        // }
 
         if (this.state.biografia) {
             request.biografia = this.state.biografia
         }
 
-        axios.post('http://localhost:8081/politico', request)
-            .then(this.handleChangeSuccess)
-            .catch(function (error) {
-                if (error) {
-                    console.log(error);
-                }
-            })
+        request.perfil_aprovado = false
+
+        console.log(request)
+        const req = JSON.stringify(request)
+        console.log(req)
+
+          axios.post('http://localhost:8081/politico', request).then(this.handleSuccess).catch(this.handleFailure);
+      
     }
 
+    handleSuccess = (response) => {
+        console.log(response)
+    }
+
+    handleFailure = (err) => {
+        console.log(err)
+    }
+
+    handleChange = (event, index, value) => {
+        this.setState({partido: value})
+    }
+
+    handleEstadoChange = (event, index, value) => {
+        this.setState({estado: value})
+    }
+
+    handleEscolaridadeChange = (event, index, value) => {
+        this.setState({nivelescolaridade: value})
+    }
 
     render() {
         return (<div className="card-div">
@@ -206,9 +226,16 @@ export default class CadastroPolitico extends React.Component {
                             this.setState({ cnpj: text, errorCNPJ: false })
                         }} />
                     <p>Selectione o Partido:</p>
-                    <SiglaPartido className="partido-dropdown" />
+                    <SiglaPartido 
+                        className="partido-dropdown" 
+                        handleChange={(event, text) => {
+                            this.setState({partido: text})
+                        }}/>
                     <p>Selectione o Estado:</p>
-                    <Estados />
+                    <Estados 
+                        handleEstadoChange={(event, text) => {
+                            this.setState({estado: text})
+                        }}/>
                     <p>Selecione a data de nascimento:</p>
                     <DatePicker
                         hintText="Data de nascimento"
@@ -223,7 +250,11 @@ export default class CadastroPolitico extends React.Component {
                         locale="en-US"
                     />
                     <p>Selectione o seu nível de escolaridade:</p>
-                    <NiveisDeEscolaridade />
+                    <NiveisDeEscolaridade 
+                        handleEscolaridadeChange={(event, text) => {
+                            console.log(text)
+                            this.setState({nivelescolaridade: text})
+                        }}/>
                     <TextField
                         hintText="Biografia"
                         floatingLabelText="Biografia"
@@ -232,6 +263,9 @@ export default class CadastroPolitico extends React.Component {
                         rowsMax={50}
                         floatingLabelStyle={styles.floatingLabelStyle}
                         floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+                        onChange={(event, text) => {
+                            this.setState({ biografia: text })
+                        }}
                     />
                 </div>
                 <div className="buttons">

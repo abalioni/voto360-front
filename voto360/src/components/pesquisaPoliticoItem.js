@@ -1,17 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
-const styles = {
-    block: {
-        maxWidth: 250,
-    },
-    radioButton: {
-        marginBottom: 16,
-    },
-};
-
 export default class PesquisaPoliticoItem extends React.Component {
     constructor(props) {
         super(props)
@@ -54,7 +43,7 @@ export default class PesquisaPoliticoItem extends React.Component {
         console.log(this.state.response)
         return (
             <div>
-                <img src={this.state.response && this.state.response.urlFoto} />
+                <img src={this.state.response && this.state.response.urlFoto} alt="foto do politico" />
                 <label htmlFor="radioButton">{this.state.response && this.state.response.nome}</label>
                 <input name="politicos" type="radio" id="UKE" />
             </div>

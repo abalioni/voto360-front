@@ -19,6 +19,12 @@ export default class SiglaPartido extends React.Component {
         response: {},
         value: -1
     };
+
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.siglaDoPartido = nextProps.value;
   }
 
   componentDidMount() {
@@ -26,7 +32,7 @@ export default class SiglaPartido extends React.Component {
           .then((res) => {
               this.setState({ response: res.data.dados })
               for (let i = 0; i < this.state.response.length; i++) {
-                items.push(<MenuItem key={i} value={i} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} className="dropdown-menu-item" />);
+                items.push(<MenuItem key={i} value={this.state.response[i].sigla} primaryText={this.state.response[i].sigla + " - " + this.state.response[i].nome} className="dropdown-menu-item" />);
                 }
               return res;
           })
@@ -38,7 +44,10 @@ export default class SiglaPartido extends React.Component {
         
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  handleChange = (event, index, value) => {
+    this.setState({value: value})
+    this.props.handleChange(event, value)
+  } 
 
   render() {
       

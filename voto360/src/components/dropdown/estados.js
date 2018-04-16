@@ -19,11 +19,15 @@ export default class Estados extends React.Component {
 
   componentDidMount() {
     for (let i = 0; i < this.state.states.length; i++) {
-      items.push(<MenuItem value={i} key={this.state.states[i]} primaryText={this.state.states[i]} />);
+      items.push(<MenuItem value={this.state.states[i]} key={this.state.states[i]} primaryText={this.state.states[i]} />);
     }
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  handleChange = (event, index, value) => {
+    console.log(value)
+    this.setState({value})
+    this.props.handleEstadoChange(event, value)
+  }
 
   render() {
       

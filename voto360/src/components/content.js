@@ -7,6 +7,7 @@ import Home from './home'
 import Pesquisa from './pesquisaVotos'
 import NotLoggedReset from './NotLoggedReset'
 import VerifyChangePasswordToken from './VerifyChangePasswordToken'
+import PoliticsRequests from './politicsRequests'
 import CadastroPolitico from './cadastro/cadastroPolitico'
 import MeusDados from './meusdados'
 import Drawer from 'material-ui/Drawer';
@@ -93,6 +94,7 @@ class Content extends Component {
       <Route exact path="/" component={Home}/>
       <Route path="/pesquisasDeVoto" component={Pesquisa}/>
       <Route path="/admin" render={(props) => (user && user.cargo === 'admin') ? <Admin {...props} /> : <div></div>} />
+      <Route path="/PoliticsRequests" render={(props) => (user && user.cargo === 'editor') ? <PoliticsRequests {...props} /> : <div></div>} />
       <Route path="/forgotpassword/" component={NotLoggedReset}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
