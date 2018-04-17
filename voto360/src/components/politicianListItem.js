@@ -16,7 +16,6 @@ export default class PoliticianListItem extends React.Component {
 
 
     handleChange = () => {
-        console.log(this.props)
         this.props.handleOptionChange(this.props.value._id)
     }
 

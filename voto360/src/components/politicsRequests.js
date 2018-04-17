@@ -6,6 +6,8 @@ import {Card, CardTitle, CardActions, CardHeader, CardText} from 'material-ui/Ca
 import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import PoliticianListItem from './politicianListItem'
+import FlatButton from 'material-ui/FlatButton';
+import { Tabs, Tab } from 'material-ui/Tabs';
 
 import '../dist/css/politicsrequest.css'
 
@@ -34,30 +36,43 @@ export default class PoliticsRequests extends React.Component {
       cargo: '',
       nome: '', 
       politicians_response: [],
-      selected_politician: []
+      selected_politician: [],
+      timer: null
     }
     this.handleUsers = this.handleUsers.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
+  generateRequest() {
+    this.timer = setTimeout(() => {
+      console.log("request")
+      axios.get('http://localhost:8081/politico')
+        .then((res) => {
+          console.log(res)
+          this.setState({ politicians_response: res.data })
+          this.generateRequest()
+          return res;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.generateRequest()
+          return error;
+          
+        })
+    }, 3000);
+  }
+
   componentDidMount() {
-    axios.get('http://localhost:8081/politico?q={"perfil_aprovado":"false"}')
-      .then((res) => {
-        this.setState({ politicians_response: res.data })
-        return res;
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      })
+    this.generateRequest()   
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer)
   }
 
   handleOptionChange = (i) => {
-    console.log("click politics request")
-    console.log("id", i)
     axios.get(`http://localhost:8081/politico?q={"_id":"${i}"}`)
       .then((res) => {
-        console.log(res)
         this.setState({selected_politician: res.data[0]})
         return res;
       })
@@ -70,19 +85,53 @@ export default class PoliticsRequests extends React.Component {
 
   render() {
     return (<div className="container-list">
-      <div className="pending-list">
-      <List>
-          <Subheader>Pendentes</Subheader>
-          {this.state.politicians_response.map((item, i) => {
-          return (<PoliticianListItem
-            handleOptionChange={this.handleOptionChange}
-            key={i}
-            value={item}
-          />
-          )
-        })}
-        </List>
-    </div> 
+      <Tabs className="pending-list">
+          <Tab label="Pendentes" >
+          <div >
+          <List>
+              {this.state.politicians_response.map((item, i) => {
+                return (item && item.perfil_aprovado ? undefined : (<PoliticianListItem
+                  handleOptionChange={this.handleOptionChange}
+                  key={i}
+                  value={item}
+                />)
+              )
+            })}
+            </List>
+    
+          </div> 
+          </ Tab>
+        <Tab label="Rejeitados" >
+          <div >
+            <List>
+              {this.state.politicians_response.map((item, i) => {
+                return (item && item.perfil_aprovado ? (<PoliticianListItem
+                  handleOptionChange={this.handleOptionChange}
+                  key={i}
+                  value={item}
+                />) : undefined
+                )
+              })}
+            </List>
+
+          </div>
+        </ Tab>
+        <Tab label="Aprovados" >
+          <div>
+            <List>
+              {this.state.politicians_response.map((item, i) => {
+                return (<PoliticianListItem
+                  handleOptionChange={this.handleOptionChange}
+                  key={i}
+                  value={item}
+                />
+                )
+              })}
+            </List>
+
+          </div>
+        </ Tab>
+      </Tabs>
       <div className="pending-info">
         {this.state.selected_politician && this.state.selected_politician.nome_eleitoral ? 
           (<Card>
@@ -101,11 +150,21 @@ export default class PoliticsRequests extends React.Component {
             {this.state.selected_politician && this.state.selected_politician.estado ? (<p>Estado: {this.state.selected_politician.estado}</p>) : undefined}
             {this.state.selected_politician && this.state.selected_politician.partido ? (<p>Partido: {this.state.selected_politician.partido}</p>) : undefined}
           </CardText>
+            <CardActions>
+              <FlatButton label="Aprovar" onClick={this.handleApprovePolitician} />
+              <FlatButton label="Reprovar" onClick={this.handleRejectPolitician}/>
+            </CardActions>
         </Card>) 
         : undefined}
       
     </div>
     </div>)
+  }
+
+  handleApprovePolitician = () => {
+    this.setState({
+      selected_politician: {"perfil_aprovado": "true"}
+    })
   }
 
   getUsuarios = () => {
