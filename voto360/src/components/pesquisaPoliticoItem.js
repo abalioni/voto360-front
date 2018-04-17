@@ -27,20 +27,8 @@ export default class PesquisaPoliticoItem extends React.Component {
             })
     }
 
+
     render() {
-        console.log(this.state.response)
-        
-        // this.state.response = 
-        //
-        //  "id": 178864,
-        //  "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178864", 
-        //  "nome": "ADAIL CARNEIRO", 
-        //  "siglaPartido": "PP", 
-        //  "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36809", 
-        //  "siglaUf": "CE", 
-        //  "idLegislatura": 55, 
-        //  "urlFoto": "http://www.camara.leg.br/internet/deputado/bandep/178864.jpg" 
-        console.log(this.state.response)
         return (
             <div>
                 <img src={this.state.response && this.state.response.urlFoto} alt="foto do politico" />

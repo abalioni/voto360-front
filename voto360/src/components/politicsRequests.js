@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import axios from 'axios'
-
+import PropTypes from 'prop-types';
 import { gray900 } from 'material-ui/styles/colors';
 import {Card, CardTitle, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import {List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import PoliticianListItem from './politicianListItem'
 
 import '../dist/css/politicsrequest.css'
 
@@ -23,8 +24,6 @@ const styles = {
 
 export default class PoliticsRequests extends React.Component {
 
-  
-
   constructor(props) {
     super(props)
 
@@ -33,35 +32,78 @@ export default class PoliticsRequests extends React.Component {
       users: [],
       emailSelecionado: '',
       cargo: '',
-      nome: '',
+      nome: '', 
+      politicians_response: [],
+      selected_politician: []
     }
     this.handleUsers = this.handleUsers.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
-  
+  componentDidMount() {
+    axios.get('http://localhost:8081/politico?q={"perfil_aprovado":"false"}')
+      .then((res) => {
+        this.setState({ politicians_response: res.data })
+        return res;
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      })
+  }
+
+  handleOptionChange = (i) => {
+    console.log("click politics request")
+    console.log("id", i)
+    axios.get(`http://localhost:8081/politico?q={"_id":"${i}"}`)
+      .then((res) => {
+        console.log(res)
+        this.setState({selected_politician: res.data[0]})
+        return res;
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      })
+
+  }  
 
   render() {
     return (<div className="container-list">
       <div className="pending-list">
       <List>
-        <Subheader>Pendentes</Subheader>
-        <ListItem
-            primaryText="Brunch this weekend?"
-            secondaryText={
-              <p>
-                <span>Brendan Lim</span> --
-                I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-              </p>
-            }
-            secondaryTextLines={2}
+          <Subheader>Pendentes</Subheader>
+          {this.state.politicians_response.map((item, i) => {
+          return (<PoliticianListItem
+            handleOptionChange={this.handleOptionChange}
+            key={i}
+            value={item}
           />
-
-      </List>             
+          )
+        })}
+        </List>
     </div> 
-    <div className="pending-info">
-      <Card>
-        <CardTitle title="Card title" subtitle="Card subtitle" />
-      </Card>
+      <div className="pending-info">
+        {this.state.selected_politician && this.state.selected_politician.nome_eleitoral ? 
+          (<Card>
+          <CardTitle title={this.state.selected_politician && this.state.selected_politician.nome_eleitoral} subtitle={this.state.selected_politician && this.state.selected_politician.emaileleitoral} />
+          <CardText>
+            {/* "1999-04-16T21:49:10.378Z"
+            emaileleitoral:"jose.banana@gov.br"
+            escolaridade:"Superior - Completo"
+            estado:"SP"
+            nome_eleitoral:"José Da Banana"
+            partido:"DEM"
+            perfil_aprovado:false
+            __v:0
+            _id:"5ad51a5e634001e0909138d1" */}
+            {this.state.selected_politician && this.state.selected_politician.escolaridade ? (<p>Escolaridade: {this.state.selected_politician.escolaridade}</p>) : undefined}
+            {this.state.selected_politician && this.state.selected_politician.estado ? (<p>Estado: {this.state.selected_politician.estado}</p>) : undefined}
+            {this.state.selected_politician && this.state.selected_politician.partido ? (<p>Partido: {this.state.selected_politician.partido}</p>) : undefined}
+          </CardText>
+        </Card>) 
+        : undefined}
+      
     </div>
     </div>)
   }
@@ -124,4 +166,5 @@ export default class PoliticsRequests extends React.Component {
       }
     })
 }
+
 }

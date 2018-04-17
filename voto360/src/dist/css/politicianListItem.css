@@ -1,0 +1,21 @@
+.politician-item-div {
+    padding: 10px;
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+.politician-item-div:hover {
+    background-color: aquamarine;
+}
+
+.politician-name {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.politician-email {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}

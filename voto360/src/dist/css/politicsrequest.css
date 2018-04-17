@@ -1,14 +1,12 @@
 .container-list {
     display: flex;
     flex-direction: row;
-    background-color: red;
     width: 100%;
     height: 100%;
 }
 
 .pending-list {
     width: 50%;
-    background-color: blueviolet;
 }
 
 .pending-info {
