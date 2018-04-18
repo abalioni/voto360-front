@@ -8,6 +8,8 @@ import Subheader from 'material-ui/Subheader';
 import PoliticianListItem from './politicianListItem'
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import Divider from 'material-ui/Divider';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 import '../dist/css/politicsrequest.css'
 
@@ -37,29 +39,32 @@ export default class PoliticsRequests extends React.Component {
       nome: '', 
       politicians_response: [],
       selected_politician: [],
-      timer: null
+      timer: null,
+      isLoading: false,
+      loadingStatus: 'hide'
     }
     this.handleUsers = this.handleUsers.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   generateRequest() {
+    this.setState({isLoading: true, loadingStatus: 'loading'})
     this.timer = setTimeout(() => {
-      console.log("request")
       axios.get('http://localhost:8081/politico')
         .then((res) => {
-          console.log(res)
-          this.setState({ politicians_response: res.data })
+          console.log("done")
+          this.setState({ politicians_response: res.data, isLoading: false, loadingStatus: 'hide' })
           this.generateRequest()
           return res;
         })
         .catch((error) => {
           console.log(error);
           this.generateRequest()
+          this.setState({ isLoading: false, loadingStatus: 'hide' })
           return error;
           
         })
-    }, 3000);
+    }, 10000);
   }
 
   componentDidMount() {
@@ -86,18 +91,26 @@ export default class PoliticsRequests extends React.Component {
   render() {
     return (<div className="container-list">
       <Tabs className="pending-list">
-          <Tab label="Pendentes" >
+          <Tab label="Pendentes" > 
           <div >
-          <List>
-              {this.state.politicians_response.map((item, i) => {
-                return (item && item.perfil_aprovado ? undefined : (<PoliticianListItem
-                  handleOptionChange={this.handleOptionChange}
-                  key={i}
-                  value={item}
-                />)
-              )
-            })}
-            </List>
+            {this.state.isLoading ? (<RefreshIndicator
+              size={50}
+              left={70}
+              top={0}
+              status={this.state.loadingStatus}
+              style={style.refresh}
+            />) :
+              (<List>
+                {this.state.politicians_response.map((item, i) => {
+                  return (item && (item.perfil_aprovado === "pending") ? (<PoliticianListItem
+                    handleOptionChange={this.handleOptionChange}
+                    key={i}
+                    value={item}
+                  />) : undefined
+                  )
+                })}
+              </List>)
+            }
     
           </div> 
           </ Tab>
@@ -105,7 +118,7 @@ export default class PoliticsRequests extends React.Component {
           <div >
             <List>
               {this.state.politicians_response.map((item, i) => {
-                return (item && item.perfil_aprovado ? (<PoliticianListItem
+                return (item && (item.perfil_aprovado === 'rejected') ? (<PoliticianListItem
                   handleOptionChange={this.handleOptionChange}
                   key={i}
                   value={item}
@@ -120,12 +133,12 @@ export default class PoliticsRequests extends React.Component {
           <div>
             <List>
               {this.state.politicians_response.map((item, i) => {
-                return (<PoliticianListItem
+                return (item && (item.perfil_aprovado === 'approved') ? (<span><PoliticianListItem
                   handleOptionChange={this.handleOptionChange}
                   key={i}
                   value={item}
-                />
-                )
+                /> <Divider /></span>) : undefined
+                ) 
               })}
             </List>
 

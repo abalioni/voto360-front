@@ -10,6 +10,7 @@ import SiglaPartido from '../dropdown/siglaPartidos';
 import Estados from '../dropdown/estados';
 import NiveisDeEscolaridade from '../dropdown/nivelDeEscolaridade';
 import InputCNPJ from '../inputs/InputCNPJ';
+import SimpleDialog from '../dialogs/SimpleDialog'
 
 import { cookie } from 'cookie_js';
 import axios from 'axios';
@@ -53,7 +54,9 @@ export default class CadastroPolitico extends React.Component {
             errorEmail: false,
             errorCPF: false,
             errorNome: false,
-            maxDate: undefined
+            maxDate: undefined,
+            success: false,
+            open: false
 
         }
 
@@ -154,21 +157,21 @@ export default class CadastroPolitico extends React.Component {
             request.biografia = this.state.biografia
         }
 
-        request.perfil_aprovado = false
+        request.perfil_aprovado = 'pending'
 
-        console.log(request)
         const req = JSON.stringify(request)
-        console.log(req)
 
           axios.post('http://localhost:8081/politico', request).then(this.handleSuccess).catch(this.handleFailure);
       
     }
 
     handleSuccess = (response) => {
+        this.setState({success: true, open: true})
         console.log(response)
     }
 
     handleFailure = (err) => {
+        this.setState({ success: false, open: true })
         console.log(err)
     }
 
@@ -270,9 +273,20 @@ export default class CadastroPolitico extends React.Component {
                 </div>
                 <div className="buttons">
                     <CardActions className="card-actions">
-                        <RaisedButton label="Salvar" primary={true} fullWidth={true} onClick={this.changeInfo} />
+                        <RaisedButton label="Solicitar perfil político" primary={true} fullWidth={true} onClick={this.changeInfo} />
                     </CardActions>
                 </div>
-            </Card></div>)
+            </Card>
+            <SimpleDialog
+                open={this.state.open}
+                title={this.state.success ? 'Solicitação criada' : 'Algo deu errado'}
+                message={this.state.success ? 'Sua solicitação foi encaminhada para nossa equipe e em breve você terá um retorno.' : 'Algo deu errado, verifique as informações e tente novamente.'}
+                onRequestClose={() => {
+                    this.setState({
+                        open: false,
+                    })
+                }}
+            />
+            </div>)
     }
 }
