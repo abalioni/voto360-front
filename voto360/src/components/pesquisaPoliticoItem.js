@@ -13,8 +13,6 @@ export default class PesquisaPoliticoItem extends React.Component {
 
     componentWillMount() {
         var id = this.props.id;
-        console.log(this.props)
-        console.log(id)
         axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados?id=${id}`)
             .then((res) => {
                 console.log(res);

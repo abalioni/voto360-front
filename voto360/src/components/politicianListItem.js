@@ -24,7 +24,7 @@ export default class PoliticianListItem extends React.Component {
         return (
             <div className="politician-item-div" onClick={this.handleChange}>
                 <h3 className="politician-name">{this.props.value.nome_eleitoral}</h3>
-                <span className="politician-email">{this.props.value.emaileleitoral}</span>
+                <span className="politician-email">{this.props.value.email_eleitoral}</span>
                
             </div>
 

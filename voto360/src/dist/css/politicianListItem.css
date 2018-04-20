@@ -1,11 +1,10 @@
 .politician-item-div {
     padding: 10px;
-    background-color: lightblue;
     cursor: pointer;
 }
 
 .politician-item-div:hover {
-    background-color: aquamarine;
+    background-color: lightgray;
 }
 
 .politician-name {

@@ -72,6 +72,7 @@ export default class CadastroPolitico extends React.Component {
             console.log(user)
             this.setState({
                 user: user,
+                email: user.email,
                 maxDate
             })
         }
@@ -129,8 +130,12 @@ export default class CadastroPolitico extends React.Component {
             request.nome_eleitoral = this.state.nome
         }
 
+        if (this.state.cpf) {
+            request.cpf = this.state.cpf
+        }
+
         if (this.state.emaileleitoral) {
-            request.emaileleitoral = this.state.emaileleitoral
+            request.email_eleitoral = this.state.emaileleitoral
         }
 
         if (this.state.nivelescolaridade) {
@@ -149,9 +154,9 @@ export default class CadastroPolitico extends React.Component {
             request.datanascimento = this.state.datanascimento
         }
 
-        // if (this.state.cnpj) {
-        //     request.cnpj = this.state.cnpj
-        // }
+        if (this.state.cnpj) {
+            request.cnpj = "80228817000150"
+        }
 
         if (this.state.biografia) {
             request.biografia = this.state.biografia
@@ -160,14 +165,32 @@ export default class CadastroPolitico extends React.Component {
         request.perfil_aprovado = 'pending'
 
         const req = JSON.stringify(request)
-
-          axios.post('http://localhost:8081/politico', request).then(this.handleSuccess).catch(this.handleFailure);
-      
+    
+        //   axios.post('http://localhost:8081/politico', request).then(this.handleSuccess).catch(this.handleFailure);
+          axios.post(`http://localhost:8081/politico`, request)
+          .then((response) => {
+            this.handleSuccess
+            this.setState({success: true, open: true})
+            console.log(response);
+          })
+          .then( (error) => {
+            this.handleFailure
+              console.log(error);
+          })
     }
 
     handleSuccess = (response) => {
-        this.setState({success: true, open: true})
-        console.log(response)
+        // this.setState({success: true, open: true})
+        console.log("sucess ",response)
+            var request = {
+              email: this.state.email,
+              subject: 'Solicitação de Perfil Politico Criada',
+              html: `<p>Você será notificado por email quando seu perfil for analisado pela nossa equipe.</p><p>Obrigada por se cadastrar!</p><p>Equipe VOTO360</p>`
+            };
+        
+            axios.post('http://localhost:8081/sendCommonEmail', request).then((response) => console.log(response)).catch(function (error) {
+              alert(error);
+            });
     }
 
     handleFailure = (err) => {
