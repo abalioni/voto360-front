@@ -113,7 +113,7 @@ export default class PoliticsRequests extends React.Component {
     
           </div> 
           </ Tab>
-        <Tab label="Rejeitados" >
+        <Tab label="Rejeitados" onActive={this.handleActive}>
           <div >
           <RefreshIndicator
               size={50}
@@ -135,7 +135,7 @@ export default class PoliticsRequests extends React.Component {
 
           </div>
         </ Tab>
-        <Tab label="Aprovados" >
+        <Tab label="Aprovados" onActive={this.handleActive}>
           <div>
           <RefreshIndicator
               size={50}
@@ -191,9 +191,15 @@ export default class PoliticsRequests extends React.Component {
     </div>)
   }
 
+  handleActive = () => {
+    this.setState({
+      selected_politician: undefined
+    })
+  }
+
   handleApprovePolitician = () => {
     this.setState({
-      selected_politician: {perfil_aprovado: "approved"}
+      selected_politician: { undefined }
     })
     console.log(this.state.selected_politician)
     axios.put(`http://localhost:8081/politico/${this.state.selected_politician._id}/ativar`)

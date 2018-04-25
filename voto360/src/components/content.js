@@ -53,17 +53,17 @@ class Content extends Component {
     <Router>
     <div>
       <Drawer docked={false} width={200} open={this.props.open} onRequestChange={this.props.handleToggle} >
-          {user && (user.cargo === 'admin') ? undefined : (<Link to="/">
+          {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : (<Link to="/">
             <MenuItem onClick={this.props.handleClose}>
               Home
             </MenuItem></Link>)}
 
-          {user && (user.cargo === 'admin') ? undefined : (<Link to="/comparacaoPoliticos">
+          {user && (user.cargo === 'admin'|| user.cargo === 'editor') ? undefined : (<Link to="/comparacaoPoliticos">
             <MenuItem onClick={this.props.handleClose}>
               Comparação Politicos
             </MenuItem>
           </Link>) }
-          {user && (user.cargo === 'admin' ) ? undefined : (<Link to="/pesquisasDeVoto">
+          {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : (<Link to="/pesquisasDeVoto">
             <MenuItem onClick={this.props.handleClose}>
               Pesquisas de Voto
             </MenuItem>
@@ -79,7 +79,7 @@ class Content extends Component {
               Aprovar Perfil Politico
           </MenuItem>
         </Link>}
-        {user && (user.cargo === 'admin') ? undefined : (<Link to="/meusDados">
+        {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : (<Link to="/meusDados">
           <MenuItem onClick={this.props.handleClose}>
             Meu Perfil
           </MenuItem>
