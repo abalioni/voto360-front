@@ -11,6 +11,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import Divider from 'material-ui/Divider';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import LinearProgress from 'material-ui/LinearProgress';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import '../dist/css/politicsrequest.css'
 
@@ -93,23 +94,19 @@ export default class PoliticsRequests extends React.Component {
       <Tabs className="pending-list">
           <Tab label="Pendentes" > 
           <div >
-            <RefreshIndicator
-              size={50}
-              left={70}
-              top={0}
-              status={this.state.isLoading ? 'loading' : 'hide'}
-              style={style.refresh}
-            />
-              <List>
+            {this.state.isLoading ? (<div className="refresh-indicator">
+              <CircularProgress />
+            </div>) : 
+              (<List>
                 {this.state.politicians_response.map((item, i) => {
-                  return (item && (item.perfil_aprovado === "pending") ? (<PoliticianListItem
+                  return (item && (item.perfil_aprovado === "pending") ? (<span><PoliticianListItem
                     handleOptionChange={this.handleOptionChange}
                     key={i}
                     value={item}
-                  />) : 
-                  undefined)
-                })}
-              </List>
+                  /> <Divider /></span>) : 
+                undefined)
+              })}
+              </List>)}
     
           </div> 
           </ Tab>
@@ -150,7 +147,7 @@ export default class PoliticsRequests extends React.Component {
                   handleOptionChange={this.handleOptionChange}
                   key={i}
                   value={item}
-                /> </span>) : undefined
+                /><Divider /></span>) : undefined
                 ) 
               })}
             </List>

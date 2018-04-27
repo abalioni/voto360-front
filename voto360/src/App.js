@@ -6,6 +6,10 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+import MenuLinks from './components/menuLinks'
+
+import './dist/css/app.css'
 
 export default class App extends React.Component {
 
@@ -26,8 +30,9 @@ export default class App extends React.Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
         <div>
-          <AppBar onLeftIconButtonClick={this.handleToggle} title="VOTO360"/>
-          <Content open={this.state.open} handleToggle={this.handleToggle} handleClose={this.handleClose}/>
+          <AppBar onLeftIconButtonClick={this.handleToggle} title="VOTO360" />
+          <MenuLinks />
+          <Content open={this.state.open} handleToggle={this.handleToggle} handleClose={this.handleClose} className="container-body"/>
         </div>
       </MuiThemeProvider>
     );
