@@ -19,6 +19,10 @@ import Subheader from 'material-ui/Subheader';
 
 import { cookie } from 'cookie_js'
 
+const style = {
+  
+}
+
 // export class Content = ({match, isLoggedIn}) => {
 class Content extends Component {
   constructor(props) {
@@ -67,29 +71,26 @@ class Content extends Component {
       user = JSON.parse(cookieUser);
     }
     return (
-      <Router>
+      // <Router>
       <div>
-      <Drawer width={200} open={this.state.open} onRequestChange={this.props.handleToggle} >
-      
-      <Divider />
-      <Subheader>Encontre um Político</Subheader>
+      <Drawer width={200} open={this.props.open} onRequestChange={this.props.handleToggle} >
+  
+      <Subheader>VOTO360</Subheader>
       {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : (<Link style={{textDecoration: 'none'}} to="/">
       
       <MenuItem onClick={this.props.handleClose}>
-      {/* <SvgIcon {...this.props}>
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-    </SvgIcon> */}
-    Home
-    </MenuItem></Link>)}
+          Home
+      </MenuItem></Link>)}
     
-    
+    <Divider />
+     <Subheader>Sobre Políticos</Subheader>
     {user && (user.cargo === 'admin'|| user.cargo === 'editor') ? undefined : (<Link style={{textDecoration: 'none'}} to="/comparacaoPoliticos">
     <MenuItem onClick={this.props.handleClose}>
     Comparação Politicos
     </MenuItem>
     </Link>) }
     
-    <Subheader></Subheader>
+    
     {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : (<Link style={{textDecoration: 'none'}} to="/pesquisasDeVoto">
     <MenuItem onClick={this.props.handleClose}>
     Pesquisas de Voto
@@ -137,9 +138,10 @@ class Content extends Component {
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
       <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
       <Route path="/cadastroPolitico" render={(props) => (user && user.cargo !== 'admin') ? <CadastroPolitico {...props} /> : <div></div>} />
+      <Route path="/comparacaoPoliticos" component={VerifyChangePasswordToken} />
       
       </div>
-      </Router>
+      // </Router>
     )}
   }
   

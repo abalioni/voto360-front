@@ -166,22 +166,20 @@ export default class CadastroPolitico extends React.Component {
 
         const req = JSON.stringify(request)
     
-        //   axios.post('http://localhost:8081/politico', request).then(this.handleSuccess).catch(this.handleFailure);
           axios.post(`http://localhost:8081/politico`, request)
           .then((response) => {
-            this.handleSuccess
+            this.handleSuccess(response)
             this.setState({success: true, open: true})
             console.log(response);
           })
-          .then( (error) => {
+          .catch((error) => {
             this.handleFailure
               console.log(error);
           })
     }
 
     handleSuccess = (response) => {
-        // this.setState({success: true, open: true})
-        console.log("sucess ",response)
+        console.log("sucess email",response)
             var request = {
               email: this.state.email,
               subject: 'Solicitação de Perfil Politico Criada',

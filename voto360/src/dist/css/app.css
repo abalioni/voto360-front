@@ -1,3 +1,13 @@
 .container-body {
-    width: 100% - 200px !important;
+    width: 10.5%;
+}
+
+.mainContainerDivOpen {
+    margin-left: 200px;
+    transition: 0.5s;
+}
+
+.mainContainerDivClosed {
+    margin-left: 0;
+    transition: 0.5s;
 }

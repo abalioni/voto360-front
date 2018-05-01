@@ -12,6 +12,8 @@ import CadastroPolitico from './cadastro/cadastroPolitico'
 import MeusDados from './meusdados'
 import FlatButton from 'material-ui/FlatButton';
 
+import '../dist/css/menuLinks.css'
+
 import { cookie } from 'cookie_js'
 const user = cookie.get('user');
 
@@ -58,60 +60,17 @@ class MenuLinks extends Component {
             user = JSON.parse(cookieUser);
         }
         console.log(cookieUser)
-        return (<Router>
-            <Switch>
-            {user && (user.cargo === 'admin' || user.cargo === 'editor') ? (<Link style={{ textDecoration: 'none' }} to="/">
-            Home
-            </Link>) : 
-            undefined }
-            {user && (user.cargo === 'admin' || user.cargo === 'editor') ?  (<Link style={{ textDecoration: 'none' }} to="/comparacaoPoliticos">
-            
-            Comparação Politicos
-            
-            </Link>) : 
-            (<Link style={{ textDecoration: 'none' }} to="/comparacaoPoliticos">
-            
-            Comparação Politicos
-            
-            </Link>)}
-            {user && (user.cargo === 'admin' || user.cargo === 'editor') ? undefined : 
-            (<Link style={{ textDecoration: 'none' }} to="/pesquisasDeVoto">
-            
-            Pesquisas de Voto
-            
-            </Link>)}
-            
-            {user && user.cargo === 'admin' && <Link style={{ textDecoration: 'none' }} to="/admin">
-            
-            Admin
-            
-            </Link>}
-            
-            
-            {user && user.cargo === 'editor' && <Link style={{ textDecoration: 'none' }} to="/PoliticsRequests">
-            Aprovar Perfil Politico
-            </Link>}
-            
-            {this.renderLink(user)}
+        return (
+            <div className="link-container">
             
             {this.state.isLoggedIn ? null : (<Link style={{ textDecoration: 'none' }} to="/login">
             Login/Cadastro
             </Link>)}
-            {this.state.isLoggedIn ? (<FlatButton fullWidth={true} onClick={this.handleLogout}>
+            {this.state.isLoggedIn ? (<FlatButton onClick={this.handleLogout}>
                 Logout
                 </ FlatButton >) : null}
-                
-                <Route exact path="/" component={Home} />
-                <Route path="/pesquisasDeVoto" component={Pesquisa} />
-                <Route path="/admin" render={(props) => (user && user.cargo === 'admin') ? <Admin {...props} /> : <div></div>} />
-                <Route path="/PoliticsRequests" render={(props) => (user && user.cargo === 'editor') ? <PoliticsRequests {...props} /> : <div></div>} />
-                <Route path="/forgotpassword/" component={NotLoggedReset} />
-                <Route path="/login" render={(props) => <Login handleLogin={() => { this.handleLogged(true) }} {...props} />} />
-                <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
-                <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
-                <Route path="/cadastroPolitico" render={(props) => (user && user.cargo !== 'admin') ? <CadastroPolitico {...props} /> : <div></div>} />
-                </Switch>
-                </Router>
+
+            </div>
             )}
         }
         
