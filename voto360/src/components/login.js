@@ -65,6 +65,7 @@ class CardLogin extends React.Component {
     cookie.set({
       user: JSON.stringify(response.data)
     });
+    
     if (!this.props.location.state) {
       this.props.history.push('/')
     }

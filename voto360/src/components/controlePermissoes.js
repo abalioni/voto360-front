@@ -117,15 +117,12 @@ export default class ControlePermissoes extends React.Component {
   handleUsers = (response) => {
  
     this.setState({ emails: response.data.map(d => d.email), users: response.data })
-    console.log(this.state.emailSelecionado, "email selecionad")
     
   }
 
   displayUser = () => {
     this.state.users.forEach((obj, index) => {
-      console.log(obj)
       if(obj.email === this.state.emailSelecionado) {
-        console.log(obj.nome, "obj nome")
         this.setState({
           cargo: obj.cargo,
           nome: obj.nome

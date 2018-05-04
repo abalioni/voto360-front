@@ -31,7 +31,7 @@ const styles = {
     },
 };
 
-export default class CadastroPolitico extends React.Component {
+export default class AlteraCadastroPolitico extends React.Component {
     constructor(props) {
         super(props)
 
@@ -122,71 +122,70 @@ export default class CadastroPolitico extends React.Component {
 
         var request = {};
 
-        
-        if (this.state.nome) {
-            request.nome_eleitoral = this.state.nome
-        }
-        
-        if (this.state.cpf) {
-            request.cpf = this.state.cpf
-        }
-        
-        if (this.state.emaileleitoral) {
-            request.email_eleitoral = this.state.emaileleitoral
-        }
-        
-        if (this.state.nivelescolaridade) {
-            request.escolaridade = this.state.nivelescolaridade
-        }
-        
-        if (this.state.partido) {
-            request.partido = this.state.partido
-        }
-        
-        if (this.state.estado) {
-            request.estado = this.state.estado
-        }
-        
-        if (this.state.datanascimento) {
-            request.datanascimento = this.state.datanascimento
-        }
-        
-        if (this.state.cnpj) {
-            request.cnpj = "80228817000150"
-        }
-        
-        if (this.state.biografia) {
-            request.biografia = this.state.biografia
-        }
-        
-        request.perfil_aprovado = 'pending'
-        
         if (this.state.user._id) {
             request.id = this.state.user._id
         }
-        
+
+        if (this.state.nome) {
+            request.nome_eleitoral = this.state.nome
+        }
+
+        if (this.state.cpf) {
+            request.cpf = this.state.cpf
+        }
+
+        if (this.state.emaileleitoral) {
+            request.email_eleitoral = this.state.emaileleitoral
+        }
+
+        if (this.state.nivelescolaridade) {
+            request.escolaridade = this.state.nivelescolaridade
+        }
+
+        if (this.state.partido) {
+            request.partido = this.state.partido
+        }
+
+        if (this.state.estado) {
+            request.estado = this.state.estado
+        }
+
+        if (this.state.datanascimento) {
+            request.datanascimento = this.state.datanascimento
+        }
+
+        if (this.state.cnpj) {
+            request.cnpj = "80228817000150"
+        }
+
+        if (this.state.biografia) {
+            request.biografia = this.state.biografia
+        }
+
+        request.perfil_aprovado = 'pending'
+
         axios.post(`http://localhost:8081/politico`, request)
-          .then((response) => {
-            this.handleSuccess(response)
-            this.setState({success: true, open: true})
-            console.log(response);
-          })
-          .catch((error) => {
-            this.handleFailure()
-          })
+            .then((response) => {
+                this.handleSuccess(response)
+                this.setState({ success: true, open: true })
+                console.log(response);
+            })
+            .catch((error) => {
+                this.handleFailure()
+            })
     }
 
     handleSuccess = (response) => {
-        console.log("sucess email",response)
-            var request = {
-              email: this.state.email,
-              subject: 'Solicitação de Perfil Politico Criada',
-              html: `<p>Você será notificado por email quando seu perfil for analisado pela nossa equipe.</p><p>Obrigada por se cadastrar!</p><p>Equipe VOTO360</p>`
-            };
-        
-            axios.post('http://localhost:8081/sendCommonEmail', request).then((response) => console.log(response)).catch(function (error) {
-              alert(error);
-            });
+        console.log("sucess email", response)
+        var request = {
+            email: this.state.email,
+            subject: 'Solicitação de Perfil Politico Criada',
+            html: `<p>Você será notificado por email quando seu perfil for analisado pela nossa equipe.</p><p>Obrigada por se cadastrar!</p><p>Equipe VOTO360</p>`
+        };
+
+        axios.post('http://localhost:8081/sendCommonEmail', request).then((response) => console.log(response)).catch(function (error) {
+            alert(error);
+        });
     }
 
     handleFailure = (err) => {
@@ -195,88 +194,23 @@ export default class CadastroPolitico extends React.Component {
     }
 
     handleChange = (event, index, value) => {
-        this.setState({partido: value})
+        this.setState({ partido: value })
     }
 
     handleEstadoChange = (event, index, value) => {
-        this.setState({estado: value})
+        this.setState({ estado: value })
     }
 
     handleEscolaridadeChange = (event, index, value) => {
-        this.setState({nivelescolaridade: value})
+        this.setState({ nivelescolaridade: value })
     }
 
     render() {
         return (<div className="card-div">
             <Card className="user-card-container">
-                <CardTitle title="Solicitar cadastro político" className="card-title" />
+                <CardTitle title="Alterar Cadastro Político" className="card-title" />
                 <div className="user-card-info">
-                    <TextField
-                        value={this.state.nome}
-                        onBlur={this.validarErroNome}
-                        floatingLabelStyle={styles.floatingLabelStyle}
-                        underlineStyle={styles.underlineStyle}
-                        errorText={this.state.errorNome && "Campo obrigatório"}
-                        floatingLabelText="Nome Eleitoral*"
-                        onChange={(event, text) => {
-                            this.setState({ nome: text, errorNome: false })
-                        }}
-                    />
-                    <TextField
-                        value={this.state.emaileleitoral}
-                        onBlur={this.validarErroEmail}
-                        hintText="Email Eleitoral*"
-                        floatingLabelText="Email Eleitoral*"
-                        underlineStyle={styles.underlineStyle}
-                        errorText={this.state.errorEmail && "Campo obrigatório"}
-                        floatingLabelStyle={styles.floatingLabelStyle}
-                        floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-                        onChange={(event, text) => {
-                            this.setState({ emaileleitoral: text, errorEmail: false })
-                        }}
-                    />
-                    <InputCNPJ
-                        value={this.state.cnpj}
-                        onBlur={this.validarCNPJ}
-                        hintText="CNPJ*"
-                        floatingLabelText="CNPJ*"
-                        underlineStyle={styles.underlineStyle}
-                        errorText={this.state.errorCNPJ && "Verifique o valor digitado"}
-                        floatingLabelStyle={styles.floatingLabelStyle}
-                        floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-                        onChange={(event, text) => {
-                            this.setState({ cnpj: text, errorCNPJ: false })
-                        }} />
-                    <p>Selectione o Partido:</p>
-                    <SiglaPartido 
-                        className="partido-dropdown" 
-                        handleChange={(event, text) => {
-                            this.setState({partido: text})
-                        }}/>
-                    <p>Selectione o Estado:</p>
-                    <Estados 
-                        handleEstadoChange={(event, text) => {
-                            this.setState({estado: text})
-                        }}/>
-                    <p>Selecione a data de nascimento:</p>
-                    <DatePicker
-                        hintText="Data de nascimento"
-                        container="inline"
-                        underlineStyle={styles.underlineStyle}
-                        textFieldStyle={styles.floatingLabelStyle}
-                        dialogContainerStyle={styles.floatingLabelFocusStyle}
-                        maxDate={this.state.maxDate}
-                        onChange={(event, date) => {
-                            this.setState({ datanascimento: date })
-                        }}
-                        locale="en-US"
-                    />
-                    <p>Selectione o seu nível de escolaridade:</p>
-                    <NiveisDeEscolaridade 
-                        handleEscolaridadeChange={(event, text) => {
-                            console.log(text)
-                            this.setState({nivelescolaridade: text})
-                        }}/>
+                    
                     <TextField
                         hintText="Biografia"
                         floatingLabelText="Biografia"
@@ -292,7 +226,7 @@ export default class CadastroPolitico extends React.Component {
                 </div>
                 <div className="buttons">
                     <CardActions className="card-actions">
-                        <RaisedButton label="Solicitar perfil político" primary={true} fullWidth={true} onClick={this.changeInfo} />
+                        <RaisedButton label="Alterar Informações" primary={true} fullWidth={true} onClick={this.changeInfo} />
                     </CardActions>
                 </div>
             </Card>
@@ -306,6 +240,6 @@ export default class CadastroPolitico extends React.Component {
                     })
                 }}
             />
-            </div>)
+        </div>)
     }
 }

@@ -1,16 +1,8 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import { BrowserRouter as Link } from 'react-router-dom'
 
-import { Admin } from './admin'
-import Login from './login'
-import Home from './home'
-import Pesquisa from './pesquisaVotos'
-import NotLoggedReset from './NotLoggedReset'
-import VerifyChangePasswordToken from './VerifyChangePasswordToken'
-import PoliticsRequests from './politicsRequests'
-import CadastroPolitico from './cadastro/cadastroPolitico'
-import MeusDados from './meusdados'
 import FlatButton from 'material-ui/FlatButton';
+
 
 import '../dist/css/menuLinks.css'
 
@@ -37,7 +29,6 @@ class MenuLinks extends Component {
     
     handleLogout() {
         if (user) {
-            console.log("logout");
             cookie.remove('user');
         }
         this.handleLogged(false)

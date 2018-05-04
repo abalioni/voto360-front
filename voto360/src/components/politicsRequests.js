@@ -1,31 +1,18 @@
-import React, { Component } from 'react'
+import React from 'react'
 import axios from 'axios'
-import PropTypes from 'prop-types';
-import { gray900 } from 'material-ui/styles/colors';
-import {Card, CardTitle, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import { List, ListItem } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
+import {Card, CardTitle, CardActions, CardText} from 'material-ui/Card';
+import { List } from 'material-ui/List';
 import PoliticianListItem from './politicianListItem'
 import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import Divider from 'material-ui/Divider';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import LinearProgress from 'material-ui/LinearProgress';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import '../dist/css/politicsrequest.css'
 
 const style = {
   margin: 12,
-};
-
-const styles = {
-  floatingLabelStyle: {
-    color: gray900,
-  },
-  underlineStyle: {
-    borderColor: gray900,
-  }
 };
 
 export default class PoliticsRequests extends React.Component {

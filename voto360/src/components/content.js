@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import {Admin} from './admin'
 import Login from './login'
@@ -9,19 +9,18 @@ import NotLoggedReset from './NotLoggedReset'
 import VerifyChangePasswordToken from './VerifyChangePasswordToken'
 import PoliticsRequests from './politicsRequests'
 import CadastroPolitico from './cadastro/cadastroPolitico'
+import AlteraCadastroPolitico from './cadastro/alteraCadastroPolitico'
 import MeusDados from './meusdados'
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import SvgIcon from 'material-ui/SvgIcon';
 import Subheader from 'material-ui/Subheader';
+import ComparacaoPoliticos from './comparacaoPoliticos';
+import CriarPesquisa from './criarPesquisa'
 
 import { cookie } from 'cookie_js'
 
-const style = {
-  
-}
 
 // export class Content = ({match, isLoggedIn}) => {
 class Content extends Component {
@@ -54,13 +53,19 @@ class Content extends Component {
   
   renderLink(user = {}) {
     
-    if (this.state.isLoggedIn && user.cargo !== 'admin' && user.cargo !== 'editor') {
+    if ((this.state.isLoggedIn && user.cargo === 'politico')) {
+      return (<Link style={{ textDecoration: 'none' }} to="/alteraCadastroPolitico">
+        <MenuItem onClick={this.props.handleClose}>
+          Alterar Cadastro Politico
+      </MenuItem>
+      </Link>)
+    } else if (this.state.isLoggedIn && user.cargo !== 'admin' && user.cargo !== 'editor') {
       return (<Link style={{ textDecoration: 'none' }} to="/meusDados">
       <MenuItem onClick={this.props.handleClose}>
       Alterar Cadastro
       </MenuItem>
       </Link>)
-    }
+    } 
     return null
   }
   
@@ -86,7 +91,7 @@ class Content extends Component {
      <Subheader>Sobre Políticos</Subheader>
     {user && (user.cargo === 'admin'|| user.cargo === 'editor') ? undefined : (<Link style={{textDecoration: 'none'}} to="/comparacaoPoliticos">
     <MenuItem onClick={this.props.handleClose}>
-    Comparação Politicos
+      Comparação Politicos
     </MenuItem>
     </Link>) }
     
@@ -109,7 +114,7 @@ class Content extends Component {
     
     {user && user.cargo === 'editor' && <Link style={{textDecoration: 'none'}} to="/PoliticsRequests">
     <MenuItem onClick={this.props.handleClose}>
-    Aprovar Perfil Politico
+      Aprovar Perfil Politico
     </MenuItem>
     </Link>}
     
@@ -138,8 +143,10 @@ class Content extends Component {
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
       <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
       <Route path="/cadastroPolitico" render={(props) => (user && user.cargo !== 'admin') ? <CadastroPolitico {...props} /> : <div></div>} />
-      <Route path="/comparacaoPoliticos" component={VerifyChangePasswordToken} />
-      
+      <Route path="/alteraCadastroPolitico" render={(props) => (user && (user.cargo === 'politico')) ? <AlteraCadastroPolitico {...props} /> : <div></div>} />
+      <Route path="/comparacaoPoliticos" component={ComparacaoPoliticos} />
+      <Route path="/criarPesquisa" component={CriarPesquisa} />
+
       </div>
       // </Router>
     )}
