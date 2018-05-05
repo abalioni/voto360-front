@@ -143,7 +143,7 @@ class Content extends Component {
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
       <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
       <Route path="/cadastroPolitico" render={(props) => (user && user.cargo !== 'admin') ? <CadastroPolitico {...props} /> : <div></div>} />
-      <Route path="/alteraCadastroPolitico" render={(props) => (user && (user.cargo === 'politico')) ? <AlteraCadastroPolitico {...props} /> : <div></div>} />
+      <Route path="/alteraCadastroPolitico" render={(props) => user ? <AlteraCadastroPolitico {...props} /> : <div></div>} />
       <Route path="/comparacaoPoliticos" component={ComparacaoPoliticos} />
       <Route path="/criarPesquisa" component={CriarPesquisa} />
 

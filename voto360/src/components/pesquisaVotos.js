@@ -34,6 +34,10 @@ export default class Pesquisa extends React.Component {
     }
   }
 
+  componentDidMount() {
+
+  }
+
   handleOptionChange = (changeEvent) => {
     this.setState({
       selectedOpt: changeEvent.target.value
@@ -54,9 +58,7 @@ export default class Pesquisa extends React.Component {
             <CardTitle title="Vereador" subtitle="Pesquisa de votos" className="card-title" />
             <CardText className="card-text">
               <div className="politic-container">
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
+                
               </div>
               <form>
                 {values.map((item, i) => {

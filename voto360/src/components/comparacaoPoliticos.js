@@ -6,7 +6,8 @@ import { gray900 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
-import Proposicoes from './dropdown/proposicoes'
+import Proposicoes from './proposicoes'
+import PoliticianInfoDropdown from './dropdown/politicianInfoDropdown'
 
 import '../dist/css/comparacaopoliticos.css'
 
@@ -52,7 +53,7 @@ export default class ComparacaoPoliticos extends React.Component {
                 EmailParlamentar: "",
                 SiglaPartidoParlamentar: "",
                 UfParlamentar: ""
-            }    
+            }
         }
     }
 
@@ -66,8 +67,10 @@ export default class ComparacaoPoliticos extends React.Component {
             }
         })
             .then((res) => {
-                this.setState({ response: res.data.ListaParlamentarEmExercicio,
-                                politicians: res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar })
+                this.setState({
+                    response: res.data.ListaParlamentarEmExercicio,
+                    politicians: res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar
+                })
                 var names = []
                 res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar.forEach((politicianInfo, index) => {
 
@@ -109,12 +112,12 @@ export default class ComparacaoPoliticos extends React.Component {
                             />
                         </div>
                         <Divider />
-                        <br/>
+                        <br />
                         {this.state.selectedPoliticianFirst && this.state.selectedPoliticianFirst.NomeParlamentar ? (<div className="politician-search-results">
-                            <Avatar 
+                            <Avatar
                                 src={this.state.selectedPoliticianFirst.UrlFotoParlamentar}
                                 size={100}
-                                 />
+                            />
                             {/* <img
                                 src={this.state.selectedPoliticianFirst.UrlFotoParlamentar}s
                             /> */}
@@ -130,12 +133,14 @@ export default class ComparacaoPoliticos extends React.Component {
                             <Divider />
                             <p>{this.state.selectedPoliticianFirst ? (<span>Página: <a href={this.state.selectedPoliticianFirst.UrlPaginaParlamentar}>Ir para a página</a> </span>) : undefined}</p>
                             <Divider />
-                            {this.state.selectedPoliticianFirst.CodigoParlamentar ? <Proposicoes id={this.state.selectedPoliticianFirst.CodigoParlamentar}/> : null}
+                            <PoliticianInfoDropdown title="Proposições">
+                                <Proposicoes id={this.state.selectedPoliticianFirst.CodigoParlamentar} />
+                            </PoliticianInfoDropdown>
 
-                        </div>) 
-                            : undefined 
+                        </div>)
+                            : undefined
                         }
-                        
+
                     </section>
                     <section className="politician-search-container">
                         <div className="politician-search">
@@ -163,21 +168,34 @@ export default class ComparacaoPoliticos extends React.Component {
                         <Divider />
                         <br />
                         {this.state.selectedPoliticianSecond && this.state.selectedPoliticianSecond.NomeParlamentar ? (<div className="politician-search-results">
-                            <p> {this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.NomeCompletoParlamentar : undefined}</p>
+                            <Avatar
+                                src={this.state.selectedPoliticianSecond.UrlFotoParlamentar}
+                                size={100}
+                            />
+                            {/* <img
+                                src={this.state.selectedPoliticianSecond.UrlFotoParlamentar}s
+                            /> */}
+                            <p> {this.state.selectedPoliticianSecond ? (<span>Nome: {this.state.selectedPoliticianSecond.NomeCompletoParlamentar}</span>) : undefined}</p>
                             <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.SexoParlamentar : undefined}</p>
+                            <p>{this.state.selectedPoliticianSecond ? (<span>Sexo: {this.state.selectedPoliticianSecond.SexoParlamentar}</span>) : undefined}</p>
                             <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.FormaTratamento : undefined}</p>
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.EmailParlamentar : undefined}</p>
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.SiglaPartidoParlamentar : undefined}</p>
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.NomeCompletoParlamentar : undefined}</p>
-                            <p>{this.state.selectedPoliticianSecond ? this.state.selectedPoliticianSecond.NomeCompletoParlamentar : undefined}</p>
+                            <p>{this.state.selectedPoliticianSecond ? (<span>Cargo: {this.state.selectedPoliticianSecond.FormaTratamento}</span>) : undefined}</p>
+                            <Divider />
+                            <p>{this.state.selectedPoliticianSecond ? (<span>Sigla do Partido: {this.state.selectedPoliticianSecond.SiglaPartidoParlamentar}</span>) : undefined}</p>
+                            <Divider />
+                            <p>{this.state.selectedPoliticianSecond ? (<span>Estado: {this.state.selectedPoliticianSecond.UfParlamentar}</span>) : undefined}</p>
+                            <Divider />
+                            <p>{this.state.selectedPoliticianSecond ? (<span>Página: <a href={this.state.selectedPoliticianSecond.UrlPaginaParlamentar}>Ir para a página</a> </span>) : undefined}</p>
+                            <Divider />
+                            <PoliticianInfoDropdown title="Proposições">
+                                <Proposicoes id={this.state.selectedPoliticianSecond.CodigoParlamentar} />
+                            </PoliticianInfoDropdown>
 
                         </div>)
                             : undefined
                         }
 
-                        
+
                     </section>
                 </div>
             </main>
@@ -189,9 +207,9 @@ export default class ComparacaoPoliticos extends React.Component {
         this.state.politicians.forEach((politician, index) => {
             if (politician.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedPoliticianFirst.NomeParlamentar) {
                 this.setState(prevState => ({
-                    selectedPoliticianFirst:                   
+                    selectedPoliticianFirst:
                         politician.IdentificacaoParlamentar
-                    
+
                 }))
                 return
             }

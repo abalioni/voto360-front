@@ -185,8 +185,7 @@ export default class PoliticsRequests extends React.Component {
     this.setState({
       selected_politician: { undefined }
     })
-    console.log(this.state.selected_politician)
-    axios.put(`http://localhost:8081/politico/${this.state.selected_politician._id}/ativar`)
+    axios.put(`http://localhost:8081/api/politico/${this.state.selected_politician._id}/ativar`)
     .then(function (response) {
       console.log(response);
     })
@@ -201,8 +200,7 @@ export default class PoliticsRequests extends React.Component {
     this.setState({
       selected_politician: {perfil_aprovado: "rejected"}
     })
-    console.log(this.state.selected_politician)
-    axios.put(`http://localhost:8081/politico/${this.state.selected_politician._id}/rejeitar`)
+    axios.put(`http://localhost:8081/api/politico/${this.state.selected_politician._id}/rejeitar`)
     .then(function (response) {
       console.log(response);
     })
