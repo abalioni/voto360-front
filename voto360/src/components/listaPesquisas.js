@@ -7,48 +7,56 @@ import {
   TableBody,
   TableRowColumn,
   FontIcon,
+  RaisedButton,
 } from 'material-ui'
 import axios from 'axios'
 import { red500, blue500 } from 'material-ui/styles/colors'
 import SimpleDialog from './dialogs/SimpleDialog'
 
-const COLUMNS = ['UF', 'Cargo', 'Políticos', 'Opções']
+import '../dist/css/listaPesquisa.css'
+
+
+const COLUMNS = ['Título', 'Descrição', 'Políticos', 'Opções']
 
 export default class ListaPesquisas extends React.PureComponent {
   constructor(props) {
     super(props)
 
+    this.searchPolls = this.searchPolls.bind(this)
     this.renderHeaderColumns = this.renderHeaderColumns.bind(this)
     this.renderContentColumns = this.renderContentColumns.bind(this)
 
     this.state = {
       dialogMessage: '',
-      pesquisas: [{
-        id: '123',
-        estado: 'AM',
-        cargo: 'Governador',
-        politicos: ['Amazonino Mendes', 'Artur Virgílio', 'Alfredo Nascimento']
-      }]
+      pesquisas: []
     }
+  }
+  componentWillMount() {
+    this.searchPolls()
   }
   searchPolls() {
     axios.get('http://localhost:8081/pesquisa').then((pesquisas) => {
-      this.setState({ pesquisas })
+      this.setState({ pesquisas: pesquisas.data })
     }).catch(() => {
-      this.setState({ pesquisas: [] })
+      this.setState({
+        pesquisas: [],
+        dialogMessage: 'Problemas ao buscar as pesquisas de voto'
+      })
     })
   }
-  handleEdit(id) {
+  handleEdit(id = 'new') {
     return () => {
-      this.props.history.push(`/editPesquisa/${id}`)
+      this.props.history.push(`/formPesquisa/${id}`)
     }
   }
   handleDelete(id) {
     return () => {
-      axios.delete(`http://localhost:8081/pesquisa?id=${id}`).then(() => {
+      axios.delete(`http://localhost:8081/pesquisa/${id}`).then(() => {
         this.setState({
           dialogMessage: 'Pesquisa excluída com sucesso'
         })
+        // updating current polls
+        this.searchPolls()
       }).catch(() => {
         this.setState({
           dialogMessage: 'Problemas ao excluir a pesquisa'
@@ -58,28 +66,29 @@ export default class ListaPesquisas extends React.PureComponent {
   }
   renderHeaderColumns(label) {
     return (
-      <TableHeaderColumn>
+      <TableHeaderColumn key={label}>
         {label}
       </TableHeaderColumn>
     )
   }
   renderContentColumns(itemPesquisa) {
+    const id = itemPesquisa._id // eslint-disable-line no-underscore-dangle
     return (
-      <TableRow>
+      <TableRow key={id}>
         <TableRowColumn>
-          {itemPesquisa.estado}
+          {itemPesquisa.titulo}
         </TableRowColumn>
         <TableRowColumn>
-          {itemPesquisa.cargo}
+          {itemPesquisa.descricao}
         </TableRowColumn>
         <TableRowColumn>
-          {itemPesquisa.politicos.join(', ')}
+          {itemPesquisa.politicos.map((politician) => politician.politico.nome_eleitoral).join(', ')}
         </TableRowColumn>
         <TableRowColumn>
-          <button onClick={this.handleEdit(itemPesquisa.id)} type="button">
+          <button onClick={this.handleEdit(id)} type="button">
             <FontIcon className="material-icons" color={blue500}>border_color</FontIcon>
           </button>
-          <button onClick={this.handleDelete(itemPesquisa.id)} type="button">
+          <button onClick={this.handleDelete(id)} type="button">
             <FontIcon className="material-icons" color={red500}>close</FontIcon>
           </button>
         </TableRowColumn>
@@ -89,6 +98,9 @@ export default class ListaPesquisas extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
+        <div className="buttonContainer">
+          <RaisedButton label="Nova Pesquisa" onClick={this.handleEdit()} primary className="buttonContainer--button-default" />
+        </div>
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
