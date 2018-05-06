@@ -38,8 +38,8 @@ export default class FormPesquisa extends React.PureComponent {
   }
   componentWillMount() {
     const editId = this.props.match.params.id
-    if (editId !== undefined) {
-      axios.get(`http://localhost:8081/pesquisa/${editId}`)
+    if (editId !== 'new') {
+      axios.get(`http://localhost:8081/api/pesquisa/${editId}`)
         .then((pesquisa) => {
           this.setState({
             titulo: pesquisa.data.titulo,
@@ -87,10 +87,13 @@ export default class FormPesquisa extends React.PureComponent {
     this.setState({ currentPolitician })
   }
   handleAddPoll() {
-    const method = this.props.match.params.id === 'new' ? 'post' : 'put'
+    const method = this.props.match.params.id !== 'new' ? 'put' : 'post'
     axios({
       method,
-      url: 'http://localhost:8081/pesquisa',
+      url: `http://localhost:8081/api/pesquisa${this.props.match.params.id !== 'new' ? `/${this.props.match.params.id}` : ''}`,
+      headers: {
+        'content-type': 'application/json',
+      },
       data: {
         titulo: this.state.titulo,
         descricao: this.state.descricao,
@@ -99,7 +102,7 @@ export default class FormPesquisa extends React.PureComponent {
     }).then(() => {
       this.setState({
         selectedPoliticians: [],
-        dialogMessage: 'Pesquisa cadastrada com sucesso'
+        dialogMessage: 'Pesquisa salva com sucesso'
       })
     }).catch(() => {
       this.setState({
