@@ -1,9 +1,19 @@
 import React from 'react'
 
-import TextField from 'material-ui/TextField';
+import {
+  TextField, 
+  Divider,
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+  RefreshIndicator } from 'material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 import {gray900} from 'material-ui/styles/colors';
 import SimpleDialog from './dialogs/SimpleDialog'
+import MateriasCards from './materiasCards'
 
 import '../dist/css/selectedPoliticianProfile.css'
 
@@ -65,19 +75,44 @@ export default class SelectedPoliticianProfile extends React.Component {
     return (this.state.done ? 
     (<div className="container">
     <aside className="sidebar">
-        <div className="profile-pic-container"><img className="profile-pic"src={this.state.response.IdentificacaoParlamentar.UrlFotoParlamentar} width="100"/></div>
+        <div className="profile-pic-container">
+          <img className="profile-pic"src={this.state.response.IdentificacaoParlamentar.UrlFotoParlamentar} />
+        </div>
+          <Divider />
         <div className="politician-info">
-        <h3>{this.state.response.IdentificacaoParlamentar.NomeParlamentar}</h3>
-        <h4>{this.state.response.IdentificacaoParlamentar.FormaTratamento}</h4>
-        <h4>{this.state.response.FiliacaoAtual.Partido.SiglaPartido}</h4>
+            <h3 className="header-center">{this.state.response.IdentificacaoParlamentar.NomeParlamentar}</h3>
+            <Divider />
+            <h4 className="header-center">{this.state.response.IdentificacaoParlamentar.FormaTratamento}</h4>
+            <Divider />
+            <h4 className="header-center">{this.state.response.FiliacaoAtual.Partido.SiglaPartido}</h4>
+            <Divider />
         
         </div>
     </aside>
-    <section>
-        accept
-    </section>
-    </div>) : (<div>
-    </div>))
+    <section className="info-section">
+        <div className="info-container">
+            <h3 >Sobre</h3>
+            <Divider />
+            <p >Nome Completo: {this.state.response.IdentificacaoParlamentar.NomeCompletoParlamentar}</p>
+            {this.state.response.IdentificacaoParlamentar ? (<span>Sexo: {this.state.response.IdentificacaoParlamentar.SexoParlamentar}</span>) : null}
+            <p>{this.state.response.IdentificacaoParlamentar ? (<span>Cargo: {this.state.response.IdentificacaoParlamentar.FormaTratamento}</span>) : undefined}</p>
+            <div className="list">
+              {this.state.response.MateriasDeAutoriaTramitando.Materia.map((item, i) => {
+                return (<MateriasCards item={item}/>)
+              })}
+              
+            </div>  
+        </div>
+          <div className="left-container">
+
+          </div>
+        </section>
+      </div>) : <RefreshIndicator
+        size={40}
+        left={410}
+        top={420}
+        status="loading"
+      />)
   }
 
 

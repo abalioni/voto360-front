@@ -40,7 +40,7 @@ export default class PoliticianInfoDropdown extends React.Component {
   render() {
       
     return (
-        <div className={`container`} > 
+        <div className="container-drop" > 
             <button type="button" onClick={this.toggleExpandedClick} className="button">{this.props.title}</button>
             <div className={`${this.state.expandedDiv ? 'children-open' : 'children-closed' }`}>
                 {this.props.children}

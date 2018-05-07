@@ -1,7 +1,6 @@
 .profile-pic {
-    border: 1px solid red;
-    width: 100px;
-    border-radius: 50%;
+    width: 150px;
+    border-radius: 2px;
     
 }
 
@@ -9,8 +8,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 20%;
-    background-color: chocolate;
+    height: 30%;
     align-items: center;
     justify-content: center;
 }
@@ -23,12 +21,65 @@
 
 }
 .sidebar {
-    width: 20%;
+    width: 250px !important;
+    flex-grow: 1;
     height: 100%;
-    background-color: chartreuse;
+    background-color: #01579B;
 }
 
 .politician-info {
     display: flex;
     flex-direction: column;
+}
+
+.header-center { 
+    text-align: center;
+    color: white;
+    font-weight: 200;
+    margin: 7px;
+}
+
+
+
+.info-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 2;
+    width: 80%;
+    height: 100%;
+    background-color: lightgrey;
+}
+
+.info-container {
+    background-color: white;
+    width: 70%;
+    height: 90%;
+    border-radius: 2px;
+    flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.left-container {
+    padding: 10px;
+    background-color: white;
+    width: 20%;
+    height: 90%;
+    border-radius: 2px;
+    flex-grow: 1;
+}
+
+.even {
+    background-color: lightgrey;
+}
+
+.list {
+    display: flex;
+    overflow-x: auto;
+    flex-direction: row;
+    width: 100%;
+    height: 300px;
 }
