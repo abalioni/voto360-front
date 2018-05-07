@@ -8,6 +8,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import Divider from 'material-ui/Divider';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import CircularProgress from 'material-ui/CircularProgress';
+import AutoComplete from 'material-ui/AutoComplete';
 
 import '../dist/css/politicsrequest.css'
 
@@ -29,7 +30,9 @@ export default class PoliticsRequests extends React.Component {
       politicians_response: [],
       selected_politician: [],
       timer: null,
-      isLoading: true
+      isLoading: true,
+      approvedPoliticiansList: [],
+      selectedApprovedPolitician: ''
     }
     this.handleUsers = this.handleUsers.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
@@ -62,18 +65,32 @@ export default class PoliticsRequests extends React.Component {
     clearTimeout(this.timer)
   }
 
+  // componentWillUpdate() {
+  //   const approvedList = this.state.approvedPoliticiansList.slice(0);
+
+  //   this.state.politicians_response.forEach((item, i) => {
+  //     approvedList.push(item.nome_eleitoral)
+  //     console.log(approvedList)
+  //     this.setState({
+  //       approvedPoliticiansList: approvedList
+  //     })
+  //   })
+  // }
+
   handleOptionChange = (i) => {
+    console.log(i)
     axios.get(`http://localhost:8081/politico?q={"_id":"${i}"}`)
       .then((res) => {
-        this.setState({selected_politician: res.data[0]})
+        this.setState({
+          selected_politician: res.data[0]})
         return res;
       })
       .catch((error) => {
         console.log(error);
         return error;
       })
+  }
 
-  }  
 
   render() {
     return (<div className="container-list">
@@ -128,6 +145,30 @@ export default class PoliticsRequests extends React.Component {
               status={this.state.isLoading ? 'loading' : 'hide'}
               style={style.refresh}
             />
+              <AutoComplete
+                floatingLabelText="Digite o Politico"
+                filter={AutoComplete.fuzzyFilter}
+                dataSource={this.state.politicians_response.map((politician)=> politician.nome_eleitoral)}
+                maxSearchResults={5}
+                onNewRequest={(text, index) => {
+                  this.state.politicians_response.map((politician) => {
+                    if(politician.perfil_aprovado === 'approved') {
+                      if(politician.nome_eleitoral === text) {
+                        this.handleOptionChange(politician._id)
+                      }
+                    }
+                  })
+                  this.setState(prevState => ({
+                    selectedApprovedPolitician: text
+                  }))
+                }}
+                onUpdateInput={(text, dataSource, params) => {
+                  console.log(text)
+                  this.setState({
+                    selectedApprovedPolitician: text
+                  })
+                }}
+              />
             <List>
               {this.state.politicians_response.map((item, i) => {
                 return (item && (item.perfil_aprovado === 'approved') ? (<span><PoliticianListItem
@@ -166,7 +207,8 @@ export default class PoliticsRequests extends React.Component {
           </CardText>
             <CardActions>
               <FlatButton label="Aprovar" onClick={this.handleApprovePolitician} />
-              <FlatButton label="Reprovar" onClick={this.handleRejectPolitician}/>
+              {this.state.selected_politician && (this.state.selected_politician.perfil_aprovado === "pending") ? <FlatButton label="Reprovar" onClick={this.handleRejectPolitician}/> : null}
+              {this.state.selected_politician && (this.state.selected_politician.perfil_aprovado === "approved") ? <FlatButton label="Desativar" onClick={this.handleDeactivatePolitician}/> : null}
             </CardActions>
         </Card>) 
         : undefined}
@@ -201,6 +243,21 @@ export default class PoliticsRequests extends React.Component {
       selected_politician: {perfil_aprovado: "rejected"}
     })
     axios.put(`http://localhost:8081/api/politico/${this.state.selected_politician._id}/rejeitar`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .then(function (error) {
+      if (error) {
+        console.log(error);
+      }
+    })
+  }
+
+  handleDeactivatePolitician = () => {
+    this.setState({
+      selected_politician: {perfil_aprovado: "deactivated"}
+    })
+    axios.put(`http://localhost:8081/api/politico/${this.state.selected_politician._id}/desativar`)
     .then(function (response) {
       console.log(response);
     })

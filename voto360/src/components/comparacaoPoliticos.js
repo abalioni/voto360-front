@@ -160,7 +160,6 @@ export default class ComparacaoPoliticos extends React.Component {
                                             NomeParlamentar: text
                                         }
                                     }))
-                                    console.log(this.state.selectedPoliticianSecond)
                                     this.displaySecondPolitician()
                                 }}
                             />

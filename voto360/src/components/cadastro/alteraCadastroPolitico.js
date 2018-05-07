@@ -38,6 +38,7 @@ export default class AlteraCadastroPolitico extends React.Component {
         this.state = {
             user: {},
             biografia: '',
+            oldbiografia: '',
 
             success: false,
             open: false
@@ -57,10 +58,15 @@ export default class AlteraCadastroPolitico extends React.Component {
                 email: user.email,
             })
         }
+        
         var id = user._id;
         axios.get(`http://localhost:8081/api/pessoa/${id}/politico`)
             .then((res) => {
-                console.log(res)
+                console.log(res.data.biografia)
+                this.setState({
+                    biografia: res.data.biografia,
+                    oldbiografia: res.data.biografia
+                })
             })
             .catch((error) => {
                 alert(error);
@@ -72,33 +78,22 @@ export default class AlteraCadastroPolitico extends React.Component {
 
         var request = {};
 
-        if (this.state.biografia) {
+        if (this.state.biografia && this.state.biografia !== this.state.oldbiografia) {
             request.biografia = this.state.biografia
         }
+        var id = this.state.user._id;
+        axios.put(`http://localhost:8081/api/pessoa/${id}/politico`, request)
+          .then((response) => {
+            this.handleSuccess
+          })
+          .catch((error) => {
+            this.handleFailure()
+          })
 
-
-        // axios.post(`http://localhost:8081/api/pessoa/:id_pessoa/politico`, request)
-        //     .then((response) => {
-        //         this.handleSuccess(response)
-        //         this.setState({ success: true, open: true })
-        //         console.log(response);
-        //     })
-        //     .catch((error) => {
-        //         this.handleFailure()
-        //     })
     }
 
     handleSuccess = (response) => {
-        console.log("sucess email", response)
-        var request = {
-            email: this.state.email,
-            subject: 'Alteração feita com sucesso!',
-            html: `<p>Você será notificado por email quando seu perfil for analisado pela nossa equipe.</p><p>Obrigada por se cadastrar!</p><p>Equipe VOTO360</p>`
-        };
-
-        axios.post('http://localhost:8081/sendCommonEmail', request).then((response) => console.log(response)).catch(function (error) {
-            alert(error);
-        });
+        this.setState({ success: true, open: true })
     }
 
     handleFailure = (err) => {
@@ -125,6 +120,7 @@ export default class AlteraCadastroPolitico extends React.Component {
                 <div className="user-card-info">
 
                     <TextField
+                        value={this.state.biografia}
                         hintText="Biografia"
                         floatingLabelText="Biografia"
                         multiLine={true}
@@ -145,8 +141,8 @@ export default class AlteraCadastroPolitico extends React.Component {
             </Card>
             <SimpleDialog
                 open={this.state.open}
-                title={this.state.success ? 'Solicitação criada' : 'Algo deu errado'}
-                message={this.state.success ? 'Sua solicitação foi encaminhada para nossa equipe e em breve você terá um retorno.' : 'Algo deu errado, verifique as informações e tente novamente.'}
+                title={this.state.success ? 'Alteração feita' : 'Algo deu errado'}
+                message={this.state.success ? 'Sua alteração foi feita com sucesso' : 'Algo deu errado, verifique as informações e tente novamente.'}
                 onRequestClose={() => {
                     this.setState({
                         open: false,

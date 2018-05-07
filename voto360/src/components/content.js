@@ -7,6 +7,7 @@ import Home from './home'
 import Pesquisa from './pesquisaVotos'
 import NotLoggedReset from './NotLoggedReset'
 import VerifyChangePasswordToken from './VerifyChangePasswordToken'
+import SelectedPoliticianProfile from './selectedPoliticianProfile'
 import PoliticsRequests from './politicsRequests'
 import CadastroPolitico from './cadastro/cadastroPolitico'
 import AlteraCadastroPolitico from './cadastro/alteraCadastroPolitico'
@@ -141,6 +142,7 @@ class Content extends Component {
       <Route path="/forgotpassword/" component={NotLoggedReset}/>
       <Route path="/login" render={(props) => <Login handleLogin={() => {this.handleLogged(true)}} {...props} />} />
       <Route path="/verify-change-password-token/:token" component={VerifyChangePasswordToken} />
+      <Route path="/perfilPolitico/:id" component={SelectedPoliticianProfile} />
       <Route path="/meusDados" render={(props) => (user && user.cargo !== 'admin') ? <MeusDados {...props} /> : <div></div>} />
       <Route path="/cadastroPolitico" render={(props) => (user && user.cargo !== 'admin') ? <CadastroPolitico {...props} /> : <div></div>} />
       <Route path="/alteraCadastroPolitico" render={(props) => user ? <AlteraCadastroPolitico {...props} /> : <div></div>} />

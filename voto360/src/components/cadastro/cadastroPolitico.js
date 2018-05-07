@@ -148,7 +148,7 @@ export default class CadastroPolitico extends React.Component {
         }
         
         if (this.state.datanascimento) {
-            request.datanascimento = this.state.datanascimento
+            request.data_nascimento = this.state.datanascimento
         }
         
         if (this.state.cnpj) {
@@ -164,8 +164,14 @@ export default class CadastroPolitico extends React.Component {
         if (this.state.user._id) {
             request.id = this.state.user._id
         }
+
+        if (this.state.user.cpf) {
+            request.cpf = this.state.user.cpf
+        }
+
+        console.log(request)
         
-        axios.post(`http://localhost:8081/politico`, request)
+        axios.put(`http://localhost:8081/api/politico`, request)
           .then((response) => {
             this.handleSuccess(response)
             this.setState({success: true, open: true})
