@@ -10,6 +10,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 
 
 import './dist/css/app.css'
+import './dist/iconfont/material-icons.css'
 
 
 export default class App extends React.Component {

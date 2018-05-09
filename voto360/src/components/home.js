@@ -63,7 +63,7 @@ export default class Home extends React.Component {
               this.displayPolitician()
             }}
           />
-          <RaisedButton label="Pesquisar" secondary={true} />
+          <RaisedButton label="Pesquisar" secondary={true} onClick={this.displayPolitician}/>
         </div>
       </div>
       <MiddleBar />
@@ -78,7 +78,8 @@ export default class Home extends React.Component {
           selectedPolitician:
             politician.IdentificacaoParlamentar
         }))
-        console.log(this.state.selectedPolitician)
+        console.log(this.state.selectedPolitician.CodigoParlamentar)
+        this.props.history.push(`/perfilPolitico/`+ this.state.selectedPolitician.CodigoParlamentar )
         return
       }
     })
