@@ -43,7 +43,8 @@ export default class SelectedPoliticianProfile extends React.Component {
       success: false,
       open: false,
       response: {},
-      idade: undefined
+      idade: undefined,
+      relatoria: []
     }
 
     this.handleSuccess = this.handleSuccess.bind(this)
@@ -59,17 +60,33 @@ export default class SelectedPoliticianProfile extends React.Component {
       }
     })
       .then((res) => {
+        //Check if relatoria is an array
+        if (Array.isArray(res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria)) {
+          //If it is already an array we will use it directly.
+          this.setState({
+            relatoria: res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria
+          })
+        } else {
+          //If it is an object (has only one value) we must set it to an Array
+          let relatoriaArray = [res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria]
+          this.setState({
+            relatoria: relatoriaArray
+          })
+        }
+
+
         this.setState({
           response: res.data.DetalheParlamentar.Parlamentar,
           done: true
         })
-        console.log(this.state.response)
+
+        console.log(this.state.response )
         this.getAge()
         return res;
       })
       .catch((error) => {
         this.setState({
-          done: false
+          done: true
         })
         console.log(error);
         return error;
@@ -81,49 +98,57 @@ export default class SelectedPoliticianProfile extends React.Component {
       (<div className="container">
         <aside className="sidebar">
           <div className="profile-pic-container">
-            <img className="profile-pic" src={this.state.response.IdentificacaoParlamentar.UrlFotoParlamentar} />
+            {this.state.response.IdentificacaoParlamentar && this.state.response.IdentificacaoParlamentar.UrlFotoParlamentar ? (<img className="profile-pic" src={this.state.response.IdentificacaoParlamentar.UrlFotoParlamentar} />) : null}
           </div>
           <Divider />
 
           <div className="politician-info">
-            <h3 className="header-center">{this.state.response.IdentificacaoParlamentar.NomeParlamentar}</h3>
+            {this.state.response.IdentificacaoParlamentar && this.state.response.IdentificacaoParlamentar.NomeParlamentar ?
+              (<h3 className="header-center">{this.state.response.IdentificacaoParlamentar.NomeParlamentar}</h3>)
+              : null}
             <Divider />
-            <h4 className="header-center">{this.state.response.IdentificacaoParlamentar.FormaTratamento}</h4>
+            {this.state.response.IdentificacaoParlamentar && this.state.response.IdentificacaoParlamentar.FormaTratamento ? 
+            (<h4 className="header-center">{this.state.response.IdentificacaoParlamentar.FormaTratamento} - {this.state.response.FiliacaoAtual.Partido.SiglaPartido}</h4>) 
+            : null}
+
+            {this.state.response.IdentificacaoParlamentar && this.state.response.IdentificacaoParlamentar.NomeCompletoParlamentar ? 
+              (<h4 className="header-center">Nome Completo: {this.state.response.IdentificacaoParlamentar.NomeCompletoParlamentar}</h4>) 
+              : null }
             <Divider />
-            <h4 className="header-center">{this.state.response.FiliacaoAtual.Partido.SiglaPartido}</h4>
-            <Divider />
+
 
           </div>
         </aside>
         <section className="info-section">
           <div className="info-container">
-            <h3 className="title-info">Sobre</h3>
+            {/* <h3 className="title-info">Sobre</h3>
             <Divider />
             <p >Nome Completo: {this.state.response.IdentificacaoParlamentar.NomeCompletoParlamentar}</p>
             {this.state.response.IdentificacaoParlamentar ? (<span>Sexo: {this.state.response.IdentificacaoParlamentar.SexoParlamentar}</span>) : null}
             <p>{this.state.response.IdentificacaoParlamentar ? (<span>Cargo: {this.state.response.IdentificacaoParlamentar.FormaTratamento}</span>) : undefined}</p>
-            <p>{this.state.response.DadosBasicosParlamentar ? (<span>Idade: {this.state.idade}</span>) : undefined}</p>
+            <p>{this.state.response.DadosBasicosParlamentar ? (<span>Idade: {this.state.idade}</span>) : undefined}</p> */}
 
-            <Divider />
-            <h3 className="title-info">Atividades no mandato</h3>
-            <Divider />
-            <div className="list">
-              {this.state.response.MateriasDeAutoriaTramitando.Materia.map((item, i) => {
-                return (<MateriasCards item={item} />)
-              })}
+            {this.state.response.MateriasDeAutoriaTramitando.Materia && this.state.response.MateriasDeAutoriaTramitando ? (<div><Divider />
+              <h3 className="title-info">Atividades no mandato</h3>
+              <Divider />
+              <div className="list">
+                {this.state.response.MateriasDeAutoriaTramitando.Materia.map((item, i) => {
+                  return (<MateriasCards item={item} />)
+                })}
 
-            </div>
-            <Divider />
-            <br />
-            <Divider />
-            <h3 className="title-info">Relatorias no mandato</h3>
-            <Divider />
-            {this.state.response.RelatoriasAtuais.Relatoria ? (<div className="list">
-              {this.state.response.RelatoriasAtuais.Relatoria.map((item, i) => {
-                return (<RelatoriasCards item={item} />)
-              })}
+              </div>
+              <Divider />
+              <br /></div>) : null}
 
-            </div>) : null}
+            {this.state.response.RelatoriasAtuais && this.state.response.RelatoriasAtuais.Relatoria ? (<div><Divider />
+              <h3 className="title-info">Relatorias no mandato</h3>
+              <Divider />
+              <div className="list">
+                {this.state.relatoria.map((item, i) => {
+                  return (<RelatoriasCards item={item} />)
+                })}
+
+              </div></div>) : null}
           </div>
           <div className="left-container">
             <h3 className="title-info">Timeline</h3>

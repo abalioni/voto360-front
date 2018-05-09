@@ -22,7 +22,6 @@ class RelatoriasCards extends Component {
 
 
     render() {
-        console.log(this.props)
         return (
             <Card style={style} >
                 <div className="card-materia">

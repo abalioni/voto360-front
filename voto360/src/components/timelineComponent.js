@@ -11,7 +11,6 @@ export default class TimelineComponent extends Component {
 
   
     render() {
-        console.log(this.props)
         return (
             <Timeline>
             <TimelineEvent title="Nascimento"
