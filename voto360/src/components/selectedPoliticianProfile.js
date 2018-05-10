@@ -17,6 +17,7 @@ import SimpleDialog from './dialogs/SimpleDialog'
 import MateriasCards from './materiasCards'
 import RelatoriasCards from './relatoriasCard'
 import TimelineComponent from './timelineComponent'
+import _ from 'lodash'
 
 import '../dist/css/selectedPoliticianProfile.css'
 
@@ -61,14 +62,14 @@ export default class SelectedPoliticianProfile extends React.Component {
     })
       .then((res) => {
         //Check if relatoria is an array
-        if (Array.isArray(res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria)) {
+        if (Array.isArray(_.get(res.data, 'DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria'))) {
           //If it is already an array we will use it directly.
           this.setState({
             relatoria: res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria
           })
         } else {
           //If it is an object (has only one value) we must set it to an Array
-          let relatoriaArray = [res.data.DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria]
+          let relatoriaArray = [_.get(res.data, 'DetalheParlamentar.Parlamentar.RelatoriasAtuais.Relatoria', {})]
           this.setState({
             relatoria: relatoriaArray
           })
@@ -76,11 +77,9 @@ export default class SelectedPoliticianProfile extends React.Component {
 
 
         this.setState({
-          response: res.data.DetalheParlamentar.Parlamentar,
+          response: _.get(res.data, 'DetalheParlamentar.Parlamentar'),
           done: true
         })
-
-        console.log(this.state.response )
         this.getAge()
         return res;
       })
@@ -128,7 +127,7 @@ export default class SelectedPoliticianProfile extends React.Component {
             <p>{this.state.response.IdentificacaoParlamentar ? (<span>Cargo: {this.state.response.IdentificacaoParlamentar.FormaTratamento}</span>) : undefined}</p>
             <p>{this.state.response.DadosBasicosParlamentar ? (<span>Idade: {this.state.idade}</span>) : undefined}</p> */}
 
-            {this.state.response.MateriasDeAutoriaTramitando.Materia && this.state.response.MateriasDeAutoriaTramitando ? (<div><Divider />
+            {this.state.response.MateriasDeAutoriaTramitando && this.state.response.MateriasDeAutoriaTramitando.Materia ? (<div><Divider />
               <h3 className="title-info">Atividades no mandato</h3>
               <Divider />
               <div className="list">
@@ -140,7 +139,7 @@ export default class SelectedPoliticianProfile extends React.Component {
               <Divider />
               <br /></div>) : null}
 
-            {this.state.response.RelatoriasAtuais && this.state.response.RelatoriasAtuais.Relatoria ? (<div><Divider />
+            {this.state.response.RelatoriaAtuais && this.state.response.RelatoriasAtuais.Relatoria ? (<div><Divider />
               <h3 className="title-info">Relatorias no mandato</h3>
               <Divider />
               <div className="list">
@@ -150,12 +149,12 @@ export default class SelectedPoliticianProfile extends React.Component {
 
               </div></div>) : null}
           </div>
-          <div className="left-container">
+          {this.state.response ? (<div className="left-container">
             <h3 className="title-info">Timeline</h3>
             <Divider />
             <TimelineComponent data={this.state.response} />
             <Divider />
-          </div>
+          </div>) : null}
         </section>
       </div>) : <RefreshIndicator
         size={40}

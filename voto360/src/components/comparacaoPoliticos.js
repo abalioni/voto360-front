@@ -5,9 +5,10 @@ import AutoComplete from 'material-ui/AutoComplete';
 import { gray900 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
-import { List, ListItem } from 'material-ui/List';
+import { List, ListItem, RaisedButton } from 'material-ui';
 import Proposicoes from './proposicoes'
 import PoliticianInfoDropdown from './dropdown/politicianInfoDropdown'
+import SimpleDialog from './dialogs/SimpleDialog'
 
 import '../dist/css/comparacaopoliticos.css'
 
@@ -28,6 +29,7 @@ export default class ComparacaoPoliticos extends React.Component {
             response: {},
             politicians: [],
             politiciansNames: [],
+            selectedFirstNomeParlamentar: '',
             selectedPoliticianFirst: {
                 CodigoParlamentar: undefined,
                 idLegislatura: undefined,
@@ -41,6 +43,9 @@ export default class ComparacaoPoliticos extends React.Component {
                 SiglaPartidoParlamentar: "",
                 UfParlamentar: ""
             },
+            notFoundFirstPolitician: false,
+            openFirstPoliticianModal: false,
+            selectedSecondNomeParlamentar: '',
             selectedPoliticianSecond: {
                 CodigoParlamentar: undefined,
                 idLegislatura: undefined,
@@ -53,7 +58,9 @@ export default class ComparacaoPoliticos extends React.Component {
                 EmailParlamentar: "",
                 SiglaPartidoParlamentar: "",
                 UfParlamentar: ""
-            }
+            },
+            notFoundSecondPolitician: false,
+            openSecondPoliticianModal: false
         }
     }
 
@@ -93,23 +100,33 @@ export default class ComparacaoPoliticos extends React.Component {
                     <section className="politician-search-container">
                         <div className="politician-search">
                             <h4>Selecione o Político</h4>
-                            <AutoComplete
-                                filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.state.politiciansNames}
-                                maxSearchResults={5}
-                                floatingLabelText="Pesquise o político por nome"
-                                floatingLabelStyle={styles.floatingLabelStyle}
-                                underlineStyle={styles.underlineStyle}
-                                onNewRequest={(text, index) => {
-                                    this.setState(prevState => ({
-                                        selectedPoliticianFirst: {
-                                            ...prevState.selectedPoliticianFirst,
-                                            NomeParlamentar: text
+                            <div>
+                                <AutoComplete
+                                    filter={AutoComplete.fuzzyFilter}
+                                    dataSource={this.state.politiciansNames}
+                                    maxSearchResults={5}
+                                    floatingLabelText="Pesquise o político por nome"
+                                    floatingLabelStyle={styles.floatingLabelStyle}
+                                    underlineStyle={styles.underlineStyle}
+                                    onNewRequest={(text, index) => {
+                                        this.setState({
+                                            selectedFirstNomeParlamentar: text,
+                                            notFoundFirstPolitician: false,
+                                            openFirstPoliticianModal: false
+                                        })
+                                    }}
+                                    onUpdateInput={(text) => {
+                                        if (text.length >= 3) {
+                                            this.setState({
+                                                selectedFirstNomeParlamentar: text,
+                                                notFoundFirstPolitician: false,
+                                                openFirstPoliticianModal: false
+                                            })
                                         }
-                                    }))
-                                    this.displayFirstPolitician()
-                                }}
-                            />
+                                    }}
+                                />
+                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayFirstPolitician} />
+                            </div>
                         </div>
                         <Divider />
                         <br />
@@ -118,9 +135,6 @@ export default class ComparacaoPoliticos extends React.Component {
                                 src={this.state.selectedPoliticianFirst.UrlFotoParlamentar}
                                 size={100}
                             />
-                            {/* <img
-                                src={this.state.selectedPoliticianFirst.UrlFotoParlamentar}s
-                            /> */}
                             <p> {this.state.selectedPoliticianFirst ? (<span>Nome: {this.state.selectedPoliticianFirst.NomeCompletoParlamentar}</span>) : undefined}</p>
                             <Divider />
                             <p>{this.state.selectedPoliticianFirst ? (<span>Sexo: {this.state.selectedPoliticianFirst.SexoParlamentar}</span>) : undefined}</p>
@@ -145,24 +159,35 @@ export default class ComparacaoPoliticos extends React.Component {
                     <section className="politician-search-container">
                         <div className="politician-search">
                             <h4>Selecione o Político</h4>
-                            <AutoComplete
-                                filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.state.politiciansNames}
-                                maxSearchResults={5}
-                                floatingLabelText="Pesquise o político por nome"
-                                floatingLabelStyle={styles.floatingLabelStyle}
-                                underlineStyle={styles.underlineStyle}
-                                onNewRequest={(text, index) => {
-                                    console.log("text", text)
-                                    this.setState(prevState => ({
-                                        selectedPoliticianSecond: {
-                                            ...prevState.selectedPoliticianSecond,
-                                            NomeParlamentar: text
+                            <div>
+                                <AutoComplete
+                                    filter={AutoComplete.fuzzyFilter}
+                                    dataSource={this.state.politiciansNames}
+                                    maxSearchResults={5}
+                                    floatingLabelText="Pesquise o político por nome"
+                                    floatingLabelStyle={styles.floatingLabelStyle}
+                                    underlineStyle={styles.underlineStyle}
+                                    onNewRequest={(text, index) => {
+                                        this.setState(prevState => ({
+                                            selectedPoliticianSecond: {
+                                                selectedSecondNomeParlamentar: text,
+                                                notFoundSecondPolitician: false,
+                                                openSecondPoliticianModal: false
+                                            }
+                                        }))
+                                    }}
+                                    onUpdateInput={(text) => {
+                                        if (text.length >= 3) {
+                                            this.setState({
+                                                selectedSecondNomeParlamentar: text,
+                                                notFoundSecondPolitician: false,
+                                                openSecondPoliticianModal: false
+                                            })
                                         }
-                                    }))
-                                    this.displaySecondPolitician()
-                                }}
-                            />
+                                    }}
+                                />
+                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displaySecondPolitician} />
+                            </div>
                         </div>
                         <Divider />
                         <br />
@@ -171,9 +196,6 @@ export default class ComparacaoPoliticos extends React.Component {
                                 src={this.state.selectedPoliticianSecond.UrlFotoParlamentar}
                                 size={100}
                             />
-                            {/* <img
-                                src={this.state.selectedPoliticianSecond.UrlFotoParlamentar}s
-                            /> */}
                             <p> {this.state.selectedPoliticianSecond ? (<span>Nome: {this.state.selectedPoliticianSecond.NomeCompletoParlamentar}</span>) : undefined}</p>
                             <Divider />
                             <p>{this.state.selectedPoliticianSecond ? (<span>Sexo: {this.state.selectedPoliticianSecond.SexoParlamentar}</span>) : undefined}</p>
@@ -197,34 +219,73 @@ export default class ComparacaoPoliticos extends React.Component {
 
                     </section>
                 </div>
+                <SimpleDialog
+                    open={this.state.openFirstPoliticianModal}
+                    title={this.state.notFoundFirstPolitician ? 'Político não encontrado' : null}
+                    message={this.state.notFoundFirstPolitician ? 'Algo deu errado, verifique as informações e tente novamente.' : null}
+                    onRequestClose={() => {
+                        this.setState({
+                            openFirstPoliticianModal: false,
+                            notFoundFirstPolitician: false
+                        })
+                    }}
+                />
+                <SimpleDialog
+                    open={this.state.openSecondPoliticianModal}
+                    title={this.state.notFoundSecondPolitician ? 'Político não encontrado' : null}
+                    message={this.state.notFoundSecondPolitician ? 'Algo deu errado, verifique as informações e tente novamente.' : null}
+                    onRequestClose={() => {
+                        this.setState({
+                            openSecondPoliticianModal: false,
+                            notFoundSecondPolitician: false
+                        })
+                    }}
+                />
             </main>
 
         )
     }
 
+    findFirstPolitician = (element) => {
+        return element.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedFirstNomeParlamentar
+    }
+
+    findSecondPolitician = (element) => {
+        return element.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedSecondNomeParlamentar
+    }
+
     displayFirstPolitician = () => {
-        this.state.politicians.forEach((politician, index) => {
-            if (politician.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedPoliticianFirst.NomeParlamentar) {
+
+        var foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
+
+        if (foundFirstPolitician) {
                 this.setState(prevState => ({
                     selectedPoliticianFirst:
-                        politician.IdentificacaoParlamentar
-
+                        foundFirstPolitician.IdentificacaoParlamentar
                 }))
-                return
+            } else {
+                this.setState({
+                    notFoundFirstPolitician: true,
+                    openFirstPoliticianModal: true
+                })
             }
-        })
+            return
     }
 
     displaySecondPolitician = () => {
-        this.state.politicians.forEach((politician, index) => {
-            if (politician.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedPoliticianSecond.NomeParlamentar) {
-                this.setState(prevState => ({
-                    selectedPoliticianSecond:
-                        politician.IdentificacaoParlamentar
+        var foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
 
-                }))
-                return
-            }
-        })
+        if (foundSecondPolitician) {
+            this.setState(prevState => ({
+                selectedPoliticianSecond:
+                    foundSecondPolitician.IdentificacaoParlamentar
+            }))
+        } else {
+            this.setState({
+                notFoundSecondPolitician: true,
+                openSecondPoliticianModal: true
+            })
+        }
+        return
     }
 }

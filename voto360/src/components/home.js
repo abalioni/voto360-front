@@ -47,23 +47,27 @@ export default class Home extends React.Component {
       <div className="main-section">
         <AppName />
         <div className="search-bar-container">
+          <div className="search-n-button">
           <AutoComplete
-            floatingLabelText="Pesquise o Politico"
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={this.state.politiciansNames}
-            maxSearchResults={5}
-            onNewRequest={(text, index) => {
-              console.log("text", text)
-              this.setState(prevState => ({
-                selectedPolitician: {
-                  ...prevState.selectedPolitician,
-                  NomeParlamentar: text
-                }
-              }))
-              this.displayPolitician()
+              className="search-input"
+              hintText="Pesquise o Politico"
+              underlineShow={false}
+              inputStyle={{ backgroundColor:'#FAFAFA'}}
+              filter={AutoComplete.fuzzyFilter}
+              dataSource={this.state.politiciansNames}
+              maxSearchResults={10}
+              onNewRequest={(text, index) => {
+                this.setState(prevState => ({
+                  selectedPolitician: {
+                    ...prevState.selectedPolitician,
+                    NomeParlamentar: text
+                  }
+                }))
+                this.displayPolitician()
             }}
           />
-          <RaisedButton label="Pesquisar" secondary={true} onClick={this.displayPolitician}/>
+            <RaisedButton label="Pesquisar" onClick={this.displayPolitician} backgroundColor='rgb(26, 35, 126)' labelColor='white' className="button" />
+        </div>
         </div>
       </div>
       <MiddleBar />
@@ -78,7 +82,6 @@ export default class Home extends React.Component {
           selectedPolitician:
             politician.IdentificacaoParlamentar
         }))
-        console.log(this.state.selectedPolitician.CodigoParlamentar)
         this.props.history.push(`/perfilPolitico/`+ this.state.selectedPolitician.CodigoParlamentar )
         return
       }

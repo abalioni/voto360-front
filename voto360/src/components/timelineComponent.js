@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Timeline, TimelineEvent } from 'react-event-timeline'
 import FontIcon from 'material-ui/FontIcon';
+import _ from 'lodash'
+
 
 export default class TimelineComponent extends Component {
     constructor(props) {
@@ -14,25 +16,25 @@ export default class TimelineComponent extends Component {
         return (
             <Timeline>
             <TimelineEvent title="Nascimento"
-                    createdAt={(this.props.data.DadosBasicosParlamentar.DataNascimento).split('-').reverse().join('/')}
+                    createdAt={(_.get(this.props.data, 'DadosBasicosParlamentar.DataNascimento', '')).split('-').reverse().join('/')}
                     icon={<i className="material-icons">child_friendly</i>}
             >
             </TimelineEvent>
             <TimelineEvent
                     title="Filiação partidária"
-                    createdAt={(this.props.data.FiliacaoAtual.DataFiliacao).split('-').reverse().join('/')}
+                    createdAt={(_.get(this.props.data, 'FiliacaoAtual.DataFiliacao', '')).split('-').reverse().join('/')}
                     icon={<i className="material-icons">group</i>}
-            > Filiou-se ao: {this.props.data.FiliacaoAtual.Partido.NomePartido} - {this.props.data.FiliacaoAtual.Partido.SiglaPartido}
+                > Filiou-se ao: {_.get(this.props.data, 'FiliacaoAtual.Partido.NomePartido', '')} - {_.get(this.props.data, 'FiliacaoAtual.Partido.SiglaPartido', '')}
             </TimelineEvent>
             <TimelineEvent
                     title="Início do Mandato"
-                    createdAt={(this.props.data.MandatoAtual.PrimeiraLegislaturaDoMandato.DataInicio).split('-').reverse().join('/')}
+                    createdAt={(_.get(this.props.data, 'MandatoAtual.PrimeiraLegislaturaDoMandato.DataInicio', '')).split('-').reverse().join('/')}
                     icon={<i className="material-icons">event</i>}
             >
             </TimelineEvent>
                 <TimelineEvent
                     title="Fim do Mandato"
-                    createdAt={(this.props.data.MandatoAtual.PrimeiraLegislaturaDoMandato.DataFim).split('-').reverse().join('/')}
+                    createdAt={(_.get(this.props.data, 'MandatoAtual.PrimeiraLegislaturaDoMandato.DataFim', '')).split('-').reverse().join('/')}
                     icon={<i className="material-icons">highlight_off</i>}
                 >
                 </TimelineEvent>
