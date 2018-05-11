@@ -9,7 +9,7 @@ export const Admin = ({ match }) => (
   <div>
     <ul>
       <li>
-        <Link to={`${match.url}/controlePermissoes`}>
+        <Link to={`/controlePermissoes`}>
           Controle de permissoes
         </Link>
       </li>

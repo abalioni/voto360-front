@@ -28,7 +28,7 @@ export default class Estados extends React.PureComponent {
 
   render() {
     return (
-      <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu">
+      <DropDownMenu maxHeight={300} autoWidth={false} value={this.state.value} onChange={this.handleChange} className="dropdown-menu" >
         {items}
       </DropDownMenu>
     )

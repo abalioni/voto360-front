@@ -22,6 +22,7 @@ import CriarPesquisa from './criarPesquisa'
 import FormPesquisa from './formPesquisa'
 import ListaPesquisas from './listaPesquisas'
 import Pesquisa from './pesquisaVotos'
+import ControlePermissoes from './controlePermissoes'
 
 class Content extends Component {
   constructor(props) {
@@ -222,7 +223,7 @@ class Content extends Component {
         <Route
           path="/admin"
           render={(props) => ((user && user.cargo === 'admin')
-            ? <Admin {...props} />
+            ? <ControlePermissoes {...props} />
             : null)}
         />
         <Route

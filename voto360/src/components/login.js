@@ -352,7 +352,7 @@ const RaisedButtonLogin = (props) => (<RaisedButton label="Login" primary={true}
 
 const RaisedButtonCadastro = (props) => (<RaisedButton label="Cadastro" primary={true} fullWidth={true} className="marginBottom20 marginTop20" onClick={props.handleClick}/>);
 
-const TabsLogin = (props) => (<Tabs className="tabsLogin">
+const TabsLogin = (props) => (<Tabs className="tabsLogin" tabItemContainerStyle={{backgroundColor:"#0D47A1"}}>
   <Tab label="Login">
     <CardLogin {...props}/>
   </Tab>

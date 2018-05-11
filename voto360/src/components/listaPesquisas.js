@@ -14,6 +14,7 @@ import { red500, blue500 } from 'material-ui/styles/colors'
 import SimpleDialog from './dialogs/SimpleDialog'
 
 import '../dist/css/listaPesquisa.css'
+import { ConfirmationDialog } from './dialogs/ConfirmationDialog';
 
 
 const COLUMNS = ['Título', 'Descrição', 'Políticos', 'Opções']
@@ -28,6 +29,7 @@ export default class ListaPesquisas extends React.PureComponent {
 
     this.state = {
       dialogMessage: '',
+      dialogConfirmationMessage: '',
       pesquisas: []
     }
   }
@@ -36,6 +38,7 @@ export default class ListaPesquisas extends React.PureComponent {
   }
   searchPolls() {
     axios.get('http://localhost:8081/pesquisa').then((pesquisas) => {
+      console.log(pesquisas.data)
       this.setState({ pesquisas: pesquisas.data })
     }).catch(() => {
       this.setState({
@@ -49,21 +52,30 @@ export default class ListaPesquisas extends React.PureComponent {
       this.props.history.push(`/formPesquisa/${id}`)
     }
   }
-  handleDelete(id) {
+
+  handleDelete() {
+    this.setState({
+      dialogConfirmationMessage: 'Deseja realmente deletar a pesquisa?'
+    })
+
+  }
+
+  handleConfirmDialog(id) {
     return () => {
       axios.delete(`http://localhost:8081/pesquisa/${id}`).then(() => {
         this.setState({
-          dialogMessage: 'Pesquisa excluída com sucesso'
+          dialogConfirmationMessage: 'Pesquisa excluída com sucesso'
         })
         // updating current polls
         this.searchPolls()
       }).catch(() => {
         this.setState({
-          dialogMessage: 'Problemas ao excluir a pesquisa'
+          dialogConfirmationMessage: 'Problemas ao excluir a pesquisa'
         })
       })
     }
   }
+
   renderHeaderColumns(label) {
     return (
       <TableHeaderColumn key={label}>
@@ -71,6 +83,21 @@ export default class ListaPesquisas extends React.PureComponent {
       </TableHeaderColumn>
     )
   }
+
+  getPollPoliticians = (itemPesquisa) => {
+    let politico = itemPesquisa.politico
+    axios.get(`http://localhost:8081/politico/${politico}`).then((res) => {
+      console.log(res)
+      return res
+      // this.setState({ pesquisas: pesquisas.data })
+    }).catch(() => {
+      this.setState({
+        pesquisas: [],
+        dialogMessage: 'Problemas ao buscar as pesquisas de voto'
+      })
+    })
+  }
+
   renderContentColumns(itemPesquisa) {
     const id = itemPesquisa._id // eslint-disable-line no-underscore-dangle
     return (
@@ -82,7 +109,7 @@ export default class ListaPesquisas extends React.PureComponent {
           {itemPesquisa.descricao}
         </TableRowColumn>
         <TableRowColumn>
-          {itemPesquisa.politicos.map((politician) => politician.politico.nome_eleitoral).join(', ')}
+          {itemPesquisa.politicos.map((politician) => { var politicos = this.getPollPoliticians(politician); console.log(politicos) })}
         </TableRowColumn>
         <TableRowColumn>
           <button onClick={this.handleEdit(id)} type="button">
@@ -120,6 +147,16 @@ export default class ListaPesquisas extends React.PureComponent {
             })
           }}
         />
+        <ConfirmationDialog
+          open={!!this.state.dialogConfirmationMessage}
+          message={this.state.dialogConfirmationMessage}
+          handleConfirm={this.handleConfirmDialog}
+          handleClose={this.handleClose}
+          onRequestClose={() => {
+            this.setState({
+              dialogConfirmationMessage: '',
+            })
+          }} />
       </React.Fragment>
     )
   }

@@ -6,13 +6,24 @@ import {
   List,
   TextField,
   ListItem,
+  Divider
 } from 'material-ui'
 import axios from 'axios'
-import { red500 } from 'material-ui/styles/colors'
+import { red500, gray900 } from 'material-ui/styles/colors'
 import SimpleDialog from './dialogs/SimpleDialog'
+
 
 import Estados from './dropdown/estados'
 
+import '../dist/css/formPesquisa.css'
+const styles = {
+  floatingLabelStyle: {
+    color: gray900,
+  },
+  underlineStyle: {
+    borderColor: gray900,
+  }
+};
 
 export default class FormPesquisa extends React.PureComponent {
   constructor(props) {
@@ -86,6 +97,7 @@ export default class FormPesquisa extends React.PureComponent {
   handleSelectPolitician(currentPolitician) {
     this.setState({ currentPolitician })
   }
+
   handleAddPoll() {
     const method = this.props.match.params.id !== 'new' ? 'put' : 'post'
     axios({
@@ -129,13 +141,18 @@ export default class FormPesquisa extends React.PureComponent {
   }
   render() {
     return (
-      <div>
-        <div>
+      <div className="pesquisa-container">
+        <div className="add-pesquisa">
+        <h2>Adicionar Nova Pesquisa</h2>
+        <div >
           <TextField
             name="titulo"
             value={this.state.titulo}
             onChange={this.genericUpdateState}
             hintText="Título"
+            floatingLabelText="Título"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
           />
         </div>
         <div>
@@ -144,16 +161,54 @@ export default class FormPesquisa extends React.PureComponent {
             value={this.state.descricao}
             onChange={this.genericUpdateState}
             hintText="Descrição"
+            floatingLabelText="Descrição"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
+          />
+        </div>
+        
+        <div className="estados">
+          <span>Estado:</span>
+          <Estados handleEstadoChange={this.handleEstadoChange} />
+        </div>  
+        <div className="options">
+          
+          <AutoComplete
+            filter={AutoComplete.fuzzyFilter}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
+            dataSource={this.state.politicians.map((politician) => politician.nome_eleitoral)}
+            maxSearchResults={5}
+            floatingLabelText="Pesquise o político por nome"
+            // floatingLabelStyle={styles.floatingLabelStyle}
+            // underlineStyle={styles.underlineStyle}
+            onNewRequest={this.handleSelectPolitician}
+          />
+          <RaisedButton primary label="Adicionar opção" onClick={this.handleAddPolitician} className="add-button"/>
+          <SimpleDialog
+            open={!!this.state.dialogMessage}
+            message={this.state.dialogMessage}
+            onRequestClose={() => {
+              this.setState({
+                dialogMessage: '',
+              })
+              this.props.history.push('/listaPesquisas')
+            }}
           />
         </div>
         {this.state.selectedPoliticians.length ? (
           <div>
+            <br />
+            <Divider />
+            <br /> 
               Candidatos selecionados para a pesquisa:
             <List>
               {this.state.selectedPoliticians.map((politician, index) => (
                 <ListItem
                   key={politician._id} // eslint-disable-line no-underscore-dangle
                   primaryText={politician.nome_eleitoral}
+                  floatingLabelStyle={styles.floatingLabelStyle}
+                  underlineStyle={styles.underlineStyle}
                   rightIcon={(
                     <button onClick={this.handleDeleteSelected(index)} type="button">
                       <FontIcon className="material-icons" color={red500}>close</FontIcon>
@@ -162,33 +217,13 @@ export default class FormPesquisa extends React.PureComponent {
                 />
               ))}
             </List>
+            <Divider />
           </div>
         ) : null}
-        <div>
-          <Estados handleEstadoChange={this.handleEstadoChange} />
-          <AutoComplete
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={this.state.politicians.map((politician) => politician.nome_eleitoral)}
-            maxSearchResults={5}
-            floatingLabelText="Pesquise o político por nome"
-            // floatingLabelStyle={styles.floatingLabelStyle}
-            // underlineStyle={styles.underlineStyle}
-            onNewRequest={this.handleSelectPolitician}
-          />
-          <RaisedButton primary label="Adicionar opção" onClick={this.handleAddPolitician} />
-          <SimpleDialog
-            open={!!this.state.dialogMessage}
-            message={this.state.dialogMessage}
-            onRequestClose={() => {
-              this.setState({
-                dialogMessage: '',
-              })
-            }}
-          />
-        </div>
         <div className="buttonContainer">
           <RaisedButton secondary label="Cancelar" onClick={this.handleCancelPoll} className="buttonContainer--button-default" />
           <RaisedButton primary label="Salvar" onClick={this.handleAddPoll} className="buttonContainer--button-default" />
+        </div>
         </div>
       </div>
     )

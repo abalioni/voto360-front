@@ -95,7 +95,7 @@ export default class PoliticsRequests extends React.Component {
   render() {
     return (<div className="container-list">
     
-      <Tabs className="pending-list">
+      <Tabs className="pending-list" tabItemContainerStyle={{backgroundColor:"#0D47A1"}}>
           <Tab label="Pendentes" > 
           <div >
             {this.state.isLoading ? (<div className="refresh-indicator">
@@ -145,6 +145,7 @@ export default class PoliticsRequests extends React.Component {
               status={this.state.isLoading ? 'loading' : 'hide'}
               style={style.refresh}
             />
+            <div className="filter">
               <AutoComplete
                 floatingLabelText="Digite o Politico"
                 filter={AutoComplete.fuzzyFilter}
@@ -169,6 +170,7 @@ export default class PoliticsRequests extends React.Component {
                   })
                 }}
               />
+            </div>  
             <List>
               {this.state.politicians_response.map((item, i) => {
                 return (item && (item.perfil_aprovado === 'approved') ? (<span><PoliticianListItem
