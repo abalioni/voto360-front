@@ -5,7 +5,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import { gray900 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
-import Proposicoes from './dropdown/proposicoes'
+import Proposicoes from './proposicoes'
 import echarts from 'echarts';
 import { List, ListItem, RaisedButton } from 'material-ui';
 import PoliticianInfoDropdown from './dropdown/politicianInfoDropdown'
@@ -433,13 +433,11 @@ export default class ComparacaoPoliticos extends React.Component {
                                                 openFirstPoliticianModal: false
                                             })
                                         }
-                                    }))
-                                    this.displayFirstPolitician()
-
-                                }}
+                                        this.displayFirstPolitician()
+                                    }
+                                    }
                             />
-                                    }}
-                                />
+                                
                                 <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayFirstPolitician} />
                             </div>
                         </div>
