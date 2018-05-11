@@ -5,8 +5,9 @@ import AutoComplete from 'material-ui/AutoComplete';
 import { gray900 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
+import Proposicoes from './dropdown/proposicoes'
+import echarts from 'echarts';
 import { List, ListItem, RaisedButton } from 'material-ui';
-import Proposicoes from './proposicoes'
 import PoliticianInfoDropdown from './dropdown/politicianInfoDropdown'
 import SimpleDialog from './dialogs/SimpleDialog'
 
@@ -41,7 +42,10 @@ export default class ComparacaoPoliticos extends React.Component {
                 UrlPaginaParlamentar: "",
                 EmailParlamentar: "",
                 SiglaPartidoParlamentar: "",
-                UfParlamentar: ""
+                UfParlamentar: "",
+                votacoes: 0,
+                mandatos: 0,
+                autorias: 0
             },
             notFoundFirstPolitician: false,
             openFirstPoliticianModal: false,
@@ -57,7 +61,10 @@ export default class ComparacaoPoliticos extends React.Component {
                 UrlPaginaParlamentar: "",
                 EmailParlamentar: "",
                 SiglaPartidoParlamentar: "",
-                UfParlamentar: ""
+                UfParlamentar: "",
+                votacoes: 0,
+                mandatos: 0,
+                autorias: 0
             },
             notFoundSecondPolitician: false,
             openSecondPoliticianModal: false
@@ -84,6 +91,12 @@ export default class ComparacaoPoliticos extends React.Component {
                     names.push(politicianInfo.IdentificacaoParlamentar.NomeParlamentar)
                 })
                 this.setState({ politiciansNames: names })
+
+
+
+               
+
+
                 return res;
             })
             .catch((error) => {
@@ -91,6 +104,303 @@ export default class ComparacaoPoliticos extends React.Component {
                 return error;
             })
     }
+
+    componentDidUpdate(prevProps, prevState) {
+
+      if ((this.state.selectedPoliticianFirst.CodigoParlamentar === undefined || this.state.selectedPoliticianSecond.CodigoParlamentar === undefined)
+      || ((this.state.selectedPoliticianFirst.CodigoParlamentar === prevState.selectedPoliticianFirst.CodigoParlamentar && this.state.selectedPoliticianSecond.CodigoParlamentar === prevState.selectedPoliticianSecond.CodigoParlamentar))){
+         return;
+       }
+
+
+      console.log("componentDidUpdate");
+      console.log(JSON.stringify(this.state.selectedPoliticianFirst));
+      console.log(JSON.stringify(this.state.selectedPoliticianSecond));
+
+      axios({
+          method: 'get',
+          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/votacoes',
+          "headers": {
+              "accept": "application/json"
+          }
+      }).then((res) => {
+          console.log("votacoes")
+        const currentState = Object.assign({}, this.state)
+        currentState.selectedPoliticianFirst.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
+        this.setState(currentState)
+
+        var domVotacoes = document.getElementById("graphVotacoes");
+        var chartVotacoes = echarts.init(domVotacoes);
+        var optionsVotacoes = null;
+        optionsVotacoes = {
+          title: {
+            text: 'Comparativo de Número de Votações'
+          },
+            xAxis: {
+                type: 'category',
+                data: [
+                  this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar
+                ]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.votacoes,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.votacoes,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsVotacoes && typeof optionsVotacoes === "object") {
+            chartVotacoes.setOption(optionsVotacoes, true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+
+
+      axios({
+          method: 'get',
+          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/votacoes',
+          "headers": {
+              "accept": "application/json"
+          }
+      }).then((res) => {
+        console.log("votacoes")
+        const currentState = Object.assign({}, this.state)
+        currentState.selectedPoliticianSecond.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
+        this.setState(currentState)
+
+        var domVotacoes = document.getElementById("graphVotacoes");
+        var chartVotacoes = echarts.init(domVotacoes);
+        var optionsVotacoes = null;
+        optionsVotacoes = {
+          title: {
+            text: 'Comparativo de Número de Votações'
+          },
+            xAxis: {
+                type: 'category',
+                data: [
+                  this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar
+                ]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.votacoes,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.votacoes,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsVotacoes && typeof optionsVotacoes === "object") {
+            chartVotacoes.setOption(optionsVotacoes, true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+
+      axios({
+          method: 'get',
+          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/mandatos',
+          "headers": {
+              "accept": "application/json"
+          }
+      }).then((res) => {
+        console.log("mandatos")
+        const currentState = Object.assign({}, this.state)
+        currentState.selectedPoliticianFirst.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
+        this.setState(currentState)
+
+        var domMandato = document.getElementById("graphMandato");
+        var chartMandato = echarts.init(domMandato);
+        var optionsMandatos = null;
+        optionsMandatos = {
+            title: {
+              text: 'Comparativo de Número de Mandatos'
+            },
+            xAxis: {
+                type: 'category',
+                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.mandatos,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.mandatos,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsMandatos && typeof optionsMandatos === "object") {
+            chartMandato.setOption(optionsMandatos, true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+      axios({
+          method: 'get',
+          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/mandatos',
+          "headers": {
+              "accept": "application/json"
+          }
+      }).then((res) => {
+        const currentState = Object.assign({}, this.state)
+        currentState.selectedPoliticianSecond.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
+        this.setState(currentState)
+
+        var domMandato = document.getElementById("graphMandato");
+        var chartMandato = echarts.init(domMandato);
+        var optionsMandatos = null;
+        optionsMandatos = {
+            title: {
+              text: 'Comparativo de Número de Mandatos'
+            },
+            xAxis: {
+                type: 'category',
+                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.mandatos,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.mandatos,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsMandatos && typeof optionsMandatos === "object") {
+            chartMandato.setOption(optionsMandatos, true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+
+
+
+
+    //   var app = {};
+
+    //   var domAutoria = document.getElementById("graphAutoria");
+    //   var chartAutoria = echarts.init(domAutoria);
+    //   var optionsAutorias = null;
+    //   optionsAutorias = {
+    //     title: {
+    //       text: 'Comparativo de Número de Autorias de Projetos'
+    //     },
+    //       xAxis: {
+    //           type: 'category',
+    //           data: [
+    //             this.state.selectedPoliticianFirst.NomeParlamentar,
+    //             this.state.selectedPoliticianSecond.NomeParlamentar
+    //           ]
+    //       },
+    //       yAxis: {
+    //           type: 'value'
+    //       },
+    //       series: [{
+    //           data: [
+    //             {value: this.state.selectedPoliticianFirst.autorias,
+    //               itemStyle: {color: 'rgb(178, 223, 219)'}},
+    //             {value: this.state.selectedPoliticianSecond.autorias,
+    //               itemStyle: {color: 'rgb(0, 105, 92)'}}],
+    //           type: 'bar'
+    //       }]
+    //   };
+    //   if (optionsAutorias && typeof optionsAutorias === "object") {
+    //       chartAutoria.setOption(optionsAutorias, true);
+    //   }
+
+
+
+      var domVotacoes = document.getElementById("graphVotacoes");
+      var chartVotacoes = echarts.init(domVotacoes);
+      var optionsVotacoes = null;
+      optionsVotacoes = {
+        title: {
+          text: 'Comparativo de Número de Votações'//titulo
+        },
+          xAxis: {
+              type: 'category',
+              data: [
+                this.state.selectedPoliticianFirst.NomeParlamentar,
+                this.state.selectedPoliticianSecond.NomeParlamentar
+              ]
+          },
+          yAxis: {
+              type: 'value'
+          },
+          series: [{
+              data: [
+                {value: this.state.selectedPoliticianFirst.votacoes,
+                  itemStyle: {color: 'rgb(178, 223, 219)'}},
+                {value: this.state.selectedPoliticianSecond.votacoes,
+                  itemStyle: {color: 'rgb(0, 105, 92)'}}],
+              type: 'bar'
+          }]
+      };
+      if (optionsVotacoes && typeof optionsVotacoes === "object") {
+          chartVotacoes.setOption(optionsVotacoes, true);
+      }
+
+
+
+
+
+      var domMandato = document.getElementById("graphMandato");
+      var chartMandato = echarts.init(domMandato);
+      var optionsMandatos = null;
+      optionsMandatos = {
+          title: {
+            text: 'Comparativo de Número de Mandatos'
+          },
+          xAxis: {
+              type: 'category',
+              data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                this.state.selectedPoliticianSecond.NomeParlamentar]
+          },
+          yAxis: {
+              type: 'value'
+          },
+          series: [{
+              data: [
+                {value: this.state.selectedPoliticianFirst.mandatos,
+                  itemStyle: {color: 'rgb(178, 223, 219)'}},
+                {value: this.state.selectedPoliticianSecond.mandatos,
+                  itemStyle: {color: 'rgb(0, 105, 92)'}}],
+              type: 'bar'
+          }]
+      };
+      if (optionsMandatos && typeof optionsMandatos === "object") {
+          chartMandato.setOption(optionsMandatos, true);
+      }
+
+    }
+
 
 
     render() {
@@ -123,6 +433,11 @@ export default class ComparacaoPoliticos extends React.Component {
                                                 openFirstPoliticianModal: false
                                             })
                                         }
+                                    }))
+                                    this.displayFirstPolitician()
+
+                                }}
+                            />
                                     }}
                                 />
                                 <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayFirstPolitician} />
@@ -219,6 +534,8 @@ export default class ComparacaoPoliticos extends React.Component {
 
                     </section>
                 </div>
+                {/* <div id="graphAutoria" className="graph"></div> */}
+                
                 <SimpleDialog
                     open={this.state.openFirstPoliticianModal}
                     title={this.state.notFoundFirstPolitician ? 'Político não encontrado' : null}
@@ -241,6 +558,8 @@ export default class ComparacaoPoliticos extends React.Component {
                         })
                     }}
                 />
+                <div id="graphMandato" className="graph"></div>
+                <div id="graphVotacoes" className="graph"></div>
             </main>
 
         )
