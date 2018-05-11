@@ -1,15 +1,17 @@
 import React from 'react'
 
+import axios from 'axios';
 import Avatar from 'material-ui/Avatar';
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import FlatButton from 'material-ui/FlatButton';
+import PesquisaPoliticoItem from './pesquisaPoliticoItem'
+
+import { cookie } from 'cookie_js'
 import { Redirect } from 'react-router-dom'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import '../dist/css/pesquisa.css'
-import { cookie } from 'cookie_js'
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 
-import PesquisaPoliticoItem from './pesquisaPoliticoItem'
+import '../dist/css/pesquisa.css'
 
 const styles = {
   block: {
@@ -25,17 +27,37 @@ export default class Pesquisa extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      cargo: '',
-      concorrentes: {
-        concorrente_um: 'a',
-        concorrente_dois: 'b',
-        concorrente_tres: 'c'
-      }
+      pesquisas: []
     }
   }
 
   componentDidMount() {
+    axios({
+      method: 'get',
+      url: 'http://localhost:8081/api/pesquisa',
+      "headers": {
+        "accept": "application/json"
+      }
+    }).then((res) => {
+      let pesquisas = [];
 
+      if (res.data) {
+        res.data.forEach(pesquisa => {
+          pesquisas.push(
+            {
+              "titulo": pesquisa.titulo,
+              "descricao": pesquisa.descricao,
+              "opcoes": pesquisa.politicos
+            }
+          );
+        });
+      }
+
+      this.setState({ pesquisas: pesquisas });
+    }).catch((error) => {
+      console.log(error);
+      return error;
+    });
   }
 
   handleOptionChange = (changeEvent) => {
@@ -50,79 +72,38 @@ export default class Pesquisa extends React.Component {
 
   render() {
     const user = cookie.get('user');
-    const values = [178957, 178864, 178914];
-    if (user) {
+    const pesquisas = this.state.pesquisas;
+    const teste = ["0", "1", "2", "3"];
+
+    console.log('pesquisas:', pesquisas);
+    if (true) {
       return (
         <div className="card-container">
-          <Card className="card">
-            <CardTitle title="Vereador" subtitle="Pesquisa de votos" className="card-title" />
-            <CardText className="card-text">
-              <div className="politic-container">
-                
-              </div>
-              <form>
-                {values.map((item, i) => {
-                  return (<PesquisaPoliticoItem
-                    checked={this.state.selectedOption === item}
-                    onChange={this.handleOptionChange}
-                    id={item} />)
-                })}
-              </form>
-            </CardText>
-            <CardActions>
-              <FlatButton label="Votar" secondary={true} fullWidth={true} />
-            </CardActions>
-          </Card>
-
-
-          <Divider />
-
-
-          <Card className="card">
-            <CardTitle title="Prefeito" subtitle="Pesquisa de votos" className="card-title" />
-            <CardText className="card-text">
-              <div className="politic-container">
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
-                <Avatar src="http://via.placeholder.com/50x50" className="avatar" />
-              </div>
-              <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup">
-                <RadioButton
-                  value="Fulano"
-                  label="Fulano"
-                  style={styles.radioButton}
-                  className="radio-button"
-                />
-                <RadioButton
-                  value="Alexia"
-                  label="Alexia"
-                  style={styles.radioButton}
-                  className="radio-button"
-                />
-                <RadioButton
-                  value="João"
-                  label="João"
-                  style={styles.radioButton}
-                  className="radio-button"
-                />
-              </RadioButtonGroup>
-
-            </CardText>
-            <CardActions>
-              <FlatButton label="Votar" secondary={true} fullWidth={true} />
-            </CardActions>
-          </Card>
-
-        </div>)
+          {
+            pesquisas.map((pesquisa) => {
+              return (
+              <Card className="card">
+                <CardTitle title={pesquisa.titulo} subtitle={pesquisa.descricao} className="card-title" />
+                <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup">
+                {
+                  pesquisa.opcoes.map((opcao) => {
+                    return (<RadioButton
+                      value={opcao.politico._id}
+                      label={opcao.politico.nome_eleitoral}
+                      style={styles.radioButton}
+                      className="radio-button"
+                    />)
+                  })
+                }
+                </RadioButtonGroup>
+                <CardActions>
+                  <FlatButton label="Votar" secondary={true} fullWidth={true} />
+                </CardActions>
+              </Card>);
+            })
+          }
+        </div>
+      );
     }
-    return <Redirect to={{
-      pathname: '/login',
-      state: {
-        referrer: window.location.href.replace(window.location.origin, '')
-      }
-    }}
-    />;
-
-  }
-}
-
+  };
+};

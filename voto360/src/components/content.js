@@ -21,6 +21,7 @@ import ComparacaoPoliticos from './comparacaoPoliticos'
 import CriarPesquisa from './criarPesquisa'
 import FormPesquisa from './formPesquisa'
 import ListaPesquisas from './listaPesquisas'
+import Pesquisa from './pesquisaVotos'
 
 class Content extends Component {
   constructor(props) {
@@ -102,6 +103,23 @@ class Content extends Component {
                   </MenuItem>
                 </Link>
               )
+          }
+
+          <Divider /> 
+          <Subheader>Votação</Subheader>
+          {
+            user && user.cargo === 'eleitor' && (
+              <Link
+                style={{
+                  textDecoration: 'none'
+                }}
+                to="/votar"
+              >
+                <MenuItem onClick={this.props.handleClose}>
+                  Pesquisas de Voto
+                </MenuItem>
+              </Link>
+            )
           }
 
           <Divider />
@@ -205,6 +223,12 @@ class Content extends Component {
           path="/admin"
           render={(props) => ((user && user.cargo === 'admin')
             ? <Admin {...props} />
+            : null)}
+        />
+        <Route
+          path="/votar"
+          render={(props) => ((user && user.cargo === 'eleitor')
+            ? <Pesquisa {...props} />
             : null)}
         />
         <Route
