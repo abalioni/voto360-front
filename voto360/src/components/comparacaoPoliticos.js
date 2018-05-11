@@ -113,6 +113,8 @@ export default class ComparacaoPoliticos extends React.Component {
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianFirst.autorias = res.data.MembroComissaoParlamentar.Parlamentar.MembroComissoes.Comissao.length
         this.setState(currentState)
+
+
       })
       .catch((error) => {
         console.error(error);
@@ -128,6 +130,7 @@ export default class ComparacaoPoliticos extends React.Component {
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianSecond.autorias = res.data.MembroComissaoParlamentar.Parlamentar.MembroComissoes.Comissao.length
         this.setState(currentState)
+        this.componentDidUpdate(this.props, this.state)
       })
       .catch((error) => {
         console.log(error);
@@ -188,38 +191,13 @@ export default class ComparacaoPoliticos extends React.Component {
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianSecond.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
         this.setState(currentState)
-        var domMandato = document.getElementById("graphVotacoes");
-        var chartMandato = echarts.init(domMandato);
-        var optionsMandatos = null;
-        optionsMandatos = {
-            title: {
-              text: 'Comparativo de Número de Mandatos'
-            },
-            xAxis: {
-                type: 'category',
-                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
-                  this.state.selectedPoliticianSecond.NomeParlamentar]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: [
-                  {value: this.state.selectedPoliticianFirst.mandatos,
-                    itemStyle: {color: 'rgb(178, 223, 219)'}},
-                  {value: this.state.selectedPoliticianSecond.mandatos,
-                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
-                type: 'bar'
-            }]
-        };
-        if (optionsAutorias && typeof optionsAutorias === "object") {
-            chartAutoria.setOption(optionsAutorias, true);
-        }
       })
       .catch((error) => {
         console.log(error);
         return error;
       });
+
+
 
 
       var app = {};
@@ -250,13 +228,13 @@ export default class ComparacaoPoliticos extends React.Component {
               type: 'bar'
           }]
       };
-      if (optionsMandatos && typeof optionsMandatos === "object") {
-          chartMandato.setOption(optionsMandatos, true);
+      if (optionsAutorias && typeof optionsAutorias === "object") {
+          chartAutoria.setOption(optionsAutorias, true);
       }
 
 
 
-      var domVotacoes = document.getElementById("graphMandato");
+      var domVotacoes = document.getElementById("graphVotacoes");
       var chartVotacoes = echarts.init(domVotacoes);
       var optionsVotacoes = null;
       optionsVotacoes = {
@@ -290,7 +268,7 @@ export default class ComparacaoPoliticos extends React.Component {
 
 
 
-      var domMandato = document.getElementById("graphVotacoes");
+      var domMandato = document.getElementById("graphMandato");
       var chartMandato = echarts.init(domMandato);
       var optionsMandatos = null;
       optionsMandatos = {
@@ -314,8 +292,8 @@ export default class ComparacaoPoliticos extends React.Component {
               type: 'bar'
           }]
       };
-      if (optionsAutorias && typeof optionsAutorias === "object") {
-          chartAutoria.setOption(optionsAutorias, true);
+      if (optionsMandatos && typeof optionsMandatos === "object") {
+          chartMandato.setOption(optionsMandatos, true);
       }
 
     }
@@ -344,6 +322,7 @@ export default class ComparacaoPoliticos extends React.Component {
                                         }
                                     }))
                                     this.displayFirstPolitician()
+
                                 }}
                             />
                         </div>
@@ -394,6 +373,7 @@ export default class ComparacaoPoliticos extends React.Component {
                                         }
                                     }))
                                     this.displaySecondPolitician()
+
                                 }}
                             />
                         </div>
