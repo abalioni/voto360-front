@@ -36,25 +36,10 @@ export default class AlteraCadastroPolitico extends React.Component {
         super(props)
 
         this.state = {
-            user: '',
-            nome: '',
-            emaileleitoral: '',
-            email: '',
-            nomeeleitoral: '',
-            partido: '',
-            cpf: '',
-            cnpj: '',
-            datanascimento: '',
-            nivelescolaridade: '',
+            user: {},
             biografia: '',
+            oldbiografia: '',
 
-            errorCNPJ: false,
-            errorSenha: false,
-            errorSenhaAtual: false,
-            errorEmail: false,
-            errorCPF: false,
-            errorNome: false,
-            maxDate: undefined,
             success: false,
             open: false
 
@@ -63,8 +48,6 @@ export default class AlteraCadastroPolitico extends React.Component {
     }
 
     componentWillMount() {
-        const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
         const cookieUser = cookie.get('user');
         let user;
         if (cookieUser) {
@@ -73,119 +56,44 @@ export default class AlteraCadastroPolitico extends React.Component {
             this.setState({
                 user: user,
                 email: user.email,
-                maxDate
             })
         }
-    }
+        
+        var id = user._id;
+        axios.get(`http://localhost:8081/api/pessoa/${id}/politico`)
+            .then((res) => {
+                console.log(res.data.biografia)
+                this.setState({
+                    biografia: res.data.biografia,
+                    oldbiografia: res.data.biografia
+                })
+            })
+            .catch((error) => {
+                alert(error);
+            });
 
-    validarCNPJ = () => {
-        if (!CNPJ.isValid(this.state.cnpj)) {
-            this.setState({ errorCNPJ: true })
-            return true
-        }
-        return false
-    }
-
-    validarErroEmail = () => {
-        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!re.test(this.state.emaileleitoral)) {
-            this.setState({ errorEmail: true })
-            return true
-        }
-        return false
-    }
-
-    validarErroNome = () => {
-        if (this.state.nome === '') {
-            this.setState({ errorNome: true })
-            return true
-        }
-        return false
     }
 
     changeInfo = () => {
 
-        //Valida Email
-        if (this.validarErroEmail()) {
-            return;
-        }
-
-        //Valida cpf
-        if (this.validarCNPJ()) {
-            return;
-        }
-
-        if (this.validarErroNome()) {
-            return;
-        }
-
-
         var request = {};
 
-        if (this.state.user._id) {
-            request.id = this.state.user._id
-        }
-
-        if (this.state.nome) {
-            request.nome_eleitoral = this.state.nome
-        }
-
-        if (this.state.cpf) {
-            request.cpf = this.state.cpf
-        }
-
-        if (this.state.emaileleitoral) {
-            request.email_eleitoral = this.state.emaileleitoral
-        }
-
-        if (this.state.nivelescolaridade) {
-            request.escolaridade = this.state.nivelescolaridade
-        }
-
-        if (this.state.partido) {
-            request.partido = this.state.partido
-        }
-
-        if (this.state.estado) {
-            request.estado = this.state.estado
-        }
-
-        if (this.state.datanascimento) {
-            request.datanascimento = this.state.datanascimento
-        }
-
-        if (this.state.cnpj) {
-            request.cnpj = "80228817000150"
-        }
-
-        if (this.state.biografia) {
+        if (this.state.biografia && this.state.biografia !== this.state.oldbiografia) {
             request.biografia = this.state.biografia
         }
+        var id = this.state.user._id;
+        axios.put(`http://localhost:8081/api/pessoa/${id}/politico`, request)
+          .then((response) => {
+            this.handleSuccess
+          })
+          .catch((error) => {
+            this.handleFailure()
+          })
 
-        request.perfil_aprovado = 'pending'
-
-        axios.post(`http://localhost:8081/politico`, request)
-            .then((response) => {
-                this.handleSuccess(response)
-                this.setState({ success: true, open: true })
-                console.log(response);
-            })
-            .catch((error) => {
-                this.handleFailure()
-            })
     }
 
     handleSuccess = (response) => {
-        console.log("sucess email", response)
-        var request = {
-            email: this.state.email,
-            subject: 'Solicitação de Perfil Politico Criada',
-            html: `<p>Você será notificado por email quando seu perfil for analisado pela nossa equipe.</p><p>Obrigada por se cadastrar!</p><p>Equipe VOTO360</p>`
-        };
-
-        axios.post('http://localhost:8081/sendCommonEmail', request).then((response) => console.log(response)).catch(function (error) {
-            alert(error);
-        });
+        this.setState({ success: true, open: true })
     }
 
     handleFailure = (err) => {
@@ -210,8 +118,9 @@ export default class AlteraCadastroPolitico extends React.Component {
             <Card className="user-card-container">
                 <CardTitle title="Alterar Cadastro Político" className="card-title" />
                 <div className="user-card-info">
-                    
+
                     <TextField
+                        value={this.state.biografia}
                         hintText="Biografia"
                         floatingLabelText="Biografia"
                         multiLine={true}
@@ -232,8 +141,8 @@ export default class AlteraCadastroPolitico extends React.Component {
             </Card>
             <SimpleDialog
                 open={this.state.open}
-                title={this.state.success ? 'Solicitação criada' : 'Algo deu errado'}
-                message={this.state.success ? 'Sua solicitação foi encaminhada para nossa equipe e em breve você terá um retorno.' : 'Algo deu errado, verifique as informações e tente novamente.'}
+                title={this.state.success ? 'Alteração feita' : 'Algo deu errado'}
+                message={this.state.success ? 'Sua alteração foi feita com sucesso' : 'Algo deu errado, verifique as informações e tente novamente.'}
                 onRequestClose={() => {
                     this.setState({
                         open: false,

@@ -1,0 +1,35 @@
+.profile-pic {
+    border: 1px solid red;
+    width: 100px;
+    border-radius: 50%;
+    
+}
+
+.profile-pic-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 20%;
+    background-color: chocolate;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 700px !important;
+
+}
+.sidebar {
+    width: 20%;
+    height: 100%;
+    background-color: chartreuse;
+}
+
+.politician-info {
+    display: flex;
+    flex-direction: column;
+    
+}

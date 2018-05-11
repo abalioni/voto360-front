@@ -69,7 +69,6 @@ export default class CadastroPolitico extends React.Component {
         let user;
         if (cookieUser) {
             user = JSON.parse(cookieUser);
-            console.log(user)
             this.setState({
                 user: user,
                 email: user.email,
@@ -148,7 +147,7 @@ export default class CadastroPolitico extends React.Component {
         }
         
         if (this.state.datanascimento) {
-            request.datanascimento = this.state.datanascimento
+            request.data_nascimento = this.state.datanascimento
         }
         
         if (this.state.cnpj) {
@@ -164,12 +163,15 @@ export default class CadastroPolitico extends React.Component {
         if (this.state.user._id) {
             request.id = this.state.user._id
         }
+
+        if (this.state.user.cpf) {
+            request.cpf = this.state.user.cpf
+        }
         
-        axios.post(`http://localhost:8081/politico`, request)
+        axios.put(`http://localhost:8081/api/politico`, request)
           .then((response) => {
             this.handleSuccess(response)
             this.setState({success: true, open: true})
-            console.log(response);
           })
           .catch((error) => {
             this.handleFailure()
@@ -177,7 +179,6 @@ export default class CadastroPolitico extends React.Component {
     }
 
     handleSuccess = (response) => {
-        console.log("sucess email",response)
             var request = {
               email: this.state.email,
               subject: 'Solicitação de Perfil Politico Criada',
@@ -191,7 +192,6 @@ export default class CadastroPolitico extends React.Component {
 
     handleFailure = (err) => {
         this.setState({ success: false, open: true })
-        console.log(err)
     }
 
     handleChange = (event, index, value) => {
@@ -274,7 +274,6 @@ export default class CadastroPolitico extends React.Component {
                     <p>Selectione o seu nível de escolaridade:</p>
                     <NiveisDeEscolaridade 
                         handleEscolaridadeChange={(event, text) => {
-                            console.log(text)
                             this.setState({nivelescolaridade: text})
                         }}/>
                     <TextField

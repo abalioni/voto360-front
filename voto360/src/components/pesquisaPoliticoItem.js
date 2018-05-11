@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 
+import '../dist/css/pesquisaPoliticoItem.css'
+
 export default class PesquisaPoliticoItem extends React.Component {
     constructor(props) {
         super(props)
@@ -13,10 +15,24 @@ export default class PesquisaPoliticoItem extends React.Component {
 
     componentWillMount() {
         var id = this.props.id;
-        axios.get(`https://dadosabertos.camara.leg.br/api/v2/deputados?id=${id}`)
+        axios({
+            method: 'get',
+            url: 'http://legis.senado.leg.br/dadosabertos/senador/lista/atual',
+            "headers": {
+                "accept": "application/json"
+            }
+        })
             .then((res) => {
-                console.log(res);
-                this.setState({ response: res.data.dados[0] })
+                this.setState({ 
+                                response: res.data.ListaParlamentarEmExercicio,
+                                politicians: res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar 
+                            })
+                var names = []
+                res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar.forEach((politicianInfo, index) => {
+
+                    names.push(politicianInfo.IdentificacaoParlamentar.NomeParlamentar)
+                })
+                this.setState({ politiciansNames: names })
                 return res;
             })
             .catch((error) => {
@@ -29,9 +45,9 @@ export default class PesquisaPoliticoItem extends React.Component {
     render() {
         return (
             <div>
-                <img src={this.state.response && this.state.response.urlFoto} alt="foto do politico" />
+                <img src={this.state.response && this.state.response.urlFoto} alt="foto do politico" className="img" />
                 <label htmlFor="radioButton">{this.state.response && this.state.response.nome}</label>
-                <input name="politicos" type="radio" id="UKE" />
+                <input name="politicos" type="radio" id="politico" />
             </div>
             
         )

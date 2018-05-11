@@ -6,8 +6,10 @@ import AutoComplete from 'material-ui/AutoComplete';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import { gray900 } from 'material-ui/styles/colors';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import SimpleDialog from './dialogs/SimpleDialog'
+
 
 
 import '../dist/css/controlepermissoes.css'
@@ -27,7 +29,7 @@ const styles = {
 
 export default class ControlePermissoes extends React.Component {
 
-  
+
 
   constructor(props) {
     super(props)
@@ -35,36 +37,39 @@ export default class ControlePermissoes extends React.Component {
     this.state = {
       emails: [],
       users: [],
+      id: '',
       emailSelecionado: '',
       cargo: '',
       nome: '',
+      dialogMessage: ''
     }
     this.handleUsers = this.handleUsers.bind(this);
+    this.handleDeleteUser = this.handleDeleteUser.bind(this);
   }
 
-  
+
 
   render() {
     return (<div className="outter-div">
-    
-    <div>
-    <h2>Controle Permissoes</h2>
-      <div className="inner-div">
-        <AutoComplete
-          floatingLabelText="Pesquise o usuário por email"
-          floatingLabelStyle={styles.floatingLabelStyle}
-          underlineStyle={styles.underlineStyle}
-          filter={AutoComplete.fuzzyFilter}
-          dataSource={this.state.emails}
-          maxSearchResults={10}
-          onNewRequest={(text, index) => { 
-            this.setState({
-              emailSelecionado: text
-            })
-            this.displayUser()
-          }}
-        />
-        <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios}/>
+
+      <div>
+        <h2>Controle Permissoes</h2>
+        <div className="inner-div">
+          <AutoComplete
+            floatingLabelText="Pesquise o usuário por email"
+            floatingLabelStyle={styles.floatingLabelStyle}
+            underlineStyle={styles.underlineStyle}
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={this.state.emails}
+            maxSearchResults={10}
+            onNewRequest={(text, index) => {
+              this.setState({
+                emailSelecionado: text
+              })
+              this.displayUser()
+            }}
+          />
+          <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios} />
         </div>
         <div className="inner-div">
           <SelectField
@@ -79,15 +84,15 @@ export default class ControlePermissoes extends React.Component {
             <MenuItem value={"editor"} primaryText="Editor" />
             <MenuItem value={"admin"} primaryText="Admin" />
           </SelectField>
-          
+
         </div>
         <div className="inner-div">
-          
+
           {/* <RaisedButton label="Excluir usuário" primary={true} style={style} onClick={this.handleSalvarPermissoes}/> */}
-          <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes}/>
+          <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes} />
         </div>
-      </div>  
-        <div className="card">
+      </div>
+      <div className="card">
         {this.state.emailSelecionado ? (<Card>
           <CardHeader
             title="Usuário selecionado"
@@ -98,42 +103,71 @@ export default class ControlePermissoes extends React.Component {
             <p>Cargo: {this.state.cargo}</p>
           </CardText>
           <CardActions>
-            <FlatButton label="Excluir Usuário" />
+            <FlatButton label="Excluir Usuário" onClick={this.handleDeleteUser} />
           </CardActions>
-          
+
         </Card>
         ) : undefined}
-            
-        </div>
+        <SimpleDialog
+          open={!!this.state.dialogMessage}
+          message={this.state.dialogMessage}
+          onRequestClose={() => {
+            this.setState({
+              dialogMessage: '',
+            })
+          }}
+        />
+      </div>
     </div>)
   }
 
+  handleDeleteUser = () => {
+    console.log(this.state)
+    if(this.state.cargo === 'admin') {
+      this.setState({
+        dialogMessage: 'O Admin não pode ser deletado'
+      })
+    } else {
+      axios.delete(`http://localhost:8081/pessoa/${this.state.id}`).then(() => {
+        this.setState({
+          dialogMessage: 'Pessoa excluída com sucesso'
+        })
+        // updating current polls
+      }).catch(() => {
+        this.setState({
+          dialogMessage: 'Problemas ao excluir a pessoa'
+        })
+      })
+    }
+  }
+
   getUsuarios = () => {
-    axios.get('http://localhost:8081/pessoa').then(this.handleUsers).catch(function(error) {
+    axios.get('http://localhost:8081/pessoa').then(this.handleUsers).catch(function (error) {
       alert(error);
     });
   }
 
   handleUsers = (response) => {
- 
     this.setState({ emails: response.data.map(d => d.email), users: response.data })
-    
+
   }
 
   displayUser = () => {
     this.state.users.forEach((obj, index) => {
-      if(obj.email === this.state.emailSelecionado) {
+      console.log(obj)
+      if (obj.email === this.state.emailSelecionado) {
         this.setState({
           cargo: obj.cargo,
-          nome: obj.nome
+          nome: obj.nome,
+          id: obj._id
         })
         return
       }
-    })  
+    })
   }
 
   handleCargo = (event, index, value) => {
-    this.setState({cargo: value})
+    this.setState({ cargo: value })
   };
 
   handleSalvarPermissoes = () => {
@@ -142,25 +176,25 @@ export default class ControlePermissoes extends React.Component {
       email: this.state.emailSelecionado,
       cargo: this.state.cargo
     })
-    .then(function (response) {
-      console.log(response);
-    })
-    .then(function (error) {
-      if (error) {
-        console.log(error);
-      }
-    })
+      .then(function (response) {
+        console.log(response);
+      })
+      .then(function (error) {
+        if (error) {
+          console.log(error);
+        }
+      })
 
     axios.get('http://localhost:8081/pessoa?q=', {
       email: this.state.emailSelecionado
     })
-    .then(function (response) {
-      console.log(response);
-    })
-    .then(function (error) {
-      if (error) {
-        console.log(error);
-      }
-    })
-}
+      .then(function (response) {
+        console.log(response);
+      })
+      .then(function (error) {
+        if (error) {
+          console.log(error);
+        }
+      })
+  }
 }
