@@ -83,6 +83,10 @@ export default class ComparacaoPoliticos extends React.Component {
                 this.setState({ politiciansNames: names })
 
 
+
+               
+
+
                 return res;
             })
             .catch((error) => {
@@ -105,52 +109,52 @@ export default class ComparacaoPoliticos extends React.Component {
 
       axios({
           method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+ this.state.selectedPoliticianFirst.CodigoParlamentar +'/comissoes',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianFirst.autorias = res.data.MembroComissaoParlamentar.Parlamentar.MembroComissoes.Comissao.length
-        this.setState(currentState)
-
-
-      })
-      .catch((error) => {
-        console.error(error);
-        return error;
-      });
-      axios({
-          method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/comissoes',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianSecond.autorias = res.data.MembroComissaoParlamentar.Parlamentar.MembroComissoes.Comissao.length
-        this.setState(currentState)
-        this.componentDidUpdate(this.props, this.state)
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
-      axios({
-          method: 'get',
           url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/votacoes',
           "headers": {
               "accept": "application/json"
           }
       }).then((res) => {
+          console.log("votacoes")
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianFirst.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
         this.setState(currentState)
+
+        var domVotacoes = document.getElementById("graphVotacoes");
+        var chartVotacoes = echarts.init(domVotacoes);
+        var optionsVotacoes = null;
+        optionsVotacoes = {
+          title: {
+            text: 'Comparativo de Número de Votações'
+          },
+            xAxis: {
+                type: 'category',
+                data: [
+                  this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar
+                ]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.votacoes,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.votacoes,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsVotacoes && typeof optionsVotacoes === "object") {
+            chartVotacoes.setOption(optionsVotacoes, true);
+        }
       })
       .catch((error) => {
         console.log(error);
         return error;
       });
+
+
       axios({
           method: 'get',
           url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/votacoes',
@@ -158,14 +162,46 @@ export default class ComparacaoPoliticos extends React.Component {
               "accept": "application/json"
           }
       }).then((res) => {
+        console.log("votacoes")
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianSecond.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
         this.setState(currentState)
+
+        var domVotacoes = document.getElementById("graphVotacoes");
+        var chartVotacoes = echarts.init(domVotacoes);
+        var optionsVotacoes = null;
+        optionsVotacoes = {
+          title: {
+            text: 'Comparativo de Número de Votações'
+          },
+            xAxis: {
+                type: 'category',
+                data: [
+                  this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar
+                ]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.votacoes,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.votacoes,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsVotacoes && typeof optionsVotacoes === "object") {
+            chartVotacoes.setOption(optionsVotacoes, true);
+        }
       })
       .catch((error) => {
         console.log(error);
         return error;
       });
+
       axios({
           method: 'get',
           url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/mandatos',
@@ -173,9 +209,38 @@ export default class ComparacaoPoliticos extends React.Component {
               "accept": "application/json"
           }
       }).then((res) => {
+        console.log("mandatos")
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianFirst.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
         this.setState(currentState)
+
+        var domMandato = document.getElementById("graphMandato");
+        var chartMandato = echarts.init(domMandato);
+        var optionsMandatos = null;
+        optionsMandatos = {
+            title: {
+              text: 'Comparativo de Número de Mandatos'
+            },
+            xAxis: {
+                type: 'category',
+                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.mandatos,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.mandatos,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsMandatos && typeof optionsMandatos === "object") {
+            chartMandato.setOption(optionsMandatos, true);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -191,6 +256,34 @@ export default class ComparacaoPoliticos extends React.Component {
         const currentState = Object.assign({}, this.state)
         currentState.selectedPoliticianSecond.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
         this.setState(currentState)
+
+        var domMandato = document.getElementById("graphMandato");
+        var chartMandato = echarts.init(domMandato);
+        var optionsMandatos = null;
+        optionsMandatos = {
+            title: {
+              text: 'Comparativo de Número de Mandatos'
+            },
+            xAxis: {
+                type: 'category',
+                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                  this.state.selectedPoliticianSecond.NomeParlamentar]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [
+                  {value: this.state.selectedPoliticianFirst.mandatos,
+                    itemStyle: {color: 'rgb(178, 223, 219)'}},
+                  {value: this.state.selectedPoliticianSecond.mandatos,
+                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
+                type: 'bar'
+            }]
+        };
+        if (optionsMandatos && typeof optionsMandatos === "object") {
+            chartMandato.setOption(optionsMandatos, true);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -200,37 +293,37 @@ export default class ComparacaoPoliticos extends React.Component {
 
 
 
-      var app = {};
+    //   var app = {};
 
-      var domAutoria = document.getElementById("graphAutoria");
-      var chartAutoria = echarts.init(domAutoria);
-      var optionsAutorias = null;
-      optionsAutorias = {
-        title: {
-          text: 'Comparativo de Número de Autorias de Projetos'
-        },
-          xAxis: {
-              type: 'category',
-              data: [
-                this.state.selectedPoliticianFirst.NomeParlamentar,
-                this.state.selectedPoliticianSecond.NomeParlamentar
-              ]
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series: [{
-              data: [
-                {value: this.state.selectedPoliticianFirst.autorias,
-                  itemStyle: {color: 'rgb(178, 223, 219)'}},
-                {value: this.state.selectedPoliticianSecond.autorias,
-                  itemStyle: {color: 'rgb(0, 105, 92)'}}],
-              type: 'bar'
-          }]
-      };
-      if (optionsAutorias && typeof optionsAutorias === "object") {
-          chartAutoria.setOption(optionsAutorias, true);
-      }
+    //   var domAutoria = document.getElementById("graphAutoria");
+    //   var chartAutoria = echarts.init(domAutoria);
+    //   var optionsAutorias = null;
+    //   optionsAutorias = {
+    //     title: {
+    //       text: 'Comparativo de Número de Autorias de Projetos'
+    //     },
+    //       xAxis: {
+    //           type: 'category',
+    //           data: [
+    //             this.state.selectedPoliticianFirst.NomeParlamentar,
+    //             this.state.selectedPoliticianSecond.NomeParlamentar
+    //           ]
+    //       },
+    //       yAxis: {
+    //           type: 'value'
+    //       },
+    //       series: [{
+    //           data: [
+    //             {value: this.state.selectedPoliticianFirst.autorias,
+    //               itemStyle: {color: 'rgb(178, 223, 219)'}},
+    //             {value: this.state.selectedPoliticianSecond.autorias,
+    //               itemStyle: {color: 'rgb(0, 105, 92)'}}],
+    //           type: 'bar'
+    //       }]
+    //   };
+    //   if (optionsAutorias && typeof optionsAutorias === "object") {
+    //       chartAutoria.setOption(optionsAutorias, true);
+    //   }
 
 
 
@@ -239,7 +332,7 @@ export default class ComparacaoPoliticos extends React.Component {
       var optionsVotacoes = null;
       optionsVotacoes = {
         title: {
-          text: 'Comparativo de Número de Votações'
+          text: 'Comparativo de Número de Votações'//titulo
         },
           xAxis: {
               type: 'category',
@@ -397,7 +490,7 @@ export default class ComparacaoPoliticos extends React.Component {
 
                     </section>
                 </div>
-                <div id="graphAutoria" className="graph"></div>
+                {/* <div id="graphAutoria" className="graph"></div> */}
                 <div id="graphMandato" className="graph"></div>
                 <div id="graphVotacoes" className="graph"></div>
             </main>
