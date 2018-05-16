@@ -22,15 +22,6 @@ export default class PoliticianInfoDropdown extends React.Component {
     this.toggleExpandedClick = this.toggleExpandedClick.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log("props", nextProps)
-  }
-
-  componentDidMount() {
-      console.log("mount")
-        
-  }
-
   toggleExpandedClick = () => {
     this.setState({ expandedDiv: !this.state.expandedDiv });
   } 

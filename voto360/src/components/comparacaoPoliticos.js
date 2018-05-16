@@ -92,11 +92,6 @@ export default class ComparacaoPoliticos extends React.Component {
                 })
                 this.setState({ politiciansNames: names })
 
-
-
-               
-
-
                 return res;
             })
             .catch((error) => {
@@ -107,305 +102,219 @@ export default class ComparacaoPoliticos extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
 
-      if ((this.state.selectedPoliticianFirst.CodigoParlamentar === undefined || this.state.selectedPoliticianSecond.CodigoParlamentar === undefined)
-      || ((this.state.selectedPoliticianFirst.CodigoParlamentar === prevState.selectedPoliticianFirst.CodigoParlamentar && this.state.selectedPoliticianSecond.CodigoParlamentar === prevState.selectedPoliticianSecond.CodigoParlamentar))){
-         return;
-       }
-
-
-      console.log("componentDidUpdate");
-      console.log(JSON.stringify(this.state.selectedPoliticianFirst));
-      console.log(JSON.stringify(this.state.selectedPoliticianSecond));
-
-      axios({
-          method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/votacoes',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-          console.log("votacoes")
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianFirst.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
-        this.setState(currentState)
-
-        var domVotacoes = document.getElementById("graphVotacoes");
-        var chartVotacoes = echarts.init(domVotacoes);
-        var optionsVotacoes = null;
-        optionsVotacoes = {
-          title: {
-            text: 'Comparativo de Número de Votações'
-          },
-            xAxis: {
-                type: 'category',
-                data: [
-                  this.state.selectedPoliticianFirst.NomeParlamentar,
-                  this.state.selectedPoliticianSecond.NomeParlamentar
-                ]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: [
-                  {value: this.state.selectedPoliticianFirst.votacoes,
-                    itemStyle: {color: 'rgb(178, 223, 219)'}},
-                  {value: this.state.selectedPoliticianSecond.votacoes,
-                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
-                type: 'bar'
-            }]
-        };
-        if (optionsVotacoes && typeof optionsVotacoes === "object") {
-            chartVotacoes.setOption(optionsVotacoes, true);
+        if ((this.state.selectedPoliticianFirst.CodigoParlamentar === undefined || this.state.selectedPoliticianSecond.CodigoParlamentar === undefined)
+            || ((this.state.selectedPoliticianFirst.CodigoParlamentar === prevState.selectedPoliticianFirst.CodigoParlamentar && this.state.selectedPoliticianSecond.CodigoParlamentar === prevState.selectedPoliticianSecond.CodigoParlamentar))) {
+            return;
         }
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
 
 
-      axios({
-          method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/votacoes',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-        console.log("votacoes")
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianSecond.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
-        this.setState(currentState)
+        axios({
+            method: 'get',
+            url: 'http://legis.senado.leg.br/dadosabertos/senador/' + this.state.selectedPoliticianFirst.CodigoParlamentar + '/votacoes',
+            "headers": {
+                "accept": "application/json"
+            }
+        }).then((res) => {
+            console.log("votacoes")
+            const currentState = Object.assign({}, this.state)
+            currentState.selectedPoliticianFirst.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
+            this.setState(currentState)
 
-        var domVotacoes = document.getElementById("graphVotacoes");
-        var chartVotacoes = echarts.init(domVotacoes);
-        var optionsVotacoes = null;
-        optionsVotacoes = {
-          title: {
-            text: 'Comparativo de Número de Votações'
-          },
-            xAxis: {
-                type: 'category',
-                data: [
-                  this.state.selectedPoliticianFirst.NomeParlamentar,
-                  this.state.selectedPoliticianSecond.NomeParlamentar
-                ]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: [
-                  {value: this.state.selectedPoliticianFirst.votacoes,
-                    itemStyle: {color: 'rgb(178, 223, 219)'}},
-                  {value: this.state.selectedPoliticianSecond.votacoes,
-                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
-                type: 'bar'
-            }]
-        };
-        if (optionsVotacoes && typeof optionsVotacoes === "object") {
-            chartVotacoes.setOption(optionsVotacoes, true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
-
-      axios({
-          method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianFirst.CodigoParlamentar+'/mandatos',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-        console.log("mandatos")
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianFirst.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
-        this.setState(currentState)
-
-        var domMandato = document.getElementById("graphMandato");
-        var chartMandato = echarts.init(domMandato);
-        var optionsMandatos = null;
-        optionsMandatos = {
-            title: {
-              text: 'Comparativo de Número de Mandatos'
-            },
-            xAxis: {
-                type: 'category',
-                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
-                  this.state.selectedPoliticianSecond.NomeParlamentar]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: [
-                  {value: this.state.selectedPoliticianFirst.mandatos,
-                    itemStyle: {color: 'rgb(178, 223, 219)'}},
-                  {value: this.state.selectedPoliticianSecond.mandatos,
-                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
-                type: 'bar'
-            }]
-        };
-        if (optionsMandatos && typeof optionsMandatos === "object") {
-            chartMandato.setOption(optionsMandatos, true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
-      axios({
-          method: 'get',
-          url: 'http://legis.senado.leg.br/dadosabertos/senador/'+this.state.selectedPoliticianSecond.CodigoParlamentar+'/mandatos',
-          "headers": {
-              "accept": "application/json"
-          }
-      }).then((res) => {
-        const currentState = Object.assign({}, this.state)
-        currentState.selectedPoliticianSecond.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
-        this.setState(currentState)
-
-        var domMandato = document.getElementById("graphMandato");
-        var chartMandato = echarts.init(domMandato);
-        var optionsMandatos = null;
-        optionsMandatos = {
-            title: {
-              text: 'Comparativo de Número de Mandatos'
-            },
-            xAxis: {
-                type: 'category',
-                data: [this.state.selectedPoliticianFirst.NomeParlamentar,
-                  this.state.selectedPoliticianSecond.NomeParlamentar]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: [
-                  {value: this.state.selectedPoliticianFirst.mandatos,
-                    itemStyle: {color: 'rgb(178, 223, 219)'}},
-                  {value: this.state.selectedPoliticianSecond.mandatos,
-                    itemStyle: {color: 'rgb(0, 105, 92)'}}],
-                type: 'bar'
-            }]
-        };
-        if (optionsMandatos && typeof optionsMandatos === "object") {
-            chartMandato.setOption(optionsMandatos, true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
+            var domVotacoes = document.getElementById("graphVotacoes");
+            var chartVotacoes = echarts.init(domVotacoes);
+            var optionsVotacoes = null;
+            optionsVotacoes = {
+                title: {
+                    text: 'Comparativo de Número de Votações'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [
+                        this.state.selectedPoliticianFirst.NomeParlamentar,
+                        this.state.selectedPoliticianSecond.NomeParlamentar
+                    ]
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [
+                        {
+                            value: this.state.selectedPoliticianFirst.votacoes,
+                            itemStyle: { color: 'rgb(178, 223, 219)' }
+                        },
+                        {
+                            value: this.state.selectedPoliticianSecond.votacoes,
+                            itemStyle: { color: 'rgb(0, 105, 92)' }
+                        }],
+                    type: 'bar'
+                }]
+            };
+            if (optionsVotacoes && typeof optionsVotacoes === "object") {
+                chartVotacoes.setOption(optionsVotacoes, true);
+            }
+        })
+            .catch((error) => {
+                console.log(error);
+                return error;
+            });
 
 
+        axios({
+            method: 'get',
+            url: 'http://legis.senado.leg.br/dadosabertos/senador/' + this.state.selectedPoliticianSecond.CodigoParlamentar + '/votacoes',
+            "headers": {
+                "accept": "application/json"
+            }
+        }).then((res) => {
+            console.log("votacoes")
+            const currentState = Object.assign({}, this.state)
+            currentState.selectedPoliticianSecond.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
+            this.setState(currentState)
+
+            var domVotacoes = document.getElementById("graphVotacoes");
+            var chartVotacoes = echarts.init(domVotacoes);
+            var optionsVotacoes = null;
+            optionsVotacoes = {
+                title: {
+                    text: 'Comparativo de Número de Votações'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [
+                        this.state.selectedPoliticianFirst.NomeParlamentar,
+                        this.state.selectedPoliticianSecond.NomeParlamentar
+                    ]
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [
+                        {
+                            value: this.state.selectedPoliticianFirst.votacoes,
+                            itemStyle: { color: 'rgb(178, 223, 219)' }
+                        },
+                        {
+                            value: this.state.selectedPoliticianSecond.votacoes,
+                            itemStyle: { color: 'rgb(0, 105, 92)' }
+                        }],
+                    type: 'bar'
+                }]
+            };
+            if (optionsVotacoes && typeof optionsVotacoes === "object") {
+                chartVotacoes.setOption(optionsVotacoes, true);
+            }
+        })
+            .catch((error) => {
+                console.log(error);
+                return error;
+            });
+
+        axios({
+            method: 'get',
+            url: 'http://legis.senado.leg.br/dadosabertos/senador/' + this.state.selectedPoliticianFirst.CodigoParlamentar + '/mandatos',
+            "headers": {
+                "accept": "application/json"
+            }
+        }).then((res) => {
+            console.log("mandatos")
+            const currentState = Object.assign({}, this.state)
+            currentState.selectedPoliticianFirst.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
+            this.setState(currentState)
+
+            var domMandato = document.getElementById("graphMandato");
+            var chartMandato = echarts.init(domMandato);
+            var optionsMandatos = null;
+            optionsMandatos = {
+                title: {
+                    text: 'Comparativo de Número de Mandatos'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                    this.state.selectedPoliticianSecond.NomeParlamentar]
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [
+                        {
+                            value: this.state.selectedPoliticianFirst.mandatos,
+                            itemStyle: { color: 'rgb(178, 223, 219)' }
+                        },
+                        {
+                            value: this.state.selectedPoliticianSecond.mandatos,
+                            itemStyle: { color: 'rgb(0, 105, 92)' }
+                        }],
+                    type: 'bar'
+                }]
+            };
+            if (optionsMandatos && typeof optionsMandatos === "object") {
+                chartMandato.setOption(optionsMandatos, true);
+            }
+        })
+            .catch((error) => {
+                console.log(error);
+                return error;
+            });
 
 
-    //   var app = {};
+        axios({
+            method: 'get',
+            url: 'http://legis.senado.leg.br/dadosabertos/senador/' + this.state.selectedPoliticianSecond.CodigoParlamentar + '/mandatos',
+            "headers": {
+                "accept": "application/json"
+            }
+        }).then((res) => {
+            const currentState = Object.assign({}, this.state)
+            currentState.selectedPoliticianSecond.mandatos = res.data.MandatoParlamentar.Parlamentar.Mandatos.Mandato.length
+            this.setState(currentState)
 
-    //   var domAutoria = document.getElementById("graphAutoria");
-    //   var chartAutoria = echarts.init(domAutoria);
-    //   var optionsAutorias = null;
-    //   optionsAutorias = {
-    //     title: {
-    //       text: 'Comparativo de Número de Autorias de Projetos'
-    //     },
-    //       xAxis: {
-    //           type: 'category',
-    //           data: [
-    //             this.state.selectedPoliticianFirst.NomeParlamentar,
-    //             this.state.selectedPoliticianSecond.NomeParlamentar
-    //           ]
-    //       },
-    //       yAxis: {
-    //           type: 'value'
-    //       },
-    //       series: [{
-    //           data: [
-    //             {value: this.state.selectedPoliticianFirst.autorias,
-    //               itemStyle: {color: 'rgb(178, 223, 219)'}},
-    //             {value: this.state.selectedPoliticianSecond.autorias,
-    //               itemStyle: {color: 'rgb(0, 105, 92)'}}],
-    //           type: 'bar'
-    //       }]
-    //   };
-    //   if (optionsAutorias && typeof optionsAutorias === "object") {
-    //       chartAutoria.setOption(optionsAutorias, true);
-    //   }
-
-
-
-      var domVotacoes = document.getElementById("graphVotacoes");
-      var chartVotacoes = echarts.init(domVotacoes);
-      var optionsVotacoes = null;
-      optionsVotacoes = {
-        title: {
-          text: 'Comparativo de Número de Votações'//titulo
-        },
-          xAxis: {
-              type: 'category',
-              data: [
-                this.state.selectedPoliticianFirst.NomeParlamentar,
-                this.state.selectedPoliticianSecond.NomeParlamentar
-              ]
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series: [{
-              data: [
-                {value: this.state.selectedPoliticianFirst.votacoes,
-                  itemStyle: {color: 'rgb(178, 223, 219)'}},
-                {value: this.state.selectedPoliticianSecond.votacoes,
-                  itemStyle: {color: 'rgb(0, 105, 92)'}}],
-              type: 'bar'
-          }]
-      };
-      if (optionsVotacoes && typeof optionsVotacoes === "object") {
-          chartVotacoes.setOption(optionsVotacoes, true);
-      }
-
-
-
-
-
-      var domMandato = document.getElementById("graphMandato");
-      var chartMandato = echarts.init(domMandato);
-      var optionsMandatos = null;
-      optionsMandatos = {
-          title: {
-            text: 'Comparativo de Número de Mandatos'
-          },
-          xAxis: {
-              type: 'category',
-              data: [this.state.selectedPoliticianFirst.NomeParlamentar,
-                this.state.selectedPoliticianSecond.NomeParlamentar]
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series: [{
-              data: [
-                {value: this.state.selectedPoliticianFirst.mandatos,
-                  itemStyle: {color: 'rgb(178, 223, 219)'}},
-                {value: this.state.selectedPoliticianSecond.mandatos,
-                  itemStyle: {color: 'rgb(0, 105, 92)'}}],
-              type: 'bar'
-          }]
-      };
-      if (optionsMandatos && typeof optionsMandatos === "object") {
-          chartMandato.setOption(optionsMandatos, true);
-      }
+            var domMandato = document.getElementById("graphMandato");
+            var chartMandato = echarts.init(domMandato);
+            var optionsMandatos = null;
+            optionsMandatos = {
+                title: {
+                    text: 'Comparativo de Número de Mandatos'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [this.state.selectedPoliticianFirst.NomeParlamentar,
+                    this.state.selectedPoliticianSecond.NomeParlamentar]
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [
+                        {
+                            value: this.state.selectedPoliticianFirst.mandatos,
+                            itemStyle: { color: 'rgb(178, 223, 219)' }
+                        },
+                        {
+                            value: this.state.selectedPoliticianSecond.mandatos,
+                            itemStyle: { color: 'rgb(0, 105, 92)' }
+                        }],
+                    type: 'bar'
+                }]
+            };
+            if (optionsMandatos && typeof optionsMandatos === "object") {
+                chartMandato.setOption(optionsMandatos, true);
+            }
+        })
+            .catch((error) => {
+                console.log(error);
+                return error;
+            });
 
     }
-
-
 
     render() {
         return (
             <main className="main-container">
+                <h2>Comparação de Políticos</h2>
                 <div className="content-container">
                     <section className="politician-search-container">
                         <div className="politician-search">
@@ -426,18 +335,17 @@ export default class ComparacaoPoliticos extends React.Component {
                                         })
                                     }}
                                     onUpdateInput={(text) => {
-                                        if (text.length >= 3) {
+                                        if (text.length > 3) {
                                             this.setState({
                                                 selectedFirstNomeParlamentar: text,
                                                 notFoundFirstPolitician: false,
                                                 openFirstPoliticianModal: false
                                             })
                                         }
-                                        this.displayFirstPolitician()
                                     }
                                     }
-                            />
-                                
+                                />
+
                                 <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayFirstPolitician} />
                             </div>
                         </div>
@@ -465,7 +373,7 @@ export default class ComparacaoPoliticos extends React.Component {
                             </PoliticianInfoDropdown>
 
                         </div>)
-                            : undefined
+                            : null
                         }
 
                     </section>
@@ -526,16 +434,15 @@ export default class ComparacaoPoliticos extends React.Component {
                             </PoliticianInfoDropdown>
 
                         </div>)
-                            : undefined
+                            : null
                         }
 
 
                     </section>
                 </div>
-                {/* <div id="graphAutoria" className="graph"></div> */}
-                
+
                 <SimpleDialog
-                    open={this.state.openFirstPoliticianModal}
+                    open={!!this.state.openFirstPoliticianModal}
                     title={this.state.notFoundFirstPolitician ? 'Político não encontrado' : null}
                     message={this.state.notFoundFirstPolitician ? 'Algo deu errado, verifique as informações e tente novamente.' : null}
                     onRequestClose={() => {
@@ -546,7 +453,7 @@ export default class ComparacaoPoliticos extends React.Component {
                     }}
                 />
                 <SimpleDialog
-                    open={this.state.openSecondPoliticianModal}
+                    open={!!this.state.openSecondPoliticianModal}
                     title={this.state.notFoundSecondPolitician ? 'Político não encontrado' : null}
                     message={this.state.notFoundSecondPolitician ? 'Algo deu errado, verifique as informações e tente novamente.' : null}
                     onRequestClose={() => {
@@ -556,8 +463,10 @@ export default class ComparacaoPoliticos extends React.Component {
                         })
                     }}
                 />
-                <div id="graphMandato" className="graph"></div>
-                <div id="graphVotacoes" className="graph"></div>
+                <div id="graphMandato" className={`graph` + this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? null : "hidden"} ></div>
+                <div id="graphVotacoes" className={`graph` + this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? null : "hidden"}></div>
+                {/* {this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? (<div id="graphMandato" className="graph"></div>) : null} */}
+                {/* {this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? (<div id="graphVotacoes" className="graph"></div>) : null} */}
             </main>
 
         )
@@ -573,20 +482,22 @@ export default class ComparacaoPoliticos extends React.Component {
 
     displayFirstPolitician = () => {
 
-        var foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
+        let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
 
         if (foundFirstPolitician) {
-                this.setState(prevState => ({
-                    selectedPoliticianFirst:
-                        foundFirstPolitician.IdentificacaoParlamentar
-                }))
-            } else {
-                this.setState({
-                    notFoundFirstPolitician: true,
-                    openFirstPoliticianModal: true
-                })
-            }
-            return
+            console.log(foundFirstPolitician)
+            this.setState(prevState => ({
+                selectedPoliticianFirst:
+                    foundFirstPolitician.IdentificacaoParlamentar
+            }))
+        } else {
+            console.log("else")
+            this.setState({
+                notFoundFirstPolitician: true,
+                openFirstPoliticianModal: true
+            })
+        }
+        return
     }
 
     displaySecondPolitician = () => {

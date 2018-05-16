@@ -27,7 +27,8 @@ export default class Pesquisa extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pesquisas: []
+      pesquisas: [],
+      done: false
     }
   }
 
@@ -39,12 +40,14 @@ export default class Pesquisa extends React.Component {
         "accept": "application/json"
       }
     }).then((res) => {
+      console.log(res)
       let pesquisas = [];
 
       if (res.data) {
         res.data.forEach(pesquisa => {
           pesquisas.push(
             {
+              "id": pesquisa._id,
               "titulo": pesquisa.titulo,
               "descricao": pesquisa.descricao,
               "opcoes": pesquisa.politicos
@@ -70,40 +73,69 @@ export default class Pesquisa extends React.Component {
     this.setState({ selected: id });
   }
 
+
+
   render() {
     const user = cookie.get('user');
     const pesquisas = this.state.pesquisas;
     const teste = ["0", "1", "2", "3"];
 
-    console.log('pesquisas:', pesquisas);
-    if (true) {
-      return (
-        <div className="card-container">
-          {
-            pesquisas.map((pesquisa) => {
-              return (
+    return (
+      <div className="card-container">
+        {
+          pesquisas.map((pesquisa, i) => {
+            let politico_id = '';
+            return (
               <Card className="card">
                 <CardTitle title={pesquisa.titulo} subtitle={pesquisa.descricao} className="card-title" />
-                <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup">
-                {
-                  pesquisa.opcoes.map((opcao) => {
-                    return (<RadioButton
-                      value={opcao.politico._id}
-                      label={opcao.politico.nome_eleitoral}
-                      style={styles.radioButton}
-                      className="radio-button"
-                    />)
-                  })
-                }
+                <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup" key={i + "pesquisa"} onChange={(event, value) => {
+                  politico_id = value
+                }}>
+                  {
+                    pesquisa.opcoes.map((opcao, i) => {
+                      return (<RadioButton
+                        value={opcao.politico._id}
+                        label={opcao.politico.nome_eleitoral}
+                        style={styles.radioButton}
+                        key={i + "politico"}
+                        className="radio-button"
+                      />)
+                    })
+                  }
                 </RadioButtonGroup>
                 <CardActions>
-                  <FlatButton label="Votar" secondary={true} fullWidth={true} />
+                  <FlatButton label="Votar" secondary={true} fullWidth={true} onClick={() => { this.makeVote(pesquisa.id, politico_id) }} />
                 </CardActions>
               </Card>);
-            })
-          }
-        </div>
-      );
-    }
+          })
+        }
+      </div>
+    );
+
   };
+
+  makeVote = (pesquisa_id, politico_id) => {
+    axios.post(`http://localhost:8081/api/pesquisa/${pesquisa_id}/votar/${politico_id}`)
+      .then((response) => {
+        this.getResults(pesquisa_id)
+        this.setState({
+          done: true
+        })
+      })
+      .catch(function (error) {
+        alert(error);
+      });
+  }
+
+  getResults = (pesquisa_id) => {
+    console.log("get results")
+    axios.get(`http://localhost:8081/api/pesquisa/${pesquisa_id}`)
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }
+
 };

@@ -53,14 +53,7 @@ export default class ListaPesquisas extends React.PureComponent {
     }
   }
 
-  handleDelete() {
-    this.setState({
-      dialogConfirmationMessage: 'Deseja realmente deletar a pesquisa?'
-    })
-
-  }
-
-  handleConfirmDialog(id) {
+  handleDelete(id) {
     return () => {
       axios.delete(`http://localhost:8081/pesquisa/${id}`).then(() => {
         this.setState({
@@ -75,6 +68,7 @@ export default class ListaPesquisas extends React.PureComponent {
       })
     }
   }
+
 
   renderHeaderColumns(label) {
     return (
@@ -147,16 +141,6 @@ export default class ListaPesquisas extends React.PureComponent {
             })
           }}
         />
-        <ConfirmationDialog
-          open={!!this.state.dialogConfirmationMessage}
-          message={this.state.dialogConfirmationMessage}
-          handleConfirm={this.handleConfirmDialog}
-          handleClose={this.handleClose}
-          onRequestClose={() => {
-            this.setState({
-              dialogConfirmationMessage: '',
-            })
-          }} />
       </React.Fragment>
     )
   }

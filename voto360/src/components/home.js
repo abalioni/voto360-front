@@ -1,8 +1,10 @@
 import React from 'react'
 import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
+import Autosuggest from 'react-autosuggest';
 import axios from 'axios'
 import '../dist/css/home.css'
+
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -12,11 +14,14 @@ export default class Home extends React.Component {
       politicianList: [],
       selectedPolitician: "",
       politiciansNames: [],
-      selectedPolitician: {}
+      selectedPolitician: {},
+      value: '',
+      suggestions: []
 
     }
 
   }
+
   componentDidMount() {
     axios({
       method: 'get',
@@ -29,11 +34,6 @@ export default class Home extends React.Component {
         this.setState({
           politicianList: res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar
         })
-        var names = []
-        res.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar.forEach((politicianInfo, index) => {
-          names.push(politicianInfo.IdentificacaoParlamentar.NomeParlamentar)
-        })
-        this.setState({ politiciansNames: names })
         return res;
       })
       .catch((error) => {
@@ -42,32 +42,73 @@ export default class Home extends React.Component {
       })
   }
 
+  getSuggestionValue = (suggestion) => suggestion.IdentificacaoParlamentar.NomeParlamentar;
+
+  renderSuggestion = (suggestion) => {
+    return (<div>
+      {suggestion.IdentificacaoParlamentar.NomeParlamentar}
+    </div>)
+  };
+
+  getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    return inputLength === 0 ? [] : this.state.politicianList.filter(politician =>
+      politician.IdentificacaoParlamentar.NomeParlamentar.toLowerCase().slice(0, inputLength) === inputValue
+    );
+  };
+
+  onChange = (event, { newValue }) => {
+    this.setState({
+      value: newValue
+    });
+  };
+
+  // Autosuggest will call this function every time you need to update suggestions.
+  // You already implemented this logic above, so just use it.
+  onSuggestionsFetchRequested = ({ value }) => {
+    this.setState({
+      suggestions: this.getSuggestions(value)
+    });
+  };
+
+  // Autosuggest will call this function every time you need to clear suggestions.
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  };
+
+
+
   render() {
+    const { value, suggestions } = this.state;
+
+    const inputProps = {
+      placeholder: 'Escolha o Político',
+      value,
+      onChange: this.onChange
+    };
+
     return (<div>
       <div className="main-section">
         <AppName />
         <div className="search-bar-container">
           <div className="search-n-button">
-          <AutoComplete
-              className="search-input"
-              hintText="Pesquise o Politico"
-              underlineShow={false}
-              inputStyle={{ backgroundColor:'#FAFAFA'}}
-              filter={AutoComplete.fuzzyFilter}
-              dataSource={this.state.politiciansNames}
-              maxSearchResults={10}
-              onNewRequest={(text, index) => {
-                this.setState(prevState => ({
-                  selectedPolitician: {
-                    ...prevState.selectedPolitician,
-                    NomeParlamentar: text
-                  }
-                }))
-                this.displayPolitician()
-            }}
-          />
-            <RaisedButton label="Pesquisar" onClick={this.displayPolitician} backgroundColor='rgb(26, 35, 126)' labelColor='white' className="button" />
-        </div>
+            <Autosuggest
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+              getSuggestionValue={this.getSuggestionValue}
+              renderSuggestion={this.renderSuggestion}
+              inputProps={inputProps}
+              onSuggestionSelected={(event, suggestionValue) => {
+                this.displayPolitician(suggestionValue)
+              }}
+            />
+            <button type="button" onClick={this.goToPoliticianProfile} className="search-button">Pesquisar</button>
+            {/* <RaisedButton label="Pesquisar" onClick={this.displayPolitician} backgroundColor='rgb(26, 35, 126)' labelColor='white' className="button" /> */}
+          </div>
         </div>
       </div>
       <MiddleBar />
@@ -75,19 +116,24 @@ export default class Home extends React.Component {
     </div>)
   }
 
-  displayPolitician = () => {
+  displayPolitician = (suggestion) => {
+    console.log(suggestion)
     this.state.politicianList.forEach((politician, index) => {
-      if (politician.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedPolitician.NomeParlamentar) {
-        this.setState(prevState => ({
-          selectedPolitician:
-            politician.IdentificacaoParlamentar
-        }))
-        this.props.history.push(`/perfilPolitico/`+ this.state.selectedPolitician.CodigoParlamentar )
+      if (politician.IdentificacaoParlamentar.NomeParlamentar === suggestion.suggestionValue) {
+        this.setState({
+          selectedPolitician: politician.IdentificacaoParlamentar
+        });
         return
       }
     })
   }
+
+  goToPoliticianProfile = () => {
+    console.log("GO DEMONIO GO")
+    this.props.history.push(`/perfilPolitico/` + this.state.selectedPolitician.CodigoParlamentar)
+  }
 }
+
 
 const AppName = () => (
   <div className="app-name">

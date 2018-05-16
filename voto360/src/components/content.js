@@ -106,10 +106,10 @@ class Content extends Component {
               )
           }
 
-          <Divider /> 
-          <Subheader>Votação</Subheader>
           {
-            user && user.cargo === 'eleitor' && (
+            user && user.cargo === 'eleitor' && (<div>
+              <Divider /> 
+              <Subheader>Votação</Subheader>
               <Link
                 style={{
                   textDecoration: 'none'
@@ -120,6 +120,7 @@ class Content extends Component {
                   Pesquisas de Voto
                 </MenuItem>
               </Link>
+              </div>
             )
           }
 
@@ -273,6 +274,8 @@ class Content extends Component {
             ? <FormPesquisa {...props} />
             : null)}
         />
+        <Route
+          path="/perfilPolitico/:id" component={SelectedPoliticianProfile} />
         <Route
           path="/alteraCadastroPolitico"
           render={(props) => ((user && (user.cargo === 'politico'))
