@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import AutoComplete from 'material-ui/AutoComplete';
+import { AutoComplete, RefreshIndicator } from 'material-ui';
 import { gray900 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
@@ -10,6 +10,8 @@ import echarts from 'echarts';
 import { List, ListItem, RaisedButton } from 'material-ui';
 import PoliticianInfoDropdown from './dropdown/politicianInfoDropdown'
 import SimpleDialog from './dialogs/SimpleDialog'
+import TablePolitician from './TablePolitician'
+
 
 import '../dist/css/comparacaopoliticos.css'
 
@@ -167,7 +169,6 @@ export default class ComparacaoPoliticos extends React.Component {
                 "accept": "application/json"
             }
         }).then((res) => {
-            console.log("votacoes")
             const currentState = Object.assign({}, this.state)
             currentState.selectedPoliticianSecond.votacoes = res.data.VotacaoParlamentar.Parlamentar.Votacoes.Votacao.length
             this.setState(currentState)
@@ -316,10 +317,10 @@ export default class ComparacaoPoliticos extends React.Component {
             <main className="main-container">
                 <h2>Comparação de Políticos</h2>
                 <div className="content-container">
+                    <h3>Selecione o Político</h3>
                     <section className="politician-search-container">
                         <div className="politician-search">
-                            <h4>Selecione o Político</h4>
-                            <div>
+                            <div className="search-elements-container">
                                 <AutoComplete
                                     filter={AutoComplete.fuzzyFilter}
                                     dataSource={this.state.politiciansNames}
@@ -345,42 +346,7 @@ export default class ComparacaoPoliticos extends React.Component {
                                     }
                                     }
                                 />
-
-                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayFirstPolitician} />
-                            </div>
-                        </div>
-                        <Divider />
-                        <br />
-                        {this.state.selectedPoliticianFirst && this.state.selectedPoliticianFirst.NomeParlamentar ? (<div className="politician-search-results">
-                            <Avatar
-                                src={this.state.selectedPoliticianFirst.UrlFotoParlamentar}
-                                size={100}
-                            />
-                            <p> {this.state.selectedPoliticianFirst ? (<span>Nome: {this.state.selectedPoliticianFirst.NomeCompletoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianFirst ? (<span>Sexo: {this.state.selectedPoliticianFirst.SexoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianFirst ? (<span>Cargo: {this.state.selectedPoliticianFirst.FormaTratamento}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianFirst ? (<span>Sigla do Partido: {this.state.selectedPoliticianFirst.SiglaPartidoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianFirst ? (<span>Estado: {this.state.selectedPoliticianFirst.UfParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianFirst ? (<span>Página: <a href={this.state.selectedPoliticianFirst.UrlPaginaParlamentar}>Ir para a página</a> </span>) : undefined}</p>
-                            <Divider />
-                            <PoliticianInfoDropdown title="Proposições">
-                                <Proposicoes id={this.state.selectedPoliticianFirst.CodigoParlamentar} />
-                            </PoliticianInfoDropdown>
-
-                        </div>)
-                            : null
-                        }
-
-                    </section>
-                    <section className="politician-search-container">
-                        <div className="politician-search">
-                            <h4>Selecione o Político</h4>
-                            <div>
+                                <h4>+</h4>
                                 <AutoComplete
                                     filter={AutoComplete.fuzzyFilter}
                                     dataSource={this.state.politiciansNames}
@@ -390,11 +356,9 @@ export default class ComparacaoPoliticos extends React.Component {
                                     underlineStyle={styles.underlineStyle}
                                     onNewRequest={(text, index) => {
                                         this.setState(prevState => ({
-                                            selectedPoliticianSecond: {
                                                 selectedSecondNomeParlamentar: text,
                                                 notFoundSecondPolitician: false,
                                                 openSecondPoliticianModal: false
-                                            }
                                         }))
                                     }}
                                     onUpdateInput={(text) => {
@@ -407,35 +371,17 @@ export default class ComparacaoPoliticos extends React.Component {
                                         }
                                     }}
                                 />
-                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displaySecondPolitician} />
+
+                            </div>
+                            <div className="search-btn-container">
+                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayComparison} fullWidth={true} />
                             </div>
                         </div>
-                        <Divider />
-                        <br />
-                        {this.state.selectedPoliticianSecond && this.state.selectedPoliticianSecond.NomeParlamentar ? (<div className="politician-search-results">
-                            <Avatar
-                                src={this.state.selectedPoliticianSecond.UrlFotoParlamentar}
-                                size={100}
-                            />
-                            <p> {this.state.selectedPoliticianSecond ? (<span>Nome: {this.state.selectedPoliticianSecond.NomeCompletoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? (<span>Sexo: {this.state.selectedPoliticianSecond.SexoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? (<span>Cargo: {this.state.selectedPoliticianSecond.FormaTratamento}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? (<span>Sigla do Partido: {this.state.selectedPoliticianSecond.SiglaPartidoParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? (<span>Estado: {this.state.selectedPoliticianSecond.UfParlamentar}</span>) : undefined}</p>
-                            <Divider />
-                            <p>{this.state.selectedPoliticianSecond ? (<span>Página: <a href={this.state.selectedPoliticianSecond.UrlPaginaParlamentar}>Ir para a página</a> </span>) : undefined}</p>
-                            <Divider />
-                            <PoliticianInfoDropdown title="Proposições">
-                                <Proposicoes id={this.state.selectedPoliticianSecond.CodigoParlamentar} />
-                            </PoliticianInfoDropdown>
 
-                        </div>)
-                            : null
-                        }
+                    </section>
+                    <section className="politician-search-container">
+
+                        {this.state.selectedPoliticianFirst && this.state.selectedPoliticianSecond ? <TablePolitician /> : null}
 
 
                     </section>
@@ -478,6 +424,32 @@ export default class ComparacaoPoliticos extends React.Component {
 
     findSecondPolitician = (element) => {
         return element.IdentificacaoParlamentar.NomeParlamentar === this.state.selectedSecondNomeParlamentar
+    }
+
+    displayComparison = () => {
+        let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
+        var foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
+
+        if (foundFirstPolitician && foundSecondPolitician) {
+            console.log(foundFirstPolitician)
+            this.setState(prevState => ({
+                selectedPoliticianFirst:
+                    foundFirstPolitician.IdentificacaoParlamentar
+
+            }, {
+                    selectedPoliticianFirst:
+                        foundFirstPolitician.IdentificacaoParlamentar
+                }))
+        } else {
+            console.log("else")
+            this.setState({
+                notFoundFirstPolitician: true,
+                openFirstPoliticianModal: true
+            })
+        }
+        return
+
+
     }
 
     displayFirstPolitician = () => {

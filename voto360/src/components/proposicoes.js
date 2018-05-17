@@ -22,9 +22,10 @@ export default class Proposicoes extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.id !== nextProps.id) {
-            var candidato = nextProps.id;
+    componentWillMount(nextProps) {
+        console.log(nextProps)
+        if (this.props.idpolitico) {
+            var candidato = this.props.idpolitico;
             axios({
                 method: 'get',
                 url: `http://legis.senado.leg.br/dadosabertos/senador/${candidato}`,

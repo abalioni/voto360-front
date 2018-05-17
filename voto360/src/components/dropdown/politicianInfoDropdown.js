@@ -29,7 +29,7 @@ export default class PoliticianInfoDropdown extends React.Component {
 
 
   render() {
-      
+      console.log("componente pai")
     return (
         <div className="container-drop" > 
             <button type="button" onClick={this.toggleExpandedClick} className="button">{this.props.title}</button>

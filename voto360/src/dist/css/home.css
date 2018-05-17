@@ -15,7 +15,7 @@
 
 .main-section {
     width: 100%;
-    height: 350px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     background-color: #bdbdbd;
@@ -37,7 +37,7 @@
     display: flex;
     flex-direction: row;
     align-content: center;
-    align-items: center;
+    justify-content: center;
     width: 50%;
 }
 
@@ -49,12 +49,13 @@
 .search-button {
     color: white;
     font-size: 16px;
-    padding: 12px;
+    padding: 10px;
     background-color: rgb(26, 35, 126);
+    border-radius: 5px;
 }
 .middleBar {
     width: 100%;
-    height: 70px;
+    height: 50px;
     background-color: #757575;
 }
 
@@ -95,7 +96,7 @@ body {
   }
   
   .react-autosuggest__input {
-    width: 240px;
+    width: 440px;
     height: 30px;
     padding: 10px 20px;
     font-family: Helvetica, sans-serif;
@@ -122,7 +123,7 @@ body {
     display: block;
     position: absolute;
     top: 51px;
-    width: 280px;
+    width: 480px;
     border: 1px solid #aaa;
     background-color: #fff;
     font-family: Helvetica, sans-serif;
@@ -148,3 +149,18 @@ body {
     background-color: #ddd;
   }
   
+  .row {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      align-items: center;
+      
+  }
+
+  .inner-div {
+      padding: 5px;
+      margin: 10px;
+      align-self: center;
+      width: 50%;
+      height: 100px;
+  }

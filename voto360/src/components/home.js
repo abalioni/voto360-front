@@ -79,7 +79,21 @@ export default class Home extends React.Component {
     });
   };
 
+  displayPolitician = (suggestion) => {
+    console.log(suggestion)
+    this.state.politicianList.forEach((politician, index) => {
+      if (politician.IdentificacaoParlamentar.NomeParlamentar === suggestion.suggestionValue) {
+        this.setState({
+          selectedPolitician: politician.IdentificacaoParlamentar
+        });
+        return
+      }
+    })
+  }
 
+  goToPoliticianProfile = () => {
+    this.props.history.push(`/perfilPolitico/` + this.state.selectedPolitician.CodigoParlamentar)
+  }
 
   render() {
     const { value, suggestions } = this.state;
@@ -107,7 +121,6 @@ export default class Home extends React.Component {
               }}
             />
             <button type="button" onClick={this.goToPoliticianProfile} className="search-button">Pesquisar</button>
-            {/* <RaisedButton label="Pesquisar" onClick={this.displayPolitician} backgroundColor='rgb(26, 35, 126)' labelColor='white' className="button" /> */}
           </div>
         </div>
       </div>
@@ -116,22 +129,7 @@ export default class Home extends React.Component {
     </div>)
   }
 
-  displayPolitician = (suggestion) => {
-    console.log(suggestion)
-    this.state.politicianList.forEach((politician, index) => {
-      if (politician.IdentificacaoParlamentar.NomeParlamentar === suggestion.suggestionValue) {
-        this.setState({
-          selectedPolitician: politician.IdentificacaoParlamentar
-        });
-        return
-      }
-    })
-  }
 
-  goToPoliticianProfile = () => {
-    console.log("GO DEMONIO GO")
-    this.props.history.push(`/perfilPolitico/` + this.state.selectedPolitician.CodigoParlamentar)
-  }
 }
 
 
@@ -155,6 +153,15 @@ const MiddleBar = () => (
 
 const BottomSection = () => (
   <div>
-
+    <h2>Sobre o site</h2>
+    <div className="row">
+      <div className="inner-div">
+        <p>Este sistema foi desenvolvido pelos alunos do 8º semestre do curso de Sistemas de Informação da faculdade UniMetrocamp</p>
+      </div>
+      <div className="inner-div">
+        <p>As informações aqui apresentadas são fornecidas pela API de Dados Abertos do Senado Federal</p>
+        <image src='../dist/img/senado-logo.svg' alt="Logo do Senado" height="42" width="42"/>
+      </div>
+    </div>
   </div>
 )
