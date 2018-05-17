@@ -69,7 +69,8 @@ export default class ComparacaoPoliticos extends React.Component {
                 autorias: 0
             },
             notFoundSecondPolitician: false,
-            openSecondPoliticianModal: false
+            openSecondPoliticianModal: false,
+            done: false
         }
     }
 
@@ -317,7 +318,7 @@ export default class ComparacaoPoliticos extends React.Component {
             <main className="main-container">
                 <h2>Comparação de Políticos</h2>
                 <div className="content-container">
-                    <h3>Selecione o Político</h3>
+                    <h3 className="heading-center">Selecione o Político</h3>
                     <section className="politician-search-container">
                         <div className="politician-search">
                             <div className="search-elements-container">
@@ -346,7 +347,7 @@ export default class ComparacaoPoliticos extends React.Component {
                                     }
                                     }
                                 />
-                                <h4>+</h4>
+                                <div><h4>+</h4></div>
                                 <AutoComplete
                                     filter={AutoComplete.fuzzyFilter}
                                     dataSource={this.state.politiciansNames}
@@ -356,9 +357,9 @@ export default class ComparacaoPoliticos extends React.Component {
                                     underlineStyle={styles.underlineStyle}
                                     onNewRequest={(text, index) => {
                                         this.setState(prevState => ({
-                                                selectedSecondNomeParlamentar: text,
-                                                notFoundSecondPolitician: false,
-                                                openSecondPoliticianModal: false
+                                            selectedSecondNomeParlamentar: text,
+                                            notFoundSecondPolitician: false,
+                                            openSecondPoliticianModal: false
                                         }))
                                     }}
                                     onUpdateInput={(text) => {
@@ -381,9 +382,9 @@ export default class ComparacaoPoliticos extends React.Component {
                     </section>
                     <section className="politician-search-container">
 
-                        {this.state.selectedPoliticianFirst && this.state.selectedPoliticianSecond ? <TablePolitician /> : null}
-
-
+                        {this.state.done ? <TablePolitician firstPolitician={this.state.selectedPoliticianFirst} secondPolitician={this.state.selectedPoliticianSecond} /> : null}
+                        {this.state.done ? (<div id="graphMandato" className={`graph`}></div>) : null}
+                        {this.state.done ? (<div id="graphVotacoes" className={`graph`}></div>) : null}
                     </section>
                 </div>
 
@@ -409,10 +410,6 @@ export default class ComparacaoPoliticos extends React.Component {
                         })
                     }}
                 />
-                <div id="graphMandato" className={`graph` + this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? null : "hidden"} ></div>
-                <div id="graphVotacoes" className={`graph` + this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? null : "hidden"}></div>
-                {/* {this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? (<div id="graphMandato" className="graph"></div>) : null} */}
-                {/* {this.state.selectedPoliticianSecond.mandatos && this.state.selectedPoliticianFirst.mandatos ? (<div id="graphVotacoes" className="graph"></div>) : null} */}
             </main>
 
         )
@@ -428,18 +425,23 @@ export default class ComparacaoPoliticos extends React.Component {
 
     displayComparison = () => {
         let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
-        var foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
+        let foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
 
         if (foundFirstPolitician && foundSecondPolitician) {
-            console.log(foundFirstPolitician)
-            this.setState(prevState => ({
-                selectedPoliticianFirst:
-                    foundFirstPolitician.IdentificacaoParlamentar
-
-            }, {
-                    selectedPoliticianFirst:
-                        foundFirstPolitician.IdentificacaoParlamentar
+            if (foundFirstPolitician === foundSecondPolitician) {
+                this.setState(({
+                    samePoliticianError: true
                 }))
+            } else {
+                this.setState(({
+                    selectedPoliticianFirst: foundFirstPolitician.IdentificacaoParlamentar,
+                    selectedPoliticianSecond: foundSecondPolitician.IdentificacaoParlamentar,
+                    done: true
+                }), function () {
+                    console.log(this.state)
+                })
+            }
+
         } else {
             console.log("else")
             this.setState({
@@ -452,40 +454,7 @@ export default class ComparacaoPoliticos extends React.Component {
 
     }
 
-    displayFirstPolitician = () => {
 
-        let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
 
-        if (foundFirstPolitician) {
-            console.log(foundFirstPolitician)
-            this.setState(prevState => ({
-                selectedPoliticianFirst:
-                    foundFirstPolitician.IdentificacaoParlamentar
-            }))
-        } else {
-            console.log("else")
-            this.setState({
-                notFoundFirstPolitician: true,
-                openFirstPoliticianModal: true
-            })
-        }
-        return
-    }
 
-    displaySecondPolitician = () => {
-        var foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
-
-        if (foundSecondPolitician) {
-            this.setState(prevState => ({
-                selectedPoliticianSecond:
-                    foundSecondPolitician.IdentificacaoParlamentar
-            }))
-        } else {
-            this.setState({
-                notFoundSecondPolitician: true,
-                openSecondPoliticianModal: true
-            })
-        }
-        return
-    }
 }

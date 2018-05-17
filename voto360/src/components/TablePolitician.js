@@ -38,7 +38,7 @@ export default class TablePolitician extends Component {
             height: '300px',
         };
     }
-    
+
 
     handleToggle = (event, toggled) => {
         this.setState({
@@ -51,6 +51,7 @@ export default class TablePolitician extends Component {
     };
 
     render() {
+        console.log(this.props)
         return (
             <div>
                 <Table
@@ -66,14 +67,9 @@ export default class TablePolitician extends Component {
                         enableSelectAll={this.state.enableSelectAll}
                     >
                         <TableRow>
-                            <TableHeaderColumn colSpan="3" tooltip="Super Header" style={{ textAlign: 'center' }}>
-                                Acir x Ana
-              </TableHeaderColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableHeaderColumn tooltip="The ID">Nome</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="The Name">Acir</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="The Status">Ana</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="The ID">Informação</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="The Name"> {this.props.firstPolitician && this.props.firstPolitician.NomeParlamentar ? this.props.firstPolitician.NomeParlamentar : null}</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="The Status">{this.props.secondPolitician && this.props.secondPolitician.NomeParlamentar ? this.props.secondPolitician.NomeParlamentar : null} </TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody
@@ -82,23 +78,41 @@ export default class TablePolitician extends Component {
                         showRowHover={this.state.showRowHover}
                         stripedRows={this.state.stripedRows}
                     >
-                        {/* {tableData.map((row, index) => (
-                            <TableRow key={index}>
-                                <TableRowColumn>{index}</TableRowColumn>
-                                <TableRowColumn>{row.name}</TableRowColumn>
-                                <TableRowColumn>{row.status}</TableRowColumn>
-                            </TableRow>
-                        ))} */}
+                        <TableRow>
+                            <TableRowColumn>Nome completo</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.NomeCompletoParlamentar ? this.props.firstPolitician.NomeCompletoParlamentar : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.NomeCompletoParlamentar ? this.props.secondPolitician.NomeCompletoParlamentar : null}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn>Email parlamentar</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.EmailParlamentar ? this.props.firstPolitician.EmailParlamentar : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.EmailParlamentar ? this.props.secondPolitician.EmailParlamentar : null}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn>Cargo</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.FormaTratamento ? this.props.firstPolitician.FormaTratamento : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.FormaTratamento ? this.props.secondPolitician.FormaTratamento : null}</TableRowColumn>
+                        </TableRow>
                         <TableRow>
                             <TableRowColumn>Sexo</TableRowColumn>
-                            <TableRowColumn>Masculino</TableRowColumn>
-                            <TableRowColumn>Feminino</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.SexoParlamentar ? this.props.firstPolitician.SexoParlamentar : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.SexoParlamentar ? this.props.secondPolitician.SexoParlamentar : null}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn>Partido</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.SiglaPartidoParlamentar ? this.props.firstPolitician.SiglaPartidoParlamentar : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.SiglaPartidoParlamentar ? this.props.secondPolitician.SiglaPartidoParlamentar : null}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn>Mandatos</TableRowColumn>
+                            <TableRowColumn>{this.props.firstPolitician && this.props.firstPolitician.mandatos ? this.props.firstPolitician.mandatos : null}</TableRowColumn>
+                            <TableRowColumn>{this.props.secondPolitician && this.props.secondPolitician.mandatos ? this.props.secondPolitician.mandatos : null}</TableRowColumn>
                         </TableRow>
                     </TableBody>
-                    
+
                 </Table>
 
-            
+
             </div>
         );
     }
