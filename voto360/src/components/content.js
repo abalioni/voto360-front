@@ -229,7 +229,7 @@ class Content extends Component {
         />
         <Route
           path="/votar"
-          render={(props) => ((user && user.cargo === 'eleitor')
+          render={(props) => ((user && user.cargo === 'eleitor' || user.cargo === 'politico')
             ? <Pesquisa {...props} />
             : null)}
         />

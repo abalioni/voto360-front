@@ -30,7 +30,8 @@ export default class ListaPesquisas extends React.PureComponent {
     this.state = {
       dialogMessage: '',
       dialogConfirmationMessage: '',
-      pesquisas: []
+      pesquisas: [],
+      politicos: []
     }
   }
   componentWillMount() {
@@ -80,13 +81,17 @@ export default class ListaPesquisas extends React.PureComponent {
 
   getPollPoliticians = (itemPesquisa) => {
     let politico = itemPesquisa.politico
+
+    let politicosList = this.state.politicos
+
     axios.get(`http://localhost:8081/politico/${politico}`).then((res) => {
-      console.log(res)
-      return res
-      // this.setState({ pesquisas: pesquisas.data })
+      politicosList.push(res.data.nome_eleitoral)
+      this.setState({ politicos: politicosList })
+      return politicosList
+
     }).catch(() => {
       this.setState({
-        pesquisas: [],
+        politicos: [],
         dialogMessage: 'Problemas ao buscar as pesquisas de voto'
       })
     })
@@ -103,7 +108,16 @@ export default class ListaPesquisas extends React.PureComponent {
           {itemPesquisa.descricao}
         </TableRowColumn>
         <TableRowColumn>
-          {itemPesquisa.politicos.map((politician) => { var politicos = this.getPollPoliticians(politician); console.log(politicos) })}
+          {itemPesquisa.politicos
+            .map((politician) => {
+              console.log(politician)
+              var politicos = this.getPollPoliticians(politician);
+              return (
+                <div>
+                  {politicos}
+                </div>
+              )
+            })}
         </TableRowColumn>
         <TableRowColumn>
           <button onClick={this.handleEdit(id)} type="button">

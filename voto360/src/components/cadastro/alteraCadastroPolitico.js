@@ -84,7 +84,7 @@ export default class AlteraCadastroPolitico extends React.Component {
         var id = this.state.user._id;
         axios.put(`http://localhost:8081/api/pessoa/${id}/politico`, request)
           .then((response) => {
-            this.handleSuccess
+            this.handleSuccess()
           })
           .catch((error) => {
             this.handleFailure()

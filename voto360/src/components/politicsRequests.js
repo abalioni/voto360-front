@@ -208,7 +208,8 @@ export default class PoliticsRequests extends React.Component {
             
           </CardText>
             <CardActions>
-              <FlatButton label="Aprovar" onClick={this.handleApprovePolitician} />
+              
+              {this.state.selected_politician && (this.state.selected_politician.perfil_aprovado === "approved") ? null : <FlatButton label="Aprovar" onClick={this.handleApprovePolitician} />}
               {this.state.selected_politician && (this.state.selected_politician.perfil_aprovado === "pending") ? <FlatButton label="Reprovar" onClick={this.handleRejectPolitician}/> : null}
               {this.state.selected_politician && (this.state.selected_politician.perfil_aprovado === "approved") ? <FlatButton label="Desativar" onClick={this.handleDeactivatePolitician}/> : null}
             </CardActions>

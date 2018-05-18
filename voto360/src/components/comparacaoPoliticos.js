@@ -70,7 +70,8 @@ export default class ComparacaoPoliticos extends React.Component {
             },
             notFoundSecondPolitician: false,
             openSecondPoliticianModal: false,
-            done: false
+            done: false,
+            errorMessage: ''
         }
     }
 
@@ -156,6 +157,9 @@ export default class ComparacaoPoliticos extends React.Component {
             if (optionsVotacoes && typeof optionsVotacoes === "object") {
                 chartVotacoes.setOption(optionsVotacoes, true);
             }
+            this.setState({
+                firstPoliticianVotacoes: true
+            })
         })
             .catch((error) => {
                 console.log(error);
@@ -207,6 +211,9 @@ export default class ComparacaoPoliticos extends React.Component {
             if (optionsVotacoes && typeof optionsVotacoes === "object") {
                 chartVotacoes.setOption(optionsVotacoes, true);
             }
+            this.setState({
+                secondPoliticianVotacoes: true
+            })
         })
             .catch((error) => {
                 console.log(error);
@@ -256,6 +263,9 @@ export default class ComparacaoPoliticos extends React.Component {
             if (optionsMandatos && typeof optionsMandatos === "object") {
                 chartMandato.setOption(optionsMandatos, true);
             }
+            this.setState({
+                firstPoliticianMandato: true
+            })
         })
             .catch((error) => {
                 console.log(error);
@@ -305,6 +315,9 @@ export default class ComparacaoPoliticos extends React.Component {
             if (optionsMandatos && typeof optionsMandatos === "object") {
                 chartMandato.setOption(optionsMandatos, true);
             }
+            this.setState({
+                secondPoliticianMandato: true
+            })
         })
             .catch((error) => {
                 console.log(error);
@@ -318,9 +331,9 @@ export default class ComparacaoPoliticos extends React.Component {
             <main className="main-container">
                 <h2>Comparação de Políticos</h2>
                 <div className="content-container">
-                    <h3 className="heading-center">Selecione o Político</h3>
                     <section className="politician-search-container">
                         <div className="politician-search">
+                            <h3 className="heading-center">Selecione o Político</h3>
                             <div className="search-elements-container">
                                 <AutoComplete
                                     filter={AutoComplete.fuzzyFilter}
@@ -347,27 +360,51 @@ export default class ComparacaoPoliticos extends React.Component {
                                     }
                                     }
                                 />
-                                <div><h4>+</h4></div>
+                                <i className="material-icons">add_circle</i>
                                 <AutoComplete
                                     filter={AutoComplete.fuzzyFilter}
                                     dataSource={this.state.politiciansNames}
                                     maxSearchResults={5}
                                     floatingLabelText="Pesquise o político por nome"
+                                    errorText={this.state.samePoliticianError ? this.state.errorMessage : null}
                                     floatingLabelStyle={styles.floatingLabelStyle}
                                     underlineStyle={styles.underlineStyle}
                                     onNewRequest={(text, index) => {
-                                        this.setState(prevState => ({
-                                            selectedSecondNomeParlamentar: text,
-                                            notFoundSecondPolitician: false,
-                                            openSecondPoliticianModal: false
-                                        }))
-                                    }}
-                                    onUpdateInput={(text) => {
-                                        if (text.length >= 3) {
+                                        if (this.state.selectedFirstNomeParlamentar === text) {
                                             this.setState({
                                                 selectedSecondNomeParlamentar: text,
                                                 notFoundSecondPolitician: false,
-                                                openSecondPoliticianModal: false
+                                                openSecondPoliticianModal: false,
+                                                samePoliticianError: true,
+                                                errorMessage: 'Por favor, selecione um político diferente.',
+                                            })
+                                        } else {
+                                            this.setState(prevState => ({
+                                                selectedSecondNomeParlamentar: text,
+                                                notFoundSecondPolitician: false,
+                                                openSecondPoliticianModal: false,
+                                                samePoliticianError: false,
+                                                errorMessage: ''
+                                            }))
+                                        }
+
+                                    }}
+                                    onUpdateInput={(text) => {
+                                        if (this.state.selectedFirstNomeParlamentar === text) {
+                                            this.setState({
+                                                selectedSecondNomeParlamentar: text,
+                                                notFoundSecondPolitician: false,
+                                                openSecondPoliticianModal: false,
+                                                samePoliticianError: true,
+                                                errorMessage: 'Por favor, selecione um político diferente.'
+                                            })
+                                        } else if (text.length >= 3) {
+                                            this.setState({
+                                                selectedSecondNomeParlamentar: text,
+                                                notFoundSecondPolitician: false,
+                                                openSecondPoliticianModal: false,
+                                                samePoliticianError: false,
+                                                errorMessage: ''
                                             })
                                         }
                                     }}
@@ -375,16 +412,17 @@ export default class ComparacaoPoliticos extends React.Component {
 
                             </div>
                             <div className="search-btn-container">
-                                <RaisedButton label="Pesquisar" backgroundColor='#BDBDBD' onClick={this.displayComparison} fullWidth={true} />
+                                <RaisedButton label="Comparar" backgroundColor='#BDBDBD' primary={true} onClick={this.displayComparison} fullWidth={true} />
                             </div>
                         </div>
 
                     </section>
                     <section className="politician-search-container">
-
-                        {this.state.done ? <TablePolitician firstPolitician={this.state.selectedPoliticianFirst} secondPolitician={this.state.selectedPoliticianSecond} /> : null}
-                        {this.state.done ? (<div id="graphMandato" className={`graph`}></div>) : null}
-                        {this.state.done ? (<div id="graphVotacoes" className={`graph`}></div>) : null}
+                        <div>{this.state.done ? <TablePolitician firstPolitician={this.state.selectedPoliticianFirst} secondPolitician={this.state.selectedPoliticianSecond} /> : null}</div>
+                        <Divider />
+                            {this.state.done ? (<div id="graphMandato" className={`graph`}></div>) : null}
+                            {this.state.done ? (<div id="graphVotacoes" className={`graph`}></div>) : null}
+                        
                     </section>
                 </div>
 
@@ -424,32 +462,39 @@ export default class ComparacaoPoliticos extends React.Component {
     }
 
     displayComparison = () => {
-        let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
-        let foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
+        if (this.state.selectedFirstNomeParlamentar === this.state.selectedSecondNomeParlamentar) {
+            this.setState({
+                samePoliticianError: true,
+                errorMessage: 'Por favor, selecione um político diferente.'
+            })
+            return
+        } else {
+            let foundFirstPolitician = this.state.politicians.find((element) => this.findFirstPolitician(element))
+            let foundSecondPolitician = this.state.politicians.find((element) => this.findSecondPolitician(element))
 
-        if (foundFirstPolitician && foundSecondPolitician) {
-            if (foundFirstPolitician === foundSecondPolitician) {
-                this.setState(({
-                    samePoliticianError: true
-                }))
+            if (foundFirstPolitician && foundSecondPolitician) {
+                if (foundFirstPolitician === foundSecondPolitician) {
+                    this.setState(({
+                        samePoliticianError: true
+                    }))
+                } else {
+                    this.setState(({
+                        selectedPoliticianFirst: foundFirstPolitician.IdentificacaoParlamentar,
+                        selectedPoliticianSecond: foundSecondPolitician.IdentificacaoParlamentar,
+                        done: true
+                    }))
+                }
+
             } else {
-                this.setState(({
-                    selectedPoliticianFirst: foundFirstPolitician.IdentificacaoParlamentar,
-                    selectedPoliticianSecond: foundSecondPolitician.IdentificacaoParlamentar,
-                    done: true
-                }), function () {
-                    console.log(this.state)
+                this.setState({
+                    notFoundFirstPolitician: true,
+                    openFirstPoliticianModal: true
                 })
             }
-
-        } else {
-            console.log("else")
-            this.setState({
-                notFoundFirstPolitician: true,
-                openFirstPoliticianModal: true
-            })
+            return
         }
-        return
+
+
 
 
     }
