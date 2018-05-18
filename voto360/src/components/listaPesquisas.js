@@ -31,7 +31,7 @@ export default class ListaPesquisas extends React.PureComponent {
       dialogMessage: '',
       dialogConfirmationMessage: '',
       pesquisas: [],
-      politicos: []
+      politicos: {},
     }
   }
   componentWillMount() {
@@ -39,8 +39,10 @@ export default class ListaPesquisas extends React.PureComponent {
   }
   searchPolls() {
     axios.get('http://localhost:8081/pesquisa').then((pesquisas) => {
-      console.log(pesquisas.data)
       this.setState({ pesquisas: pesquisas.data })
+      pesquisas.data.forEach((pesquisa) => {
+        pesquisa.politicos.forEach((politico) => this.getPollPoliticians(politico.politico, pesquisa._id))
+      })
     }).catch(() => {
       this.setState({
         pesquisas: [],
@@ -79,19 +81,15 @@ export default class ListaPesquisas extends React.PureComponent {
     )
   }
 
-  getPollPoliticians = (itemPesquisa) => {
-    let politico = itemPesquisa.politico
-
-    let politicosList = this.state.politicos
-
-    axios.get(`http://localhost:8081/politico/${politico}`).then((res) => {
-      politicosList.push(res.data.nome_eleitoral)
+  getPollPoliticians = (politicoId, pesquisaId) => {
+    axios.get(`http://localhost:8081/politico/${politicoId}`).then((res) => {
+      const politicosList = Object.assign({}, this.state.politicos) 
+      politicosList[pesquisaId] = politicosList[pesquisaId] || []
+      politicosList[pesquisaId].push(res.data.nome_eleitoral)
       this.setState({ politicos: politicosList })
-      return politicosList
-
     }).catch(() => {
       this.setState({
-        politicos: [],
+        politicos: {},
         dialogMessage: 'Problemas ao buscar as pesquisas de voto'
       })
     })
@@ -108,16 +106,7 @@ export default class ListaPesquisas extends React.PureComponent {
           {itemPesquisa.descricao}
         </TableRowColumn>
         <TableRowColumn>
-          {itemPesquisa.politicos
-            .map((politician) => {
-              console.log(politician)
-              var politicos = this.getPollPoliticians(politician);
-              return (
-                <div>
-                  {politicos}
-                </div>
-              )
-            })}
+          {(this.state.politicos[id] || []).join(', ')}
         </TableRowColumn>
         <TableRowColumn>
           <button onClick={this.handleEdit(id)} type="button">
