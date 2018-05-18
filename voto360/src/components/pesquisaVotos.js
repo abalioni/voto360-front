@@ -8,6 +8,7 @@ import { cookie } from 'cookie_js'
 import { Redirect } from 'react-router-dom'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import SimpleDialog from './dialogs/SimpleDialog';
 
 import '../dist/css/pesquisa.css'
 
@@ -26,7 +27,8 @@ export default class Pesquisa extends React.Component {
     super(props)
     this.state = {
       pesquisas: [],
-      done: false
+      done: false,
+      open: false
     }
   }
 
@@ -110,6 +112,16 @@ export default class Pesquisa extends React.Component {
             })
           }
         </div>
+        <SimpleDialog
+                open={this.state.open}
+                title={this.state.done ? 'Voto computado' : 'Algo deu errado'}
+                message={this.state.done ? 'Seu voto foi efetuado com sucesso' : 'Algo deu errado, tente novamente mais tarde.'}
+                onRequestClose={() => {
+                    this.setState({
+                        open: false,
+                    })
+                }}
+            />
       </div>
     );
 
@@ -120,11 +132,16 @@ export default class Pesquisa extends React.Component {
       .then((response) => {
         this.getResults(pesquisa_id)
         this.setState({
-          done: true
+          done: true,
+          open: true
         })
       })
       .catch(function (error) {
         alert(error);
+        this.setState({
+          done: false,
+          open: true
+        })
       });
   }
 
