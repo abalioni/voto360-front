@@ -1,9 +1,7 @@
 import React from 'react'
 
 import axios from 'axios';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
+import { RaisedButton, Divider, Avatar } from 'material-ui';
 import PesquisaPoliticoItem from './pesquisaPoliticoItem'
 
 import { cookie } from 'cookie_js'
@@ -81,40 +79,43 @@ export default class Pesquisa extends React.Component {
     const teste = ["0", "1", "2", "3"];
 
     return (
-      <div className="card-container">
-        {
-          pesquisas.map((pesquisa, i) => {
-            let politico_id = '';
-            return (
-              <Card className="card">
-                <CardTitle title={pesquisa.titulo} subtitle={pesquisa.descricao} className="card-title" />
-                <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup" key={i + "pesquisa"} onChange={(event, value) => {
-                  politico_id = value
-                }}>
-                  {
-                    pesquisa.opcoes.map((opcao, i) => {
-                      return (<RadioButton
-                        value={opcao.politico._id}
-                        label={opcao.politico.nome_eleitoral}
-                        style={styles.radioButton}
-                        key={i + "politico"}
-                        className="radio-button"
-                      />)
-                    })
-                  }
-                </RadioButtonGroup>
-                <CardActions>
-                  <FlatButton label="Votar" secondary={true} fullWidth={true} onClick={() => { this.makeVote(pesquisa.id, politico_id) }} />
-                </CardActions>
-              </Card>);
-          })
-        }
+      <div>
+          <h2>Pesquisas de Voto</h2>
+        <div className="card-container">
+          {
+            pesquisas.map((pesquisa, indexPesquisa) => {
+              let politico_id = '';
+              return (
+                <Card className="card" id={indexPesquisa}>
+                  <CardTitle title={pesquisa.titulo} subtitle={pesquisa.descricao} className="card-title" />
+                  <RadioButtonGroup name="shipSpeed" labelPosition="left" className="radio-buttongroup" key={indexPesquisa + "pesquisa"} onChange={(event, value) => {
+                    politico_id = value
+                  }}>
+                    {
+                      pesquisa.opcoes.map((opcao, i) => {
+                        return (<RadioButton
+                          value={opcao.politico._id}
+                          label={opcao.politico.nome_eleitoral}
+                          style={styles.radioButton}
+                          key={ + "politico"}
+                          className="radio-button"
+                        />)
+                      })
+                    }
+                  </RadioButtonGroup>
+                  <CardActions>
+                    <RaisedButton label="Votar" secondary={true} fullWidth={true} onClick={() => {pesquisa.id && politico_id ? this.makeVote(pesquisa.id, politico_id, indexPesquisa) : null }} />
+                  </CardActions>
+                </Card>);
+            })
+          }
+        </div>
       </div>
     );
 
   };
 
-  makeVote = (pesquisa_id, politico_id) => {
+  makeVote = (pesquisa_id, politico_id, indexPesquisa) => {
     axios.post(`http://localhost:8081/api/pesquisa/${pesquisa_id}/votar/${politico_id}`)
       .then((response) => {
         this.getResults(pesquisa_id)
