@@ -107,7 +107,7 @@ class Content extends Component {
           }
 
           {
-            user && user.cargo === 'eleitor' && (<div>
+            user && (user.cargo === 'eleitor' || user.cargo === 'politico') && (<div>
               <Divider /> 
               <Subheader>Votação</Subheader>
               <Link

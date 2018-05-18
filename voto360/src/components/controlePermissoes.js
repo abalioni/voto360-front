@@ -52,9 +52,9 @@ export default class ControlePermissoes extends React.Component {
   render() {
     return (<div className="outter-div">
 
-      <div>
+      <div className="control-panel">
         <h2>Controle Permissoes</h2>
-        <div className="inner-div">
+        <div className="inner-panel">
           <AutoComplete
             floatingLabelText="Pesquise o usuário por email"
             floatingLabelStyle={styles.floatingLabelStyle}
@@ -69,9 +69,11 @@ export default class ControlePermissoes extends React.Component {
               this.displayUser()
             }}
           />
+          <div>
           <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios} />
+          </div>
         </div>
-        <div className="inner-div">
+        <div className="inner-panel">
           <SelectField
             floatingLabelText="Permissões"
             floatingLabelStyle={styles.floatingLabelStyle}
@@ -86,14 +88,15 @@ export default class ControlePermissoes extends React.Component {
           </SelectField>
 
         </div>
-        <div className="inner-div">
+        <div className="inner-panel">
 
           {/* <RaisedButton label="Excluir usuário" primary={true} style={style} onClick={this.handleSalvarPermissoes}/> */}
           <RaisedButton label="Salvar" primary={true} style={style} onClick={this.handleSalvarPermissoes} />
         </div>
       </div>
       <div className="card">
-        {this.state.emailSelecionado ? (<Card>
+        {this.state.emailSelecionado ? 
+          (<Card>
           <CardHeader
             title="Usuário selecionado"
           />
@@ -122,7 +125,6 @@ export default class ControlePermissoes extends React.Component {
   }
 
   handleDeleteUser = () => {
-    console.log(this.state)
     if(this.state.cargo === 'admin') {
       this.setState({
         dialogMessage: 'O Admin não pode ser deletado'
@@ -154,7 +156,7 @@ export default class ControlePermissoes extends React.Component {
 
   displayUser = () => {
     this.state.users.forEach((obj, index) => {
-      console.log(obj)
+
       if (obj.email === this.state.emailSelecionado) {
         this.setState({
           cargo: obj.cargo,
@@ -177,11 +179,9 @@ export default class ControlePermissoes extends React.Component {
       cargo: this.state.cargo
     })
       .then(function (response) {
-        console.log(response);
       })
       .then(function (error) {
         if (error) {
-          console.log(error);
         }
       })
 
@@ -189,11 +189,9 @@ export default class ControlePermissoes extends React.Component {
       email: this.state.emailSelecionado
     })
       .then(function (response) {
-        console.log(response);
       })
       .then(function (error) {
         if (error) {
-          console.log(error);
         }
       })
   }

@@ -4,18 +4,22 @@
     align-self: center;
     width: 80%;
     margin: auto;
-    /* background-color: red; */
+    justify-content: center;
+    align-items: center;
 }
 
-.inner-div {
+.inner-panel {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
+    width: 100%;
 }
 
 h2 {
     text-align: center;
 }
 
-.card {
+.control-panel {
+    width: 35%;
+    
 }
