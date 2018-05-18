@@ -64,7 +64,8 @@ export default class CadastroPolitico extends React.Component {
 
     componentWillMount() {
         const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
+        let age = 18;
+        maxDate.setFullYear(maxDate.getFullYear() - age, maxDate.getMonth(), maxDate.getDate())
         const cookieUser = cookie.get('user');
         let user;
         if (cookieUser) {
@@ -266,6 +267,7 @@ export default class CadastroPolitico extends React.Component {
                         textFieldStyle={styles.floatingLabelStyle}
                         dialogContainerStyle={styles.floatingLabelFocusStyle}
                         maxDate={this.state.maxDate}
+                        defaultDate={this.state.maxDate}
                         onChange={(event, date) => {
                             this.setState({ datanascimento: date })
                         }}

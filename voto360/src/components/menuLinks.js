@@ -32,6 +32,10 @@ class MenuLinks extends Component {
             cookie.remove('user');
         }
         this.handleLogged(false)
+        if(this.props.history) {
+
+            this.props.history.push('/')
+        }
     }
     
     renderLink(user = {}) {

@@ -41,7 +41,8 @@ export default class ControlePermissoes extends React.Component {
       emailSelecionado: '',
       cargo: '',
       nome: '',
-      dialogMessage: ''
+      dialogMessage: '',
+      done: false
     }
     this.handleUsers = this.handleUsers.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
@@ -55,8 +56,8 @@ export default class ControlePermissoes extends React.Component {
       <div className="control-panel">
         <h2>Controle Permissoes</h2>
         <div className="inner-panel">
-          <AutoComplete
-            floatingLabelText="Pesquise o usuário por email"
+          {this.state.done ? (<AutoComplete
+            floatingLabelText="Pesquise o usuário por email" 
             floatingLabelStyle={styles.floatingLabelStyle}
             underlineStyle={styles.underlineStyle}
             filter={AutoComplete.fuzzyFilter}
@@ -68,7 +69,7 @@ export default class ControlePermissoes extends React.Component {
               })
               this.displayUser()
             }}
-          />
+          />) : null }
           <div>
           <RaisedButton label="Buscar usuários" primary={true} style={style} onClick={this.getUsuarios} />
           </div>
@@ -150,7 +151,7 @@ export default class ControlePermissoes extends React.Component {
   }
 
   handleUsers = (response) => {
-    this.setState({ emails: response.data.map(d => d.email), users: response.data })
+    this.setState({ emails: response.data.map(d => d.email), users: response.data, done: true })
 
   }
 
